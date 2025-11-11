@@ -16,8 +16,7 @@ namespace yalovsky{
     }
     return true;
   }
-
-} 
+}
 
 int main()
 {
