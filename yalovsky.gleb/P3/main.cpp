@@ -36,6 +36,13 @@ namespace yalovsky{
     out << "\n";
   }
 
+  void copyMatrix(const int * source, int * dest, size_t rows, size_t cols)
+  {
+    for (size_t i = 0; i <= rows * cols; i++) {
+      dest[i] = source[i];
+    }
+  }
+
 }
 
 int main()
