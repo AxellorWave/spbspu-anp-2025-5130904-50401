@@ -157,7 +157,36 @@ struct Memory
 
     return arr;
   }
-  int *NUM_COL_LSR() { return buffer; }
+  size_t NUM_COL_LSR(int *arr, size_t rows, size_t cols)
+  {
+    size_t best_col = 0;
+    size_t best_len = 0;
+
+    for (size_t col = 0; col < cols; ++col)
+    {
+      size_t max_len = 1, cur_len = 1;
+      for (size_t row = 1; row < rows; ++row)
+      {
+        int prev = arr[(row - 1) * cols + col];
+        int curr = arr[row * cols + col];
+
+        if (curr == prev)
+          cur_len++;
+        else
+          cur_len = 1;
+
+        max_len = std::max(max_len, cur_len);
+      }
+
+      if (max_len > best_len)
+      {
+        best_len = max_len;
+        best_col = col;
+      }
+    }
+
+    return best_col;
+  }
 
   void clean()
   {
