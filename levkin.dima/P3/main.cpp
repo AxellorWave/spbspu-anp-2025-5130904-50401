@@ -239,6 +239,6 @@ int main(int argc, char **argv)
   {
     std::cerr << "unknown error\n";
     matrix.clean();
-    return 2;
+    return 1;
   }
 }
