@@ -109,36 +109,36 @@ struct Memory
       return nullptr;
 
     int *arr = copy(buffer, rows, cols);
-    int top = 0, bottom = static_cast<int>(rows) - 1;
-    int left = 0, right = static_cast<int>(cols) - 1;
-    int add = 1;
-    int visited = 0;
+    size_t top = 0, bottom = rows - 1;
+    size_t left = 0, right = cols - 1;
+    size_t add = 1;
+    size_t visited = 0;
     size_t total = rows * cols;
 
     while (visited < total)
     {
-      for (int j = left; j <= right && visited < total; ++j)
+      for (size_t j = left; j <= right && visited < total; ++j)
       {
         arr[bottom * cols + j] += add++;
         visited++;
       }
       bottom--;
 
-      for (int j = right; j >= left && visited < total; --j)
+      for (size_t j = right; j >= left && visited < total; --j)
       {
         arr[top * cols + j] += add++;
         visited++;
       }
       top++;
 
-      for (int i = bottom; i >= top && visited < total; --i)
+      for (size_t i = bottom; i >= top && visited < total; --i)
       {
         arr[i * cols + left] += add++;
         visited++;
       }
       left++;
 
-      for (int i = top; i <= bottom && visited < total; ++i)
+      for (size_t i = top; i <= bottom && visited < total; ++i)
       {
         arr[i * cols + right] += add++;
         visited++;
@@ -216,27 +216,18 @@ int main(int argc, char **argv)
     matrix.openOutput(argv[3]);
 
     int *result = matrix.LFT_BOT_CNT();
-    if (result && matrix.rows > 0 && matrix.cols > 0)
+    matrix.output_stream << matrix.rows << ' ' << matrix.cols << '\n';
+    for (size_t i = 0; i < matrix.rows; ++i)
     {
-      matrix.output_stream << matrix.rows << ' ' << matrix.cols << '\n';
-      for (size_t i = 0; i < matrix.rows; ++i)
+      for (size_t j = 0; j < matrix.cols; ++j)
       {
-        for (size_t j = 0; j < matrix.cols; ++j)
-        {
-          if (j > 0)
-            matrix.output_stream << ' ';
-          matrix.output_stream << result[i * matrix.cols + j];
-        }
-        matrix.output_stream << '\n';
+        if (j > 0)
+          matrix.output_stream << ' ';
+        matrix.output_stream << result[i * matrix.cols + j];
       }
-      delete[] result;
+      matrix.output_stream << '\n';
     }
-    else
-    {
-      matrix.output_stream << "0 0\n";
-      if (result)
-        delete[] result;
-    }
+    delete[] result;
 
     size_t best_col = matrix.NUM_COL_LSR();
     matrix.output_stream << best_col << '\n';
