@@ -14,3 +14,5 @@ out
 # Helpers
 update-student-stats.sh
 generate-stats
+# formatter config
+.clang-format
