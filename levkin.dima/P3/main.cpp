@@ -215,25 +215,34 @@ int main(int argc, char **argv)
     matrix.init(argv[2], memory_type);
     matrix.openOutput(argv[3]);
 
-    matrix.output_stream << matrix.LFT_BOT_CNT() << "\n";
+    int *result = matrix.LFT_BOT_CNT();
+    if (result && matrix.rows > 0 && matrix.cols > 0)
+    {
+      matrix.output_stream << matrix.rows << ' ' << matrix.cols << '\n';
+      for (size_t i = 0; i < matrix.rows; ++i)
+      {
+        for (size_t j = 0; j < matrix.cols; ++j)
+        {
+          if (j > 0)
+            matrix.output_stream << ' ';
+          matrix.output_stream << result[i * matrix.cols + j];
+        }
+        matrix.output_stream << '\n';
+      }
+      delete[] result;
+    }
+    else
+    {
+      matrix.output_stream << "0 0\n";
+      if (result)
+        delete[] result;
+    }
 
     size_t best_col = matrix.NUM_COL_LSR();
     matrix.output_stream << best_col << '\n';
 
     matrix.clean();
     return 0;
-  }
-  catch (const std::bad_alloc &)
-  {
-    std::cerr << "memory allocation failed\n";
-    matrix.clean();
-    return 1;
-  }
-  catch (const std::exception &e)
-  {
-    std::cerr << e.what() << '\n';
-    matrix.clean();
-    return 2;
   }
   catch (...)
   {
