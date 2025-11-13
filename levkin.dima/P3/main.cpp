@@ -105,47 +105,42 @@ struct Memory
 
   int *LFT_BOT_CNT()
   {
-    if (!buffer || rows == 0 || cols == 0)
-      return nullptr;
-
     int *arr = copy(buffer, rows, cols);
     size_t top = 0, bottom = rows - 1;
     size_t left = 0, right = cols - 1;
     size_t add = 1;
     size_t visited = 0;
     size_t total = rows * cols;
-
+  
     while (visited < total)
     {
       for (size_t j = left; j <= right && visited < total; ++j)
       {
-        arr[bottom * cols + j] += add++;
-        visited++;
+          arr[bottom * cols + j] += add++;
       }
       bottom--;
-
+  
       for (size_t j = right; j >= left && visited < total; --j)
       {
-        arr[top * cols + j] += add++;
-        visited++;
+          arr[top * cols + j] += add++;
       }
       top++;
-
+  
       for (size_t i = bottom; i >= top && visited < total; --i)
       {
-        arr[i * cols + left] += add++;
-        visited++;
+          arr[i * cols + left] += add++;
       }
+      
       left++;
-
+  
       for (size_t i = top; i <= bottom && visited < total; ++i)
       {
-        arr[i * cols + right] += add++;
-        visited++;
+          arr[i * cols + right] += add++;
       }
+      
       right--;
     }
-
+  
     return arr;
   }
 
@@ -206,9 +201,9 @@ int main(int argc, char **argv)
   }
 
   levkin::Memory matrix;
-  levkin::MemoryType memory_type = (mode[0] == '1')
-                                       ? levkin::MemoryType::STATIC_MEMORY
-                                       : levkin::MemoryType::DYNAMIC_MEMORY;
+  levkin::MemoryType memory_type = (mode[0] == '1') 
+    ? levkin::MemoryType::STATIC_MEMORY 
+    : levkin::MemoryType::DYNAMIC_MEMORY;
 
   try
   {
