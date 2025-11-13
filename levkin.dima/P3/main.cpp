@@ -39,7 +39,10 @@ struct Memory {
     }
 
     file_stream >> rows >> cols;
-    if (file_stream.fail() || rows == 0 || cols == 0) {
+    if (file_stream.fail()) {
+        throw std::runtime_error("file is wrong");
+    }
+    if (rows == 0 || cols == 0) {
       throw std::length_error("bad dimentions");
     }
 
@@ -254,7 +257,6 @@ int main(int argc, char** argv)
     return 0;
 
   } catch (std::length_error& e) {
-    std::cerr << "invalid dimentions";
     return 0;
 
   } catch (std::exception& e) {
