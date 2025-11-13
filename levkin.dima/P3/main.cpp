@@ -233,32 +233,32 @@ int main(int argc, char** argv)
       ? levkin::MemoryType::STATIC_MEMORY
       : levkin::MemoryType::DYNAMIC_MEMORY;
 
-      try {
-        matrix.init(argv[2], memory_type);
-        matrix.openOutput(argv[3]);
-      
-        int* result = matrix.LFT_BOT_CNT();
-        matrix.output_stream << matrix.rows << ' ' << matrix.cols << '\n';
-      
-        for (size_t i = 0; i < matrix.rows * matrix.cols; ++i) {
-          matrix.output_stream << result[i] << " ";
-        }
-      
-        matrix.output_stream << "\n";
-        delete[] result;
-      
-        size_t best_col = matrix.NUM_COL_LSR();
-        matrix.output_stream << best_col << '\n';
-      
-        matrix.clean();
-        return 0;
-      
-      } catch (std::runtime_error& e) {
-        return 0;
-      
-      } catch (std::exception& e) {
-        std::cerr << "unknown error: " << e.what() << "\n";
-        matrix.clean();
-        return 1;
-      }
+  try {
+    matrix.init(argv[2], memory_type);
+    matrix.openOutput(argv[3]);
+
+    int* result = matrix.LFT_BOT_CNT();
+    matrix.output_stream << matrix.rows << ' ' << matrix.cols << '\n';
+
+    for (size_t i = 0; i < matrix.rows * matrix.cols; ++i) {
+      matrix.output_stream << result[i] << " ";
+    }
+
+    matrix.output_stream << "\n";
+    delete[] result;
+
+    size_t best_col = matrix.NUM_COL_LSR();
+    matrix.output_stream << best_col << '\n';
+
+    matrix.clean();
+    return 0;
+
+  } catch (std::runtime_error& e) {
+    return 0;
+
+  } catch (std::exception& e) {
+    std::cerr << "unknown error: " << e.what() << "\n";
+    matrix.clean();
+    return 1;
+  }
 }
