@@ -254,6 +254,7 @@ int main(int argc, char** argv)
     return 0;
 
   } catch (std::length_error& e) {
+    std::cerr << "invalid dimentions";
     return 0;
 
   } catch (std::exception& e) {
