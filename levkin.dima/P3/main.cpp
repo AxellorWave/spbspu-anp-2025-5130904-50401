@@ -40,7 +40,7 @@ struct Memory {
 
     file_stream >> rows >> cols;
     if (file_stream.fail() || rows == 0 || cols == 0) {
-      throw std::runtime_error("bad dimentions");
+      throw std::length_error("bad dimentions");
     }
 
     size_t total = rows * cols;
@@ -253,7 +253,7 @@ int main(int argc, char** argv)
     matrix.clean();
     return 0;
 
-  } catch (std::runtime_error& e) {
+  } catch (std::length_error& e) {
     return 0;
 
   } catch (std::exception& e) {
