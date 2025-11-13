@@ -254,6 +254,9 @@ int main(int argc, char** argv)
     return 0;
 
   } catch (std::exception& e) {
+    if (e.what() == "bad dimentions") {
+        return 0;
+    }
     std::cerr << "unknown error: " << e.what() << "\n";
     matrix.clean();
     return 1;
