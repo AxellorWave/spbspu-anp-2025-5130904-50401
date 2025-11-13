@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <cstddef>
+#include <exception>
 #include <fstream>
 #include <iostream>
 #include <stdexcept>
@@ -12,7 +13,7 @@ enum class MemoryType : int {
 };
 
 int* copy(int* arr, size_t r, size_t c) {
-  int* copy = new int[r * c];
+  int* copy = new int[r * c]();
   for (size_t i = 0; i < r * c; ++i) {
     copy[i] = arr[i];
   }
@@ -84,36 +85,70 @@ struct Memory {
   }
 
   int* LFT_BOT_CNT() {
-    int* arr = copy(buffer, rows, cols);
-    size_t top = 0, bottom = rows - 1;
-    size_t left = 0, right = cols - 1;
-    size_t add = 1;
-    size_t visited = 0;
-    size_t total = rows * cols;
-
-    while (visited < total) {
-      for (size_t j = left; j <= right && visited < total; ++j) {
-        arr[bottom * cols + j] += add++;
+      int* arr = copy(buffer, rows, cols);
+      int border_padding[4] = {0, 0, 0, 1}; 
+  
+      int x = 0;
+      int y = rows - 1;
+      int going_mode = 0; // 0=right, 1=top, 2=left, 3=bottom
+      int i = 1;
+  
+      while (i <= rows * cols) {
+  
+          if (i == rows * cols) {
+              arr[cols * y + x] += i;
+              break;
+          }
+  
+          bool can_we_go_this_way = true;
+          switch (going_mode) {
+              case 0:
+                  can_we_go_this_way = x + 1 < (cols - border_padding[0]);
+                  break;
+              case 1: 
+                  can_we_go_this_way = y - 1 > border_padding[1] - 1;
+                  break;
+              case 2: 
+                  can_we_go_this_way = x - 1 > border_padding[2] - 1;
+                  break;
+              case 3: 
+                  can_we_go_this_way = y + 1 < (rows - border_padding[3]);
+                  break;
+          }
+  
+          if (!can_we_go_this_way) {
+              switch (going_mode) {
+                  case 0:
+                      going_mode = 1;
+                      border_padding[0]++;
+                      break;
+                  case 1:
+                      going_mode = 2;
+                      border_padding[1]++;
+                      break;
+                  case 2:
+                      going_mode = 3;
+                      border_padding[2]++;
+                      break;
+                  case 3:
+                      going_mode = 0;
+                      border_padding[3]++;
+                      break;
+              }
+              continue;
+          }
+  
+          arr[cols * y + x] += i;
+          i++;
+  
+          switch (going_mode) {
+              case 0: x += 1; break;
+              case 1: y -= 1; break;
+              case 2: x -= 1; break;
+              case 3: y += 1; break;
+          }
       }
-      --bottom;
-
-      for (size_t j = right; j >= left && visited < total; --j) {
-        arr[top * cols + j] += add++;
-      }
-      ++top;
-
-      for (size_t i = bottom; i >= top && visited < total; --i) {
-        arr[i * cols + left] += add++;
-      }
-      ++left;
-
-      for (size_t i = top; i <= bottom && visited < total; ++i) {
-        arr[i * cols + right] += add++;
-      }
-      --right;
-    }
-
-    return arr;
+      return arr;
   }
 
   size_t NUM_COL_LSR() const {
@@ -171,22 +206,17 @@ int main(int argc, char** argv) {
     matrix.openOutput(argv[3]);
     int* result = matrix.LFT_BOT_CNT();
     matrix.output_stream << matrix.rows << ' ' << matrix.cols << '\n';
-    for (size_t i = 0; i < matrix.rows; ++i) {
-      for (size_t j = 0; j < matrix.cols; ++j) {
-        if (j > 0) {
-          matrix.output_stream << ' ';
-        }
-        matrix.output_stream << result[i * matrix.cols + j];
-      }
-      matrix.output_stream << '\n';
+    for (size_t i = 0; i < matrix.rows* matrix.cols; ++i) {
+        matrix.output_stream << result[i] << " ";
     }
+    matrix.output_stream << "\n";
     delete[] result;
     size_t best_col = matrix.NUM_COL_LSR();
     matrix.output_stream << best_col << '\n';
     matrix.clean();
     return 0;
-  } catch (...) {
-    std::cerr << "unknown error\n";
+  } catch (std::exception &e) {
+    std::cerr << "unknown error: " << e.what() << "\n";
     matrix.clean();
     return 1;
   }
