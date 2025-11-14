@@ -50,32 +50,32 @@ namespace yalovsky{
     }
 
     int count = 1;
-    size_t top = 0;
-    size_t bottom = rows - 1;
-    size_t left = 0;
-    size_t right = cols - 1;
+    int top = 0;
+    int bottom = static_cast<int>(rows) - 1;
+    int left = 0;
+    int right = static_cast<int>(cols) - 1;
 
     while (top <= bottom && left <= right) {
-      for (size_t i = left; i <= right; i++) {
+      for (int i = left; i <= right; i++) {
         matrix[top * cols + i] -= count++;
       }
       top++;
 
-      for (size_t j = top; j <= bottom; j++) {
+      for (int j = top; j <= bottom; j++) {
         matrix[j * cols + right] -= count++;
       }
       right--;
 
       if (top <= bottom) {
-        for (size_t i = right; i >= left; i--) {
+        for (int i = right; i >= left; i--) {
           matrix[bottom * cols + i] -= count++;
         }
         bottom--;
       }
 
       if (left <= right) {
-        for (size_t i = bottom; i >= top; i--) {
-          matrix[i * cols + left] -= count++;
+        for (int j = bottom; j >= top; j--) {
+          matrix[j * cols + left] -= count++;
         }
         left++;
       }
@@ -89,31 +89,34 @@ namespace yalovsky{
     }
 
     int count = 1;
-    size_t top = 0;
-    size_t bottom = rows - 1;
-    size_t left = 0;
-    size_t right = cols - 1;
+    int top = 0;
+    int bottom = static_cast<int>(rows) - 1;
+    int left = 0;
+    int right = static_cast<int>(cols) - 1;
 
     while (top <= bottom && left <= right) {
-      for (size_t i = left; i <= right; i++) {
+      for (int i = left; i <= right; i++) {
         matrix[bottom * cols + i] += count++;
       }
       bottom--;
 
-      for (size_t j = bottom; j >= top; j--) {
-        matrix[j * cols + right] += count++;
+      if (top <= bottom) {
+        for (int j = bottom; j >= top; j--) {
+          matrix[j * cols + right] += count++;
+        }
       }
       right--;
 
-      if (top <= bottom) {
-        for (size_t i = right; i >= left; i--) {
+      if (top <= bottom && left <= right) {
+        for (int i = right; i >= left; i--) {
           matrix[top * cols + i] += count++;
         }
         top++;
       }
+
       if (left <= right) {
-        for (size_t i = top; i <= bottom; i++){
-          matrix[i * cols + left] += count++;
+        for (int j = top; j <= bottom; j++) {
+          matrix[j * cols + left] += count++;
         }
         left++;
       }
@@ -188,7 +191,7 @@ int main(int argc, char ** argv)
       yalovsky::writeMatrix(output, staticCopy, rows, cols);
 
     } else {
-      int * dynamicMatrix = static_cast<int*>(std::malloc(rows * cols * sizeof(int)));
+      dynamicMatrix = static_cast<int*>(std::malloc(rows * cols * sizeof(int)));
       if (!dynamicMatrix) {
         std::cerr << "Memory alloc failed\n";
         return 2;
@@ -196,7 +199,7 @@ int main(int argc, char ** argv)
 
       yalovsky::readMatrix(input, dynamicMatrix, rows, cols);
 
-      int * dynamicCopy = static_cast<int*>(std::malloc(rows * cols * sizeof(int)));
+      dynamicCopy = static_cast<int*>(std::malloc(rows * cols * sizeof(int)));
       if (!dynamicCopy) {
         std::cerr << "Memory alloc failed\n";
         std::free(dynamicMatrix);
@@ -216,9 +219,9 @@ int main(int argc, char ** argv)
       std::free(dynamicMatrix);
     }
   } catch (const std::exception& e) {
+    if (dynamicCopy) std::free(dynamicCopy);
+    if (dynamicMatrix) std::free(dynamicMatrix);
     std::cerr << "Invalid input - invalid matrix data\n";
-    std::free(dynamicCopy);
-    std::free(dynamicMatrix);
     return 2;
   }
   return 0;
