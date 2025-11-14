@@ -185,7 +185,7 @@ int main(int argc, char ** argv)
       yalovsky::writeMatrix(output, staticCopy, rows, cols);
 
     } else {
-      int * dynamicMatrix = (int*)std::malloc(rows * cols * sizeof(int));
+      int * dynamicMatrix = static_cast<int*>(std::malloc(rows * cols * sizeof(int)));
       if (!dynamicMatrix) {
         std::cerr << "Memory alloc failed\n";
         return 2;
@@ -193,7 +193,7 @@ int main(int argc, char ** argv)
 
       yalovsky::readMatrix(input, dynamicMatrix, rows, cols);
 
-      int * dynamicCopy = (int*)std::malloc(rows * cols * sizeof(int));
+      int * dynamicCopy = static_cast<int*>(std::malloc(rows * cols * sizeof(int)));
       if (!dynamicCopy) {
         std::cerr << "Memory alloc failed\n";
         std::free(dynamicMatrix);
