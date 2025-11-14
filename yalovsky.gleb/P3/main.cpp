@@ -168,6 +168,9 @@ int main(int argc, char ** argv)
     return 2;
   }
 
+  int* dynamicMatrix = nullptr;
+  int* dynamicCopy = nullptr;
+
   try {
     if (mode == 1) {
       int staticMatrix[MAX_STATIC_SIZE];
@@ -214,6 +217,8 @@ int main(int argc, char ** argv)
     }
   } catch (const std::exception& e) {
     std::cerr << "Invalid input - invalid matrix data\n";
+    std::free(dynamicCopy);
+    std::free(dynamicMatrix);
     return 2;
   }
   return 0;
