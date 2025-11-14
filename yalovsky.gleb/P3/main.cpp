@@ -2,131 +2,132 @@
 #include <fstream>
 #include <cstdlib>
 
-namespace yalovsky{
+namespace yalovsky {
 
-  bool isNumber(const char * str)
-  {
-    if (!str || *str == '\0') {
+bool isNumber(const char* str)
+{
+  if (!str || *str == '\0') {
+    return false;
+  }
+  for (size_t i = 0; str[i] != '\0'; i++) {
+    if (str[i] < '0' || str[i] > '9') {
       return false;
     }
-    for (size_t i = 0; str[i] != '\0'; i++) {
-      if (str[i] < '0' || str[i] > '9') {
-        return false;
-      }
-    }
-    return true;
   }
+  return true;
+}
 
-  void readMatrix(std::istream & in, int * matrix, size_t rows, size_t cols)
-  {
-    for (size_t i = 0; i < rows * cols; i++) {
-      in >> matrix[i];
-      if(!in) {
-       throw std::runtime_error("Invalid matrix data");
-      }
-    }
-  }
-
-  void writeMatrix(std::ostream & out, const int * matrix, size_t rows, size_t cols)
-  {
-    out << rows << " " << cols;
-    for (size_t i = 0; i < rows * cols; i++) {
-      out << " " << matrix[i];
-    }
-    out << "\n";
-  }
-
-  void copyMatrix(const int * source, int * dest, size_t rows, size_t cols)
-  {
-    for (size_t i = 0; i < rows * cols; i++) {
-      dest[i] = source[i];
-    }
-  }
-
-  void spiralTransformLFTTOPCLK(int * matrix, size_t rows, size_t cols)
-  {
-    if (rows == 0 || cols == 0) {
-      return;
-    }
-
-    int count = 1;
-    int top = 0;
-    int bottom = static_cast<int>(rows) - 1;
-    int left = 0;
-    int right = static_cast<int>(cols) - 1;
-
-    while (top <= bottom && left <= right) {
-      for (int i = left; i <= right; i++) {
-        matrix[top * cols + i] -= count++;
-      }
-      top++;
-
-      for (int j = top; j <= bottom; j++) {
-        matrix[j * cols + right] -= count++;
-      }
-      right--;
-
-      if (top <= bottom) {
-        for (int i = right; i >= left; i--) {
-          matrix[bottom * cols + i] -= count++;
-        }
-        bottom--;
-      }
-
-      if (left <= right) {
-        for (int j = bottom; j >= top; j--) {
-          matrix[j * cols + left] -= count++;
-        }
-        left++;
-      }
-    }
-  }
-
-  void spiralTransformLFTBOTCNT(int * matrix, size_t rows, size_t cols)
-  {
-    if (rows == 0 || cols == 0) {
-      return;
-    }
-
-    int count = 1;
-    int top = 0;
-    int bottom = static_cast<int>(rows) - 1;
-    int left = 0;
-    int right = static_cast<int>(cols) - 1;
-
-    while (top <= bottom && left <= right) {
-      for (int i = left; i <= right; i++) {
-        matrix[bottom * cols + i] += count++;
-      }
-      bottom--;
-
-      if (top <= bottom) {
-        for (int j = bottom; j >= top; j--) {
-          matrix[j * cols + right] += count++;
-        }
-      }
-      right--;
-
-      if (top <= bottom && left <= right) {
-        for (int i = right; i >= left; i--) {
-          matrix[top * cols + i] += count++;
-        }
-        top++;
-      }
-
-      if (left <= right) {
-        for (int j = top; j <= bottom; j++) {
-          matrix[j * cols + left] += count++;
-        }
-        left++;
-      }
+void readMatrix(std::istream& in, int* matrix, size_t rows, size_t cols)
+{
+  for (size_t i = 0; i < rows * cols; i++) {
+    in >> matrix[i];
+    if (!in) {
+      throw std::runtime_error("Invalid matrix data");
     }
   }
 }
 
-int main(int argc, char ** argv)
+void writeMatrix(std::ostream& out, const int* matrix, size_t rows, size_t cols)
 {
-    if (argc != 4) {
+  out << rows << " " << cols;
+  for (size_t i = 0; i < rows * cols; i++) {
+    out << " " << matrix[i];
+  }
+  out << "\n";
+}
+
+void copyMatrix(const int* source, int* dest, size_t rows, size_t cols)
+{
+  for (size_t i = 0; i < rows * cols; i++) {
+    dest[i] = source[i];
+  }
+}
+
+void spiralTransformLFTTOPCLK(int* matrix, size_t rows, size_t cols)
+{
+  if (rows == 0 || cols == 0) {
+    return;
+  }
+
+  int count = 1;
+  int top = 0;
+  int bottom = static_cast<int>(rows) - 1;
+  int left = 0;
+  int right = static_cast<int>(cols) - 1;
+
+  while (top <= bottom && left <= right) {
+    for (int i = left; i <= right; i++) {
+      matrix[top * cols + i] -= count++;
+    }
+    top++;
+
+    for (int j = top; j <= bottom; j++) {
+      matrix[j * cols + right] -= count++;
+    }
+    right--;
+
+    if (top <= bottom) {
+      for (int i = right; i >= left; i--) {
+        matrix[bottom * cols + i] -= count++;
+      }
+      bottom--;
+    }
+
+    if (left <= right) {
+      for (int j = bottom; j >= top; j--) {
+        matrix[j * cols + left] -= count++;
+      }
+      left++;
+    }
+  }
+}
+
+void spiralTransformLFTBOTCNT(int* matrix, size_t rows, size_t cols)
+{
+  if (rows == 0 || cols == 0) {
+    return;
+  }
+
+  int count = 1;
+  int top = 0;
+  int bottom = static_cast<int>(rows) - 1;
+  int left = 0;
+  int right = static_cast<int>(cols) - 1;
+
+  while (top <= bottom && left <= right) {
+    for (int i = left; i <= right; i++) {
+      matrix[bottom * cols + i] += count++;
+    }
+    bottom--;
+
+    if (top <= bottom) {
+      for (int j = bottom; j >= top; j--) {
+        matrix[j * cols + right] += count++;
+      }
+    }
+    right--;
+
+    if (top <= bottom && left <= right) {
+      for (int i = right; i >= left; i--) {
+        matrix[top * cols + i] += count++;
+      }
+      top++;
+    }
+
+    if (left <= right) {
+      for (int j = top; j <= bottom; j++) {
+        matrix[j * cols + left] += count++;
+      }
+      left++;
+    }
+  }
+}
+
+}
+
+int main(int argc, char** argv)
+{
+  if (argc != 4) {
     std::cerr << (argc < 4 ? "Not enough arguments\n" : "Too many arguments\n");
     return 1;
   }
@@ -136,7 +137,7 @@ int main(int argc, char ** argv)
     return 1;
   }
 
-  char* endptr;
+  char* endptr = nullptr;
   long mode = std::strtol(argv[1], &endptr, 10);
   if (*endptr != '\0' || (mode != 1 && mode != 2)) {
     std::cerr << "First parameter is out of range\n";
@@ -176,10 +177,10 @@ int main(int argc, char ** argv)
 
   try {
     if (mode == 1) {
-      int staticMatrix[MAX_STATIC_SIZE];
+      int staticMatrix[MAX_STATIC_SIZE] = {};
       yalovsky::readMatrix(input, staticMatrix, rows, cols);
 
-      int staticCopy[MAX_STATIC_SIZE];
+      int staticCopy[MAX_STATIC_SIZE] = {};
       yalovsky::copyMatrix(staticMatrix, staticCopy, rows, cols);
 
       yalovsky::spiralTransformLFTTOPCLK(staticMatrix, rows, cols);
@@ -219,8 +220,12 @@ int main(int argc, char ** argv)
       std::free(dynamicMatrix);
     }
   } catch (const std::exception& e) {
-    if (dynamicCopy) std::free(dynamicCopy);
-    if (dynamicMatrix) std::free(dynamicMatrix);
+    if (dynamicCopy != nullptr) {
+      std::free(dynamicCopy);
+    }
+    if (dynamicMatrix != nullptr) {
+      std::free(dynamicMatrix);
+    }
     std::cerr << "Invalid input - invalid matrix data\n";
     return 2;
   }
