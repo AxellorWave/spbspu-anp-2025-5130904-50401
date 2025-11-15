@@ -128,6 +128,36 @@ namespace kondrat
 
     return best_col + 1;
   }
+
+  size_t cnt_loc_min(int * m, size_t rows, size_t cols)
+  {
+    size_t count = 0;
+
+    for (size_t i = 1; i < rows - 1; i++)
+    {
+      for (size_t j = 1; j < cols - 1; j++)
+      {
+        int num = m[i * cols + j];
+        bool isLocMin = true;
+
+        isLocMin = isLocMin && (num < m[(i - 1) * cols + j]);
+        isLocMin = isLocMin && (num < m[(i + 1) * cols + j]);
+        isLocMin = isLocMin && (num < m[i * cols + (j - 1)]);
+        isLocMin = isLocMin && (num < m[i * cols + (j + 1)]);
+        isLocMin = isLocMin && (num < m[(i - 1) * cols + (j - 1)]);
+        isLocMin = isLocMin && (num < m[(i - 1) * cols + (j + 1)]);
+        isLocMin = isLocMin && (num < m[(i + 1) * cols + (j - 1)]);
+        isLocMin = isLocMin && (num < m[(i + 1) * cols + (j + 1)]);
+
+        if (isLocMin)
+        {
+          count++;
+        }
+      }
+    }
+
+    return count;
+  }
 }
 
 int main(int argc, char ** argv)
