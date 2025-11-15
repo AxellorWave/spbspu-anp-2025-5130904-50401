@@ -32,7 +32,14 @@ namespace zhuravleva {
       rows = 0;
       cols = 0;
       matrix = nullptr;
-      return true;
+      if (isfixedsize)
+      {
+        return true;
+      }
+      else
+      {
+        return false;
+      }
     }
     file >> rows >> cols;
     if (rows == 0 || cols == 0)
@@ -50,16 +57,16 @@ namespace zhuravleva {
       matrix[i] = new int[cols];
       for (size_t j = 0; j < cols; j++)
       {
-          if (!(file >> matrix[i][j]))
+        if (!(file >> matrix[i][j]))
+        {
+          for (size_t k = 0; k <= i; k++)
           {
-            for (size_t k = 0; k < i; k++)
-            {
-              delete[] matrix[k];
-            }
-            delete[] matrix;
-            matrix = nullptr;
-            return false;
+            delete[] matrix[k];
           }
+          delete[] matrix;
+          matrix = nullptr;
+          return false;
+        }
       }
     }
     return true;
