@@ -3,7 +3,7 @@
 #include <string>
 
 namespace zhuravleva {
-	const int Max_size = 10000;
+	const size_t Max_size = 10000;
   bool isNumber(const std::string& str)
   {
     if (str.empty())
@@ -20,9 +20,49 @@ namespace zhuravleva {
     return true;
   }
 
-  int cols_no_dublicats(int ** matrix, size_t rows, size_t cols)
+  bool readMatrix(const std::string& filename, int**& matrix, size_t& rows, size_t& cols, bool isfixedsize)
   {
-    int count = 0;
+	std::ifstream file(filename);
+	file >> rows >> cols;
+	if (!file.is_open())
+  {
+    return false;
+  }
+	if (isfixedsize && (rows * cols > Max_size))
+  {
+    return false;
+  }
+	matrix = new int* [rows];
+	for (size_t i = 0; i < rows; i++)
+  {
+		matrix[i] = new int[cols];
+		for (size_t j = 0; j < cols; j++)
+    {
+				if (!(file >> matrix[i][j]))
+        {
+          return false;
+        }
+		}
+	}
+	return true;
+}
+
+void freeMatrix(int**& matrix, size_t rows)
+{
+	if (matrix)
+  {
+		for (size_t i = 0; i < rows; i++)
+    {
+			 delete[] matrix[i];
+		}
+		delete[] matrix;
+		matrix = nullptr;
+	}
+}
+
+  size_t cols_no_dublicats(int ** matrix, size_t rows, size_t cols)
+  {
+    size_t count = 0;
     for (size_t j = 0; j < cols; j++)
     {
       bool is_dublics = false;
@@ -40,9 +80,9 @@ namespace zhuravleva {
     }
     return count;
   }
-  int diagonals_no_zero(int** matrix, size_t rows, size_t cols)
+  size_t diagonals_no_zero(int** matrix, size_t rows, size_t cols)
   {
-    int count = 0;
+    size_t count = 0;
     if (rows == 0 && cols == 0)
     {
       return 0;
