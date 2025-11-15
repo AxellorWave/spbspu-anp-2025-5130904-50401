@@ -3,7 +3,7 @@
 #include <string>
 
 namespace zhuravleva {
-	const size_t Max_size = 10000;
+  const size_t Max_size = 10000;
   bool isNumber(const std::string& str)
   {
     if (str.empty())
