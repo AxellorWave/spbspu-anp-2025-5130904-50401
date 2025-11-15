@@ -34,11 +34,16 @@ namespace zhuravleva {
       matrix = nullptr;
       return false;
     }
-    file >> rows >> cols;
+    if(!(file >> rows >> cols))
+    {
+      matrix = nullptr;
+      return false;
+    }
+
     if (rows == 0 || cols == 0)
     {
         matrix = nullptr;
-        return true;
+        return false;
     }
     if (isfixedsize && (cols > 0 && rows > Max_size / cols))
     {
