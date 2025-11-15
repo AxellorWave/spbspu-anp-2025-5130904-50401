@@ -32,14 +32,7 @@ namespace zhuravleva {
       rows = 0;
       cols = 0;
       matrix = nullptr;
-      if (isfixedsize)
-      {
-        return true;
-      }
-      else
-      {
-        return false;
-      }
+      return false;
     }
     file >> rows >> cols;
     if (rows == 0 || cols == 0)
