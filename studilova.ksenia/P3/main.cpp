@@ -32,7 +32,37 @@ namespace studilova {
         }
         std::fclose(f);
         return true;
-    }
+    };
+
+    int count_saddle_points(const fixed_matrix_t* m) {
+        int count = 0;
+        for (int i = 0; i < m->rows; ++i) {
+            for (int j = 0; j < m->cols; ++j) {
+                int current_val = m->data[i][j];
+                bool is_min_in_row = true;
+                for (int col = 0; col < m->cols; ++col) {
+                    if (m->data[i][col] < current_val) {
+                        is_min_in_row = false;
+                        break;
+                    }
+                }
+                if (!is_min_in_row) {
+                    continue;
+                }
+                bool is_max_in_col = true;
+                for (int row = 0; row < m->rows; ++row) {
+                    if (m->data[row][j] > current_val) {
+                        is_max_in_col = false;
+                        break;
+                    }
+                }
+                if (is_max_in_col) {
+                    count++;
+                }
+            }
+        }
+        return count;
+    };
 
     int main_logic(int argc, char* argv[]) {
         return 0;
