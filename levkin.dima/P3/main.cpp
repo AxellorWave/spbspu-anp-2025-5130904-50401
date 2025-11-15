@@ -260,7 +260,7 @@ int main(int argc, char** argv)
     return 0;
 
   } catch (std::exception& e) {
-    std::cerr << "unknown error: " << e.what() << "\n";
+    std::cerr << "unknown error: " << e.what()  << "\n";
     matrix.clean();
     return 1;
   }
