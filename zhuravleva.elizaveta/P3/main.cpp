@@ -43,7 +43,7 @@ namespace zhuravleva {
     if (rows == 0 || cols == 0)
     {
       matrix = nullptr;
-      return false;
+      return true;
     }
     if (isfixedsize && (cols > 0 && rows > Max_size / cols))
     {
