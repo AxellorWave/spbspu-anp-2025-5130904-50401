@@ -8,6 +8,12 @@ namespace studilova {
         int cols;
     };
 
+    struct dynamic_matrix_t {
+        int** data[100][100];
+        int rows;
+        int cols;
+    };
+
     int main_logic(int argc, char* argv[]) {
         return 0;
     }
