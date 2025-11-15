@@ -1,4 +1,7 @@
-#include <iostream>
+#include <cstdio>
+#include <cstdlib>
+#include <climits>
+#include <cctype>
 
 namespace studilova {
 
