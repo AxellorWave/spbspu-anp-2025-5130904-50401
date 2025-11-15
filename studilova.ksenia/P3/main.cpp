@@ -32,9 +32,12 @@ namespace studilova {
         }
         std::fclose(f);
         return true;
-    };
+    }
 
     int count_saddle_points(const fixed_matrix_t* m) {
+        if (!m || m->rows <= 0 || m->cols <= 0) {
+            return 0;
+        }
         int count = 0;
         for (int i = 0; i < m->rows; ++i) {
             for (int j = 0; j < m->cols; ++j) {
