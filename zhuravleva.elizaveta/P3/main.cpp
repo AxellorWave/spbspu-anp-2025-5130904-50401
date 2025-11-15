@@ -43,7 +43,14 @@ namespace zhuravleva {
     if (rows == 0 || cols == 0)
     {
         matrix = nullptr;
-        return false;
+        if (isfixedsize)
+        {
+          return false;
+        }
+        else
+        {
+          return true;
+        }
     }
     if (isfixedsize && (cols > 0 && rows > Max_size / cols))
     {
@@ -167,6 +174,13 @@ int main(int argc, char* argv[])
 
   if (!zhuravleva::readMatrix(argv[2], matrix, rows, cols, mode == "1"))
   {
+    if (rows == 0 || cols == 0)
+    {
+      std::ofstream file_output(argv[3]);
+      file_output << "0 0" << std::endl;
+      zhuravleva::freeMatrix(matrix, rows);
+      return 0;
+    }
     std::cerr << "Invalid matrix" << std::endl;
     return 2;
   }
