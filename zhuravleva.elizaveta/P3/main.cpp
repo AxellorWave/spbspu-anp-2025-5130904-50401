@@ -44,8 +44,8 @@ namespace zhuravleva {
           }
       }
     }
-	  return true;
-	}
+    return true;
+  }
 
   void freeMatrix(int**& matrix, size_t rows)
   {
@@ -124,31 +124,31 @@ namespace zhuravleva {
 
 int main(int argc, char* argv[])
 {
-	if (argc != 4)
+  if (argc != 4)
   {
-		std::cerr << "Need 3 arguments: 1) mode 2) input 3) output" << std::endl;
-		return 1;
-	}
-	std::string mode = argv[1];
-	if (mode != "1" && mode != "2")
+    std::cerr << "Need 3 arguments: 1) mode 2) input 3) output" << std::endl;
+    return 1;
+  }
+  std::string mode = argv[1];
+  if (mode != "1" && mode != "2")
   {
-		std::cerr << "Mode must be 1 or 2" << std::endl;
-		return 1;
-	}
-	int** matrix = nullptr;
-	size_t rows, cols;
+    std::cerr << "Mode must be 1 or 2" << std::endl;
+    return 1;
+  }
+  int** matrix = nullptr;
+  size_t rows, cols;
 
-	if (!zhuravleva::readMatrix(argv[2], matrix, rows, cols, mode == "1"))
+  if (!zhuravleva::readMatrix(argv[2], matrix, rows, cols, mode == "1"))
   {
-		std::cerr << "Invalid matrix" << std::endl;
-		return 2;
-	}
-	size_t result_for_cols_no_dublicats = zhuravleva::cols_no_dublicats(matrix, rows, cols);
-	size_t result_for_diagonals_no_zero = zhuravleva::diagonals_no_zero(matrix, rows, cols);
-	std::ofstream file_output(argv[3]);
-	file_output << result_for_cols_no_dublicats<< " ";
+    std::cerr << "Invalid matrix" << std::endl;
+    return 2;
+  }
+  size_t result_for_cols_no_dublicats = zhuravleva::cols_no_dublicats(matrix, rows, cols);
+  size_t result_for_diagonals_no_zero = zhuravleva::diagonals_no_zero(matrix, rows, cols);
+  std::ofstream file_output(argv[3]);
+  file_output << result_for_cols_no_dublicats<< " ";
 
   file_output << result_for_diagonals_no_zero;
-	zhuravleva::freeMatrix(matrix, rows);
-	return 0;
+  zhuravleva::freeMatrix(matrix, rows);
+  return 0;
 }
