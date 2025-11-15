@@ -23,12 +23,24 @@ namespace zhuravleva {
   bool readMatrix(const std::string& filename, int**& matrix, size_t& rows, size_t& cols, bool isfixedsize)
   {
     std::ifstream file(filename);
-    file >> rows >> cols;
     if (!file.is_open())
     {
       return false;
     }
-    if (isfixedsize && (rows > Max_size/cols))
+    file >> rows >> cols;
+    if (file.fail())
+    {
+      rows = 0;
+      cols = 0;
+      matrix = nullptr;
+      return true;
+    }
+    if (rows == 0 || cols == 0)
+    {
+        matrix = nullptr;
+        return true;
+    }
+    if (isfixedsize && (cols > 0 && rows > Max_size / cols))
     {
       return false;
     }
@@ -40,6 +52,12 @@ namespace zhuravleva {
       {
           if (!(file >> matrix[i][j]))
           {
+            for (size_t k = 0; k < i; k++)
+            {
+              delete[] matrix[k];
+            }
+            delete[] matrix;
+            matrix = nullptr;
             return false;
           }
       }
@@ -62,6 +80,10 @@ namespace zhuravleva {
 
     size_t cols_no_dublicats(int ** matrix, size_t rows, size_t cols)
     {
+      if (rows == 0 || cols == 0 || matrix == nullptr)
+      {
+        return 0;
+      }
       size_t count = 0;
       for (size_t j = 0; j < cols; j++)
       {
@@ -82,11 +104,11 @@ namespace zhuravleva {
     }
     size_t diagonals_no_zero(int** matrix, size_t rows, size_t cols)
     {
-      size_t count = 0;
-      if (rows == 0 && cols == 0)
+      if (rows == 0 || cols == 0 || matrix == nullptr)
       {
         return 0;
       }
+      size_t count = 0;
       for (size_t shift = 1; shift < cols; shift++)
       {
         bool has_zero = false;
@@ -147,7 +169,6 @@ int main(int argc, char* argv[])
   size_t result_for_diagonals_no_zero = zhuravleva::diagonals_no_zero(matrix, rows, cols);
   std::ofstream file_output(argv[3]);
   file_output << result_for_cols_no_dublicats<< " ";
-
   file_output << result_for_diagonals_no_zero << std::endl;
   zhuravleva::freeMatrix(matrix, rows);
   return 0;
