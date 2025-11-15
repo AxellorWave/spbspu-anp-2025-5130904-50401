@@ -223,4 +223,14 @@ int main(int argc, char ** argv)
     if (mode == 2) free(m);
     return 2;
   }
+
+  size_t local_min_count = kondrat::cnt_loc_min(m, rows, cols);
+  size_t best_col = kondrat::num_col_lsr(m, rows, cols);
+
+  fout << local_min_count << ' ' << best_col << "\n";
+
+  if (mode == 2)
+  {
+    free(m);
+  }
 }
