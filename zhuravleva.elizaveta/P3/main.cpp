@@ -148,7 +148,7 @@ int main(int argc, char* argv[])
   std::ofstream file_output(argv[3]);
   file_output << result_for_cols_no_dublicats<< " ";
 
-  file_output << result_for_diagonals_no_zero;
+  file_output << result_for_diagonals_no_zero << std::endl;
   zhuravleva::freeMatrix(matrix, rows);
   return 0;
 }
