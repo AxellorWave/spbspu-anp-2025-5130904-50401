@@ -87,6 +87,8 @@ namespace kondrat
     }
     return true;
   }
+
+  
 }
 
 int main(int argc, char ** argv)
@@ -139,6 +141,16 @@ int main(int argc, char ** argv)
 
   if (!kondrat::fill_matrix(fin, m, rows, cols))
   {
+    if (mode == 2) free(m);
+    return 2;
+  }
+
+  fin.close();
+
+  std::ofstream fout(argv[3]);
+  if (!fout)
+  {
+    std::cerr << "Cannot open output file\n";
     if (mode == 2) free(m);
     return 2;
   }
