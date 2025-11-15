@@ -88,7 +88,46 @@ namespace kondrat
     return true;
   }
 
-  
+  size_t num_col_lsr(int * m, size_t rows, size_t cols)
+  {
+    if (rows == 0 || cols == 0)
+    {
+      return 0;
+    }
+
+    size_t best_col = 0;
+    size_t max_len = 0;
+
+    for (size_t j = 0; j < cols; j++)
+    {
+      size_t curr_len = 1;
+      size_t col_max = 1;
+
+      for (size_t i = 1; i < rows; i++)
+      {
+        if (m[i * cols + j] == m[(i - 1) * cols + j])
+        {
+          curr_len++;
+          if (curr_len > col_max)
+          {
+            col_max = curr_len;
+          }
+        }
+        else
+        {
+          curr_len = 1;
+        }
+      }
+
+      if (col_max > max_len)
+      {
+        max_len = col_max;
+        best_col = j;
+      }
+    }
+
+    return best_col + 1;
+  }
 }
 
 int main(int argc, char ** argv)
