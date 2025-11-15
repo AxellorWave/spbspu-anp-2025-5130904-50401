@@ -131,6 +131,11 @@ namespace kondrat
 
   size_t cnt_loc_min(int * m, size_t rows, size_t cols)
   {
+    if (rows < 3 || cols < 3)
+    {
+      return 0;
+    }
+
     size_t count = 0;
 
     for (size_t i = 1; i < rows - 1; i++)
