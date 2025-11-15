@@ -27,14 +27,14 @@ namespace zhuravleva {
     {
       return false;
     }
-    file >> rows >> cols;
-    if (file.fail())
+    if (file.peek() == std::ifstream::traits_type::eof())
     {
       rows = 0;
       cols = 0;
       matrix = nullptr;
       return true;
     }
+    file >> rows >> cols;
     if (rows == 0 || cols == 0)
     {
         matrix = nullptr;
