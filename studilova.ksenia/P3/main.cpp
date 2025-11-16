@@ -111,6 +111,7 @@ namespace studilova {
             std::fprintf(stderr, "First parameter is out of range\n");
             return 1;
         }
+        int num = static_cast<int>(num_long);
         return 0;
     }
 }
