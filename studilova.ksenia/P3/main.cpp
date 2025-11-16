@@ -100,6 +100,7 @@ namespace studilova {
             std::fprintf(stderr, "Not enough arguments\n");
             return 1;
         }
+
         const char* num_str = argv[1];
         char* endptr_num = nullptr;
         long num_long = std::strtol(num_str, &endptr_num, 10);
@@ -111,9 +112,19 @@ namespace studilova {
             std::fprintf(stderr, "First parameter is out of range\n");
             return 1;
         }
+
         int num = static_cast<int>(num_long);
+        
         const char* input_filename = argv[2];
         const char* output_filename = argv[3];
+
+        fixed_matrix_t fixed_matrix = {0};
+        dynamic_matrix_t* dynamic_matrix = nullptr;
+
+        if (!read_matrix(input_filename, &fixed_matrix, &dynamic_matrix, num)) {
+            std::fprintf(stderr, "Error reading matrix from file\n");
+            return 1;
+        }
         return 0;
     }
 }
