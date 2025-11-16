@@ -114,7 +114,7 @@ namespace studilova {
         }
 
         int num = static_cast<int>(num_long);
-        
+
         const char* input_filename = argv[2];
         const char* output_filename = argv[3];
 
@@ -124,6 +124,24 @@ namespace studilova {
         if (!read_matrix(input_filename, &fixed_matrix, &dynamic_matrix, num)) {
             std::fprintf(stderr, "Error reading matrix from file\n");
             return 1;
+        }
+
+        int result = 0;
+        if (num == 1) {
+            result = max_sum_diagonals(&fixed_matrix);
+        } else {
+            fixed_matrix_t temp_matrix = {0};
+            temp_matrix.rows = dynamic_matrix->rows;
+            temp_matrix.cols = dynamic_matrix->cols;
+
+            for (int i = 0; i < dynamic_matrix->rows; ++i) {
+                for (int j = 0; j < dynamic_matrix->cols; ++j) {
+                    temp_matrix.data[i][j] = (int)dynamic_matrix->data[i][j];
+                }
+            }
+
+            result = count_saddle_points(&temp_matrix);
+            free_dynamic_matrix(dynamic_matrix);
         }
         return 0;
     }
