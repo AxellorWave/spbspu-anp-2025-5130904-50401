@@ -68,7 +68,17 @@ namespace studilova {
             }
         }
         return count;
-    };
+    }
+
+    int max_sum_parallel_diagonals(const fixed_matrix_t* m) {
+        if (!m) {
+            return 0;
+        }
+        if (m->rows <= 0 || m->cols <= 0) {
+            return 0;
+        }
+        return 0;
+    }
 
     int main_logic(int argc, char* argv[]) {
         return 0;
