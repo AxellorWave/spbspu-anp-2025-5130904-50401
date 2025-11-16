@@ -70,12 +70,24 @@ namespace studilova {
         return count;
     }
 
-    int max_sum_parallel_diagonals(const fixed_matrix_t* m) {
+    int max_sum_diagonals(const fixed_matrix_t* m) {
         if (!m) {
             return 0;
         }
         if (m->rows <= 0 || m->cols <= 0) {
             return 0;
+        }
+        int max_sum = INT_MIN;
+        for (int k = -(m->cols - 1); k < m->rows; ++k) {
+            int sum = 0;
+            bool has_elements = false;
+            for (int i = 0; i < m->rows; ++i) {
+                int j = i - k;
+                if (j >= 0 && j < m->cols) {
+                    sum += m->data[i][j];
+                    has_elements = true;
+                }
+            }
         }
         return 0;
     }
