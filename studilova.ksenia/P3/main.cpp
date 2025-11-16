@@ -92,7 +92,7 @@ namespace studilova {
                 max_sum = sum;
             }
         }
-        return 0;
+        return (max_sum == INT_MIN) ? 0 : max_sum;
     }
 
     int main_logic(int argc, char* argv[]) {
