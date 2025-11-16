@@ -112,6 +112,8 @@ namespace studilova {
             return 1;
         }
         int num = static_cast<int>(num_long);
+        const char* input_filename = argv[2];
+        const char* output_filename = argv[3];
         return 0;
     }
 }
