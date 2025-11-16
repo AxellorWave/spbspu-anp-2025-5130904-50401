@@ -96,6 +96,10 @@ namespace studilova {
     }
 
     int main_logic(int argc, char* argv[]) {
+        if (argc != 4) {
+            std::fprintf(stderr, "Not enough arguments\n");
+            return 1;
+        }
         return 0;
     }
 }
