@@ -88,6 +88,9 @@ namespace studilova {
                     has_elements = true;
                 }
             }
+            if (has_elements && sum > max_sum) {
+                max_sum = sum;
+            }
         }
         return 0;
     }
