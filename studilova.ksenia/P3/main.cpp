@@ -142,6 +142,15 @@ namespace studilova {
 
             result = count_saddle_points(&temp_matrix);
             free_dynamic_matrix(dynamic_matrix);
+
+            FILE* output_file = std::fopen(output_filename, "w");
+            if (!output_file) {
+                std::fprintf(stderr, "Cannot open output file\n");
+                return 1;
+            }
+
+            std::fprintf(output_file, "%d\n", result);
+            std::fclose(output_file);
         }
         return 0;
     }
