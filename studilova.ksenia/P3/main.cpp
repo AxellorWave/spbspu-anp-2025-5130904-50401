@@ -100,6 +100,17 @@ namespace studilova {
             std::fprintf(stderr, "Not enough arguments\n");
             return 1;
         }
+        const char* num_str = argv[1];
+        char* endptr_num = nullptr;
+        long num_long = std::strtol(num_str, &endptr_num, 10);
+        if (endptr_num == num_str || *endptr_num != '\0') {
+            std::fprintf(stderr, "First parameter is not a number\n");
+            return 1;
+        }
+        if (num_long != 1 && num_long != 2) {
+            std::fprintf(stderr, "First parameter is out of range\n");
+            return 1;
+        }
         return 0;
     }
 }
