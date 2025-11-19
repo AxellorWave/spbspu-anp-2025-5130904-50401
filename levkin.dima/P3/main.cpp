@@ -105,7 +105,7 @@ struct Memory {
 
     int x = 0;
     int y = static_cast<int>(rows) - 1;
-    int going_mode = 0;  // 0=right, 1=top, 2=left, 3=bottom
+    int going_mode = 0; 
     int i = 1;
 
     while (i <= static_cast<int>(rows * cols)) {
