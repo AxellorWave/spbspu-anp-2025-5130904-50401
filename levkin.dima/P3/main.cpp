@@ -5,119 +5,136 @@
 #include <iostream>
 #include <stdexcept>
 
-namespace levkin {
-
-enum class MemoryType : int {
-  STATIC_MEMORY = 1,
-  DYNAMIC_MEMORY
-};
-
-int* copy(int* arr, size_t r, size_t c)
+namespace levkin
 {
-  int* copy = new int[r * c]();
-  for (size_t i = 0; i < r * c; ++i) {
-    copy[i] = arr[i];
-  }
-  return copy;
-}
 
-struct Memory {
-  static const size_t MAX_MATRIX_SIZE = 10000;
-  static int static_buffer[MAX_MATRIX_SIZE];
-
-  int* buffer = nullptr;
-  bool is_dynamic = false;
-  std::ofstream output_stream;
-  size_t rows = 0;
-  size_t cols = 0;
-
-
-  int* init(const char* filename, MemoryType type)
+  enum class MemoryType : int
   {
-    std::ifstream file_stream(filename);
-    if (!file_stream) {
-      throw std::runtime_error("cant open input file");
-    }
+    STATIC_MEMORY = 1,
+    DYNAMIC_MEMORY
+  };
 
-    file_stream >> rows >> cols;
-    if (file_stream.fail()) {
+  int *copy(int *arr, size_t r, size_t c)
+  {
+    int *copy = new int[r * c]();
+    for (size_t i = 0; i < r * c; ++i)
+    {
+      copy[i] = arr[i];
+    }
+    return copy;
+  }
+
+  struct Memory
+  {
+    static const size_t MAX_MATRIX_SIZE = 10000;
+    static int static_buffer[MAX_MATRIX_SIZE];
+
+    int *buffer = nullptr;
+    bool is_dynamic = false;
+    std::ofstream output_stream;
+    size_t rows = 0;
+    size_t cols = 0;
+
+    int *init(const char *filename, MemoryType type)
+    {
+      std::ifstream file_stream(filename);
+      if (!file_stream)
+      {
+        throw std::runtime_error("cant open input file");
+      }
+
+      file_stream >> rows >> cols;
+      if (file_stream.fail())
+      {
         throw std::runtime_error("file is wrong");
-    }
-    if (rows == 0 || cols == 0) {
-      throw std::length_error("bad dimentions");
-    }
-
-
-    size_t total = rows * cols;
-    createBuffer(type, total);
-
-    for (size_t i = 0; i < total; ++i) {
-      if (!(file_stream >> buffer[i])) {
-        clearBuffer();
-        throw std::runtime_error("failed to read matrix element");
       }
-    }
-    return buffer;
-  }
-
-  int* createBuffer(MemoryType type, size_t size)
-  {
-    clearBuffer();
-    if (type == MemoryType::DYNAMIC_MEMORY) {
-      buffer = new int[size]();
-      is_dynamic = true;
-    } else {
-      if (size > MAX_MATRIX_SIZE) {
-        throw std::bad_alloc();
+      if (rows == 0 || cols == 0)
+      {
+        throw std::length_error("bad dimentions");
       }
-      buffer = static_buffer;
+
+      size_t total = rows * cols;
+      createBuffer(type, total);
+
+      for (size_t i = 0; i < total; ++i)
+      {
+        if (!(file_stream >> buffer[i]))
+        {
+          clearBuffer();
+          throw std::runtime_error("failed to read matrix element");
+        }
+      }
+      return buffer;
+    }
+
+    int *createBuffer(MemoryType type, size_t size)
+    {
+      clearBuffer();
+      if (type == MemoryType::DYNAMIC_MEMORY)
+      {
+        buffer = new int[size]();
+        is_dynamic = true;
+      }
+      else
+      {
+        if (size > MAX_MATRIX_SIZE)
+        {
+          throw std::bad_alloc();
+        }
+        buffer = static_buffer;
+        is_dynamic = false;
+      }
+      return buffer;
+    }
+
+    void clearBuffer()
+    {
+      if (is_dynamic && buffer)
+      {
+        delete[] buffer;
+      }
+      buffer = nullptr;
       is_dynamic = false;
     }
-    return buffer;
-  }
 
-  void clearBuffer()
-  {
-    if (is_dynamic && buffer) {
-      delete[] buffer;
-    }
-    buffer = nullptr;
-    is_dynamic = false;
-  }
-
-  void openOutput(const char* filename)
-  {
-    output_stream.open(filename);
-    if (!output_stream.is_open()) {
-      throw std::runtime_error("cant open output file: ");
-    }
-  }
-
-  void closeOutput()
-  {
-    if (output_stream.is_open()) {
-      output_stream.close();
-    }
-  }
-
-  int* lftBotCtn()
-  {
-    int* arr = copy(buffer, rows, cols);
-    int border_padding[4] = {0, 0, 0, 1};
-
-    int x = 0;
-    int y = rows - 1;
-    int going_mode = 0; 
-    int i = 1;
-
-    while (i <= rows * cols) {
-      if (i == rows * cols) {
-        arr[cols * y + x] += i;
-        break;
+    void openOutput(const char *filename)
+    {
+      output_stream.open(filename);
+      if (!output_stream.is_open())
+      {
+        throw std::runtime_error("cant open output file: ");
       }
+    }
 
-      bool can_we_go_this_way = true;
-      switch (going_mode) {
+    void closeOutput()
+    {
+      if (output_stream.is_open())
+      {
+        output_stream.close();
+      }
+    }
+
+    int *lftBotCtn()
+    {
+      int *arr = copy(buffer, rows, cols);
+      int border_padding[4] = {0, 0, 0, 1};
+
+      int x = 0;
+      int y = rows - 1;
+      int going_mode = 0;
+      int i = 1;
+
+      while (i <= rows * cols)
+      {
+        if (i == rows * cols)
+        {
+          arr[cols * y + x] += i;
+          break;
+        }
+
+        bool can_we_go_this_way = true;
+        switch (going_mode)
+        {
         case 0:
           can_we_go_this_way = x + 1 < (cols - border_padding[0]);
           break;
@@ -130,10 +147,12 @@ struct Memory {
         case 3:
           can_we_go_this_way = y + 1 < rows - border_padding[3];
           break;
-      }
+        }
 
-      if (!can_we_go_this_way) {
-        switch (going_mode) {
+        if (!can_we_go_this_way)
+        {
+          switch (going_mode)
+          {
           case 0:
             going_mode = 1;
             border_padding[0]++;
@@ -150,14 +169,15 @@ struct Memory {
             going_mode = 0;
             border_padding[3]++;
             break;
+          }
+          continue;
         }
-        continue;
-      }
 
-      arr[cols * y + x] += i;
-      i++;
+        arr[cols * y + x] += i;
+        i++;
 
-      switch (going_mode) {
+        switch (going_mode)
+        {
         case 0:
           x += 1;
           break;
@@ -170,82 +190,93 @@ struct Memory {
         case 3:
           y += 1;
           break;
-      }
-    }
-    return arr;
-  }
-
-  size_t numColLsr() const
-  {
-    if (!buffer || rows == 0 || cols == 0) {
-      return 0;
-    }
-
-    size_t best_col = 0;
-    size_t best_len = 0;
-
-    for (size_t col = 0; col < cols; ++col) {
-      size_t max_len = 1;
-      size_t cur_len = 1;
-
-      for (size_t row = 1; row < rows; ++row) {
-        int prev = buffer[(row - 1) * cols + col];
-        int curr = buffer[row * cols + col];
-
-        if (curr == prev) {
-          ++cur_len;
-        } else {
-          cur_len = 1;
         }
-        max_len = std::max(max_len, cur_len);
       }
-
-      if (max_len > best_len) {
-        best_len = max_len;
-        best_col = col;
-      }
+      return arr;
     }
-    return best_col;
-  }
 
-  void clean()
-  {
-    closeOutput();
-    clearBuffer();
-  }
-};
+    size_t numColLsr() const
+    {
+      if (!buffer || rows == 0 || cols == 0)
+      {
+        return 0;
+      }
 
-int Memory::static_buffer[Memory::MAX_MATRIX_SIZE] = {};
+      size_t best_col = 0;
+      size_t best_len = 0;
 
-}  
+      for (size_t col = 0; col < cols; ++col)
+      {
+        size_t max_len = 1;
+        size_t cur_len = 1;
 
-int main(int argc, char** argv)
+        for (size_t row = 1; row < rows; ++row)
+        {
+          int prev = buffer[(row - 1) * cols + col];
+          int curr = buffer[row * cols + col];
+
+          if (curr == prev)
+          {
+            ++cur_len;
+          }
+          else
+          {
+            cur_len = 1;
+          }
+          max_len = std::max(max_len, cur_len);
+        }
+
+        if (max_len > best_len)
+        {
+          best_len = max_len;
+          best_col = col;
+        }
+      }
+      return best_col;
+    }
+
+    void clean()
+    {
+      closeOutput();
+      clearBuffer();
+    }
+  };
+
+  int Memory::static_buffer[Memory::MAX_MATRIX_SIZE] = {};
+
+}
+
+int main(int argc, char **argv)
 {
-  if (argc != 4) {
+  if (argc != 4)
+  {
     std::cerr << "arg amount is wrong\n";
     return 1;
   }
 
-  char* mode = argv[1];
-  if (mode[0] != '1' && mode[0] != '2') {
+  char *mode = argv[1];
+  if (mode[0] != '1' && mode[0] != '2')
+  {
     std::cerr << "1 = static\n2 = dynamic\n";
     return 1;
   }
 
   levkin::Memory matrix;
   levkin::MemoryType memory_type =
-    (mode[0] == '1')
-      ? levkin::MemoryType::STATIC_MEMORY
-      : levkin::MemoryType::DYNAMIC_MEMORY;
+      (mode[0] == '1')
+          ? levkin::MemoryType::STATIC_MEMORY
+          : levkin::MemoryType::DYNAMIC_MEMORY;
 
-  try {
+  try
+  {
     matrix.init(argv[2], memory_type);
     matrix.openOutput(argv[3]);
 
-    int* result = matrix.lftBotCtn();
+    int *result = matrix.lftBotCtn();
     matrix.output_stream << matrix.rows << ' ' << matrix.cols << '\n';
 
-    for (size_t i = 0; i < matrix.rows * matrix.cols; ++i) {
+    for (size_t i = 0; i < matrix.rows * matrix.cols; ++i)
+    {
       matrix.output_stream << result[i] << " ";
     }
 
@@ -257,12 +288,14 @@ int main(int argc, char** argv)
 
     matrix.clean();
     return 0;
-
-  } catch (std::length_error& e) {
+  }
+  catch (std::length_error &e)
+  {
     return 0;
-
-  } catch (std::exception& e) {
-    std::cerr << "unknown error: " << e.what()  << "\n";
+  }
+  catch (std::exception &e)
+  {
+    std::cerr << "unknown error: " << e.what() << "\n";
     matrix.clean();
     return 1;
   }
