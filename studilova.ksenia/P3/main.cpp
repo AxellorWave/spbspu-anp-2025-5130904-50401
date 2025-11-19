@@ -206,7 +206,7 @@ bool read_matrix(const char* filename, fixed_matrix_t* fm, dynamic_matrix_t** dm
 
             for (int i = 0; i < dynamic_matrix->rows; ++i) {
                 for (int j = 0; j < dynamic_matrix->cols; ++j) {
-                    temp_matrix.data[i][j] = (int)dynamic_matrix->data[i][j];
+                    temp_matrix.data[i][j] = static_cast<int>(dynamic_matrix->data[i][j]);
                 }
             }
 
