@@ -35,7 +35,7 @@ bool read_matrix(const char* filename, fixed_matrix_t* fm, dynamic_matrix_t** dm
         if (!f) {
             return false;
         }
-        
+
         int temp_data[100][100] = {{0}};
         int rows = 0;
         int cols = 0;
@@ -73,7 +73,7 @@ bool read_matrix(const char* filename, fixed_matrix_t* fm, dynamic_matrix_t** dm
 
         if (mode == 1) {
             if (rows > 100 || cols > 100) return false;
-            
+
             fm->rows = rows;
             fm->cols = cols;
             for (int i = 0; i < rows; ++i) {
@@ -81,15 +81,15 @@ bool read_matrix(const char* filename, fixed_matrix_t* fm, dynamic_matrix_t** dm
                     fm->data[i][j] = temp_data[i][j];
                 }
             }
-        } 
+        }
         else if (mode == 2) {
             dynamic_matrix_t* dm = static_cast<dynamic_matrix_t*>(std::malloc(sizeof(dynamic_matrix_t)));
             if (!dm) return false;
-            
+
             dm->rows = rows;
             dm->cols = cols;
             dm->data = static_cast<int**>(std::malloc(rows * sizeof(int*)));
-            
+
             if (!dm->data) {
                 std::free(dm);
                 return false;
@@ -105,12 +105,12 @@ bool read_matrix(const char* filename, fixed_matrix_t* fm, dynamic_matrix_t** dm
                     std::free(dm);
                     return false;
                 }
-                
+
                 for (int j = 0; j < cols; ++j) {
                     dm->data[i][j] = temp_data[i][j];
                 }
             }
-            
+
             *dm_ptr = dm;
         }
         return true;
@@ -182,7 +182,7 @@ bool read_matrix(const char* filename, fixed_matrix_t* fm, dynamic_matrix_t** dm
 
         char* endptr;
         long num = std::strtol(argv[1], &endptr, 10);
-        
+
         if (*endptr != '\0' || (num != 1 && num != 2)) {
             std::fprintf(stderr, "First parameter is invalid\n");
             return 1;
