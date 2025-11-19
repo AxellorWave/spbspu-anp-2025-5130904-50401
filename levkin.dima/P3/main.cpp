@@ -31,6 +31,7 @@ struct Memory {
   size_t rows = 0;
   size_t cols = 0;
 
+
   int* init(const char* filename, MemoryType type)
   {
     std::ifstream file_stream(filename);
@@ -101,15 +102,15 @@ struct Memory {
   int* lftBotCtn()
   {
     int* arr = copy(buffer, rows, cols);
-    int border_padding[4] = {0, 0, 0, 1};
+    size_t border_padding[4] = {0, 0, 0, 1};
 
-    int x = 0;
-    int y = static_cast<int>(rows) - 1;
-    int going_mode = 0; 
-    int i = 1;
+    size_t x = 0;
+    size_t y = rows - 1;
+    size_t going_mode = 0; 
+    size_t i = 1;
 
-    while (i <= static_cast<int>(rows * cols)) {
-      if (i == static_cast<int>(rows * cols)) {
+    while (i <= rows * cols) {
+      if (i == rows * cols) {
         arr[cols * y + x] += i;
         break;
       }
@@ -117,7 +118,7 @@ struct Memory {
       bool can_we_go_this_way = true;
       switch (going_mode) {
         case 0:
-          can_we_go_this_way = x + 1 < (static_cast<int>(cols) - border_padding[0]);
+          can_we_go_this_way = x + 1 < (cols - border_padding[0]);
           break;
         case 1:
           can_we_go_this_way = y - 1 > border_padding[1] - 1;
@@ -126,7 +127,7 @@ struct Memory {
           can_we_go_this_way = x - 1 > border_padding[2] - 1;
           break;
         case 3:
-          can_we_go_this_way = y + 1 < (static_cast<int>(rows) - border_padding[3]);
+          can_we_go_this_way = y + 1 < rows - border_padding[3];
           break;
       }
 
