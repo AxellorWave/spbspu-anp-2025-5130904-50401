@@ -5,35 +5,114 @@
 
 namespace studilova {
 
-     struct fixed_matrix_t {
+    struct fixed_matrix_t {
         int data[100][100];
         int rows;
         int cols;
     };
 
     struct dynamic_matrix_t {
-        int** data[100][100];
+        int** data;
         int rows;
         int cols;
     };
 
-     void free_dynamic_matrix(dynamic_matrix_t* dm) {
+    void free_dynamic_matrix(dynamic_matrix_t* dm) {
         if (!dm) {
             return;
         }
-        for (int i = 0; i < dm->rows; ++i) {
-            std::free(dm->data[i]);
+        if (dm->data) {
+            for (int i = 0; i < dm->rows; ++i) {
+                std::free(dm->data[i]);
+            }
+            std::free(dm->data);
         }
-        std::free(dm->data);
         std::free(dm);
     }
 
-    bool read_matrix(const char* filename, fixed_matrix_t* fm, dynamic_matrix_t** dm_ptr, int mode) {
+bool read_matrix(const char* filename, fixed_matrix_t* fm, dynamic_matrix_t** dm_ptr, int mode) {
         FILE* f = std::fopen(filename, "r");
         if (!f) {
             return false;
         }
+        
+        int temp_data[100][100] = {{0}};
+        int rows = 0;
+        int cols = 0;
+        bool first_line = true;
+
+        while (rows < 100) {
+            int row_vals[100];
+            int col_count = 0;
+             while (col_count < 100) {
+                int value;
+                if (fscanf(f, "%d", &value) != 1) {
+                    break;
+                }
+                row_vals[col_count++] = value;
+            }
+
+            if (col_count == 0) break;
+
+            if (first_line) {
+                cols = col_count;
+                first_line = false;
+            } else if (col_count != cols) {
+                std::fclose(f);
+                return false;
+            }
+
+            for (int j = 0; j < cols; ++j) {
+                temp_data[rows][j] = row_vals[j];
+            }
+            rows++;
+        }
         std::fclose(f);
+
+        if (rows == 0 || cols == 0) return false;
+
+        if (mode == 1) {
+            if (rows > 100 || cols > 100) return false;
+            
+            fm->rows = rows;
+            fm->cols = cols;
+            for (int i = 0; i < rows; ++i) {
+                for (int j = 0; j < cols; ++j) {
+                    fm->data[i][j] = temp_data[i][j];
+                }
+            }
+        } 
+        else if (mode == 2) {
+            dynamic_matrix_t* dm = static_cast<dynamic_matrix_t*>(std::malloc(sizeof(dynamic_matrix_t)));
+            if (!dm) return false;
+            
+            dm->rows = rows;
+            dm->cols = cols;
+            dm->data = static_cast<int**>(std::malloc(rows * sizeof(int*)));
+            
+            if (!dm->data) {
+                std::free(dm);
+                return false;
+            }
+
+            for (int i = 0; i < rows; ++i) {
+                dm->data[i] = static_cast<int*>(std::malloc(cols * sizeof(int)));
+                if (!dm->data[i]) {
+                    for (int j = 0; j < i; ++j) {
+                        std::free(dm->data[j]);
+                    }
+                    std::free(dm->data);
+                    std::free(dm);
+                    return false;
+                }
+                
+                for (int j = 0; j < cols; ++j) {
+                    dm->data[i][j] = temp_data[i][j];
+                }
+            }
+            
+            *dm_ptr = dm;
+        }
         return true;
     }
 
@@ -101,29 +180,20 @@ namespace studilova {
             return 1;
         }
 
-        const char* num_str = argv[1];
-        char* endptr_num = nullptr;
-        long num_long = std::strtol(num_str, &endptr_num, 10);
-        if (endptr_num == num_str || *endptr_num != '\0') {
-            std::fprintf(stderr, "First parameter is not a number\n");
+        char* endptr;
+        long num = std::strtol(argv[1], &endptr, 10);
+        
+        if (*endptr != '\0' || (num != 1 && num != 2)) {
+            std::fprintf(stderr, "First parameter is invalid\n");
             return 1;
         }
-        if (num_long != 1 && num_long != 2) {
-            std::fprintf(stderr, "First parameter is out of range\n");
-            return 1;
-        }
-
-        int num = static_cast<int>(num_long);
-
-        const char* input_filename = argv[2];
-        const char* output_filename = argv[3];
 
         fixed_matrix_t fixed_matrix = {0};
         dynamic_matrix_t* dynamic_matrix = nullptr;
 
-        if (!read_matrix(input_filename, &fixed_matrix, &dynamic_matrix, num)) {
+        if (!read_matrix(argv[2], &fixed_matrix, &dynamic_matrix, num)) {
             std::fprintf(stderr, "Error reading matrix from file\n");
-            return 1;
+            return 2;
         }
 
         int result = 0;
@@ -142,16 +212,16 @@ namespace studilova {
 
             result = count_saddle_points(&temp_matrix);
             free_dynamic_matrix(dynamic_matrix);
-
-            FILE* output_file = std::fopen(output_filename, "w");
-            if (!output_file) {
-                std::fprintf(stderr, "Cannot open output file\n");
-                return 1;
-            }
-
-            std::fprintf(output_file, "%d\n", result);
-            std::fclose(output_file);
         }
+
+        FILE* output_file = std::fopen(argv[3], "w");
+        if (!output_file) {
+            std::fprintf(stderr, "Cannot open output file\n");
+            return 1;
+        }
+
+        std::fprintf(output_file, "%d\n", result);
+        std::fclose(output_file);
         return 0;
     }
 }
