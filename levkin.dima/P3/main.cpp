@@ -47,6 +47,7 @@ struct Memory {
       throw std::length_error("bad dimentions");
     }
 
+
     size_t total = rows * cols;
     createBuffer(type, total);
 
@@ -102,12 +103,12 @@ struct Memory {
   int* lftBotCtn()
   {
     int* arr = copy(buffer, rows, cols);
-    size_t border_padding[4] = {0, 0, 0, 1};
+    int border_padding[4] = {0, 0, 0, 1};
 
-    size_t x = 0;
-    size_t y = rows - 1;
-    size_t going_mode = 0; 
-    size_t i = 1;
+    int x = 0;
+    int y = rows - 1;
+    int going_mode = 0; 
+    int i = 1;
 
     while (i <= rows * cols) {
       if (i == rows * cols) {
