@@ -21,16 +21,18 @@ namespace studilova {
         if (!dm) {
             return;
         }
-        if (dm->data) {
+        if (dm->data && dm->rows > 0) {
             for (int i = 0; i < dm->rows; ++i) {
-                std::free(dm->data[i]);
+                if (dm->data[i]) {
+                    std::free(dm->data[i]);
+                }
             }
             std::free(dm->data);
         }
         std::free(dm);
     }
 
-bool read_matrix(const char* filename, fixed_matrix_t* fm, dynamic_matrix_t** dm_ptr, int mode) {
+    bool read_matrix(const char* filename, fixed_matrix_t* fm, dynamic_matrix_t** dm_ptr, int mode) {
         FILE* f = std::fopen(filename, "r");
         if (!f) {
             return false;
@@ -52,6 +54,24 @@ bool read_matrix(const char* filename, fixed_matrix_t* fm, dynamic_matrix_t** dm
             return false;
         }
 
+        if (rows == 0 || cols == 0) {
+            std::fclose(f);
+            if (mode == 1) {
+                fm->rows = rows;
+                fm->cols = cols;
+            } else if (mode == 2) {
+                dynamic_matrix_t* dm = static_cast<dynamic_matrix_t*>(std::malloc(sizeof(dynamic_matrix_t)));
+                if (!dm) {
+                    return false;
+                }
+                dm->rows = rows;
+                dm->cols = cols;
+                dm->data = nullptr;
+                *dm_ptr = dm;
+            }
+            return true;
+        }
+
         int temp_data[100][100] = {{0}};
         for (int i = 0; i < rows; ++i) {
             for (int j = 0; j < cols; ++j) {
@@ -62,15 +82,7 @@ bool read_matrix(const char* filename, fixed_matrix_t* fm, dynamic_matrix_t** dm
             }
         }
 
-        int extra;
-        if (fscanf(f, "%d", &extra) == 1) {
-            std::fclose(f);
-            return false;
-        }
-
         std::fclose(f);
-
-        if (rows == 0 || cols == 0) return false;
 
         if (mode == 1) {
             fm->rows = rows;
