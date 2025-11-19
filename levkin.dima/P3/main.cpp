@@ -14,10 +14,10 @@ namespace levkin
     DYNAMIC_MEMORY
   };
 
-  int *copy(int *arr, size_t r, size_t c)
+  int *copy(int *arr, int r, int c)
   {
     int *copy = new int[r * c]();
-    for (size_t i = 0; i < r * c; ++i)
+    for (int i = 0; i < r * c; ++i)
     {
       copy[i] = arr[i];
     }
@@ -26,14 +26,14 @@ namespace levkin
 
   struct Memory
   {
-    static const size_t MAX_MATRIX_SIZE = 10000;
+    static const int MAX_MATRIX_SIZE = 10000;
     static int static_buffer[MAX_MATRIX_SIZE];
 
     int *buffer = nullptr;
     bool is_dynamic = false;
     std::ofstream output_stream;
-    size_t rows = 0;
-    size_t cols = 0;
+    int rows = 0;
+    int cols = 0;
 
     int *init(const char *filename, MemoryType type)
     {
@@ -53,10 +53,10 @@ namespace levkin
         throw std::length_error("bad dimentions");
       }
 
-      size_t total = rows * cols;
+      int total = rows * cols;
       createBuffer(type, total);
 
-      for (size_t i = 0; i < total; ++i)
+      for (int i = 0; i < total; ++i)
       {
         if (!(file_stream >> buffer[i]))
         {
@@ -67,7 +67,7 @@ namespace levkin
       return buffer;
     }
 
-    int *createBuffer(MemoryType type, size_t size)
+    int *createBuffer(MemoryType type, int size)
     {
       clearBuffer();
       if (type == MemoryType::DYNAMIC_MEMORY)
@@ -195,22 +195,22 @@ namespace levkin
       return arr;
     }
 
-    size_t numColLsr() const
+    int numColLsr() const
     {
       if (!buffer || rows == 0 || cols == 0)
       {
         return 0;
       }
 
-      size_t best_col = 0;
-      size_t best_len = 0;
+      int best_col = 0;
+      int best_len = 0;
 
-      for (size_t col = 0; col < cols; ++col)
+      for (int col = 0; col < cols; ++col)
       {
-        size_t max_len = 1;
-        size_t cur_len = 1;
+        int max_len = 1;
+        int cur_len = 1;
 
-        for (size_t row = 1; row < rows; ++row)
+        for (int row = 1; row < rows; ++row)
         {
           int prev = buffer[(row - 1) * cols + col];
           int curr = buffer[row * cols + col];
@@ -275,7 +275,7 @@ int main(int argc, char **argv)
     int *result = matrix.lftBotCtn();
     matrix.output_stream << matrix.rows << ' ' << matrix.cols << '\n';
 
-    for (size_t i = 0; i < matrix.rows * matrix.cols; ++i)
+    for (int i = 0; i < matrix.rows * matrix.cols; ++i)
     {
       matrix.output_stream << result[i] << " ";
     }
@@ -283,7 +283,7 @@ int main(int argc, char **argv)
     matrix.output_stream << "\n";
     delete[] result;
 
-    size_t best_col = matrix.numColLsr();
+    int best_col = matrix.numColLsr();
     matrix.output_stream << best_col << '\n';
 
     matrix.clean();
