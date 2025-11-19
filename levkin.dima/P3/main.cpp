@@ -98,7 +98,7 @@ struct Memory {
     }
   }
 
-  int* LFT_BOT_CNT()
+  int* lftBotCtn()
   {
     int* arr = copy(buffer, rows, cols);
     int border_padding[4] = {0, 0, 0, 1};
@@ -173,7 +173,7 @@ struct Memory {
     return arr;
   }
 
-  size_t NUM_COL_LSR() const
+  size_t numColLsr() const
   {
     if (!buffer || rows == 0 || cols == 0) {
       return 0;
@@ -215,7 +215,7 @@ struct Memory {
 
 int Memory::static_buffer[Memory::MAX_MATRIX_SIZE] = {};
 
-}  // namespace levkin
+}  
 
 int main(int argc, char** argv)
 {
@@ -240,7 +240,7 @@ int main(int argc, char** argv)
     matrix.init(argv[2], memory_type);
     matrix.openOutput(argv[3]);
 
-    int* result = matrix.LFT_BOT_CNT();
+    int* result = matrix.lftBotCtn();
     matrix.output_stream << matrix.rows << ' ' << matrix.cols << '\n';
 
     for (size_t i = 0; i < matrix.rows * matrix.cols; ++i) {
@@ -250,7 +250,7 @@ int main(int argc, char** argv)
     matrix.output_stream << "\n";
     delete[] result;
 
-    size_t best_col = matrix.NUM_COL_LSR();
+    size_t best_col = matrix.numColLsr();
     matrix.output_stream << best_col << '\n';
 
     matrix.clean();
