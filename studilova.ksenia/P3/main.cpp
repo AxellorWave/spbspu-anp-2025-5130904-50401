@@ -36,44 +36,43 @@ bool read_matrix(const char* filename, fixed_matrix_t* fm, dynamic_matrix_t** dm
             return false;
         }
 
-        int temp_data[100][100] = {{0}};
-        int rows = 0;
-        int cols = 0;
-        bool first_line = true;
-
-        while (rows < 100) {
-            int row_vals[100];
-            int col_count = 0;
-             while (col_count < 100) {
-                int value;
-                if (fscanf(f, "%d", &value) != 1) {
-                    break;
-                }
-                row_vals[col_count++] = value;
-            }
-
-            if (col_count == 0) break;
-
-            if (first_line) {
-                cols = col_count;
-                first_line = false;
-            } else if (col_count != cols) {
-                std::fclose(f);
-                return false;
-            }
-
-            for (int j = 0; j < cols; ++j) {
-                temp_data[rows][j] = row_vals[j];
-            }
-            rows++;
+        int rows, cols;
+        if (fscanf(f, "%d %d", &rows, &cols) != 2) {
+            std::fclose(f);
+            return false;
         }
+
+        if (rows < 0 || cols < 0) {
+            std::fclose(f);
+            return false;
+        }
+
+        if (mode == 1 && (rows > 100 || cols > 100)) {
+            std::fclose(f);
+            return false;
+        }
+
+        int temp_data[100][100] = {{0}};
+        for (int i = 0; i < rows; ++i) {
+            for (int j = 0; j < cols; ++j) {
+                if (fscanf(f, "%d", &temp_data[i][j]) != 1) {
+                    std::fclose(f);
+                    return false;
+                }
+            }
+        }
+
+        int extra;
+        if (fscanf(f, "%d", &extra) == 1) {
+            std::fclose(f);
+            return false;
+        }
+
         std::fclose(f);
 
         if (rows == 0 || cols == 0) return false;
 
         if (mode == 1) {
-            if (rows > 100 || cols > 100) return false;
-
             fm->rows = rows;
             fm->cols = cols;
             for (int i = 0; i < rows; ++i) {
