@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <cstdlib>
 
 int main(int argc, char * argv[]) {
@@ -25,6 +26,26 @@ int main(int argc, char * argv[]) {
     const char * output_filename = argv[3];
 
     int mode = num[0] - '0';
+
+    std::ifstream input_file(input_filename);
+    if (!input_file.is_open()) {
+        std::cerr << "Can not open input file\n";
+        return 2;
+    }
+
+    int rows, cols;
+
+    if (rows == 0 || cols == 0) {
+        std::ofstream output_file(output_filename);
+        output_file << "0 0";
+        output_file.close();
+        return 0;
+    }
+
+    if (mode == 1 && rows * cols > 10000) {
+        std::cerr << "Matrix too big\n";
+        return 2;
+    }
 
     return 0;
 }
