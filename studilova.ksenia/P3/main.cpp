@@ -152,6 +152,14 @@ int main(int argc, char * argv[]) {
 
     int result1 = SaddlePoints(matrix, rows, cols);
     int result2 = MaxDiagonalSum(matrix, rows, cols);
+
+    std::ofstream output_file(output_filename);
+    output_file << result1 << " " << result2;
+    output_file.close();
+
+    if (mode == '2') {
+        free(matrix);
+    }
     
     return 0;
 }
