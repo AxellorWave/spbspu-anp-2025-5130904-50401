@@ -4,30 +4,38 @@
 
 namespace studilova {
 
-    int SaddlePoints(int * matrix, size_t rows, size_t cols) {
+    int saddlePoints(int* matrix, size_t rows, size_t cols)
+    {
         int count = 0;
 
-        for (size_t i = 0; i < rows; i++) {
-            for (size_t j = 0; j < cols; j++) {
+        for (size_t i = 0; i < rows; i++)
+        {
+            for (size_t j = 0; j < cols; j++)
+            {
                 int current = matrix[i * cols + j];
                 bool isMinInRow = true;
                 bool isMaxInCol = true;
 
-                for (size_t k = 0; k < cols; k++) {
-                    if (matrix[i * cols + k] < current) {
+                for (size_t k = 0; k < cols; k++)
+                {
+                    if (matrix[i * cols + k] < current)
+                    {
                         isMinInRow = false;
                         break;
                     }
                 }
 
-                for (size_t k = 0; k < rows; k++) {
-                    if (matrix[k * cols + j] > current) {
+                for (size_t k = 0; k < rows; k++)
+                {
+                    if (matrix[k * cols + j] > current)
+                    {
                         isMaxInCol = false;
                         break;
                     }
                 }
 
-                if (isMinInRow && isMaxInCol) {
+                if (isMinInRow && isMaxInCol)
+                {
                     count++;
                 }
             }
@@ -36,53 +44,69 @@ namespace studilova {
         return count;
     }
 
-    int MaxDiagonalSum(int * matrix, size_t rows, size_t cols) {
-        int max_sum = 0;
+    int maxDiagonalSum(int* matrix, size_t rows, size_t cols)
+    {
+        int maxSum = 0;
 
-        for (size_t d = 0; d < cols; d++) {
+        for (size_t d = 0; d < cols; d++)
+        {
             int sum = 0;
-            size_t i = 0, j = d;
-            while (i < rows && j < cols) {
+            size_t i = 0;
+            size_t j = d;
+            while (i < rows && j < cols)
+            {
                 sum += matrix[i * cols + j];
                 i++;
                 j++;
             }
-            if (sum > max_sum) {
-                max_sum = sum;
+            if (sum > maxSum)
+            {
+                maxSum = sum;
             }
         }
 
-        for (size_t d = 1; d < rows; d++) {
+        for (size_t d = 1; d < rows; d++)
+        {
             int sum = 0;
-            size_t i = d, j = 0;
-            while (i < rows && j < cols) {
+            size_t i = d;
+            size_t j = 0;
+            while (i < rows && j < cols)
+            {
                 sum += matrix[i * cols + j];
                 i++;
                 j++;
             }
-            if (sum > max_sum) {
-                max_sum = sum;
+            if (sum > maxSum)
+            {
+                maxSum = sum;
             }
         }
 
-        return max_sum;
+        return maxSum;
     }
 
-    const size_t max_size = 10000;
-    int static_memory[max_size];
+    const size_t maxSize = 10000;
+    int staticMemory[maxSize];
 
-    int * create_matrix(int mode, size_t rows, size_t cols) {
-        if (mode == 1) {
-            return static_memory;
-        } else {
+    int* createMatrix(int mode, size_t rows, size_t cols)
+    {
+        if (mode == 1)
+        {
+            return staticMemory;
+        }
+        else
+        {
             return (int*)malloc(rows * cols * sizeof(int));
         }
     }
 
-    bool read_matrix(std::ifstream& input, int * matrix, size_t rows, size_t cols) {
-        for (size_t i = 0; i < rows * cols; i++) {
+    bool readMatrix(std::ifstream& input, int* matrix, size_t rows, size_t cols)
+    {
+        for (size_t i = 0; i < rows * cols; i++)
+        {
             input >> matrix[i];
-            if (input.fail()) {
+            if (input.fail())
+            {
                 return false;
             }
         }
@@ -90,74 +114,86 @@ namespace studilova {
     }
 }
 
-int main(int argc, char * argv[]) {
+int main(int argc, char* argv[])
+{
     using namespace studilova;
 
-    if (argc < 4) {
-        std::cerr << "Not enought arguments\n";
+    if (argc < 4)
+    {
+        std::cerr << "Not enough arguments\n";
         return 1;
     }
-    else if (argc > 4) {
+    else if (argc > 4)
+    {
         std::cerr << "Too many arguments\n";
         return 1;
     }
 
-    else if (argv[1][0] < '0' || argv[1][0] > '9') {
+    else if (argv[1][0] < '0' || argv[1][0] > '9')
+    {
     std::cerr << "First parameter is not a number\n";
         return 1;
     }
-    else if (argv[1][0] != '1' && argv[1][0] != '2') {
+    else if (argv[1][0] != '1' && argv[1][0] != '2')
+    {
         std::cerr << "First parameter is out of range\n";
         return 1;
     }
 
-    const char * num = argv[1];
-    const char * input_filename = argv[2];
-    const char * output_filename = argv[3];
+    const char* num = argv[1];
+    const char* inputFilename = argv[2];
+    const char* outputFilename = argv[3];
 
     int mode = num[0] - '0';
 
-    std::ifstream input_file(input_filename);
-    if (!input_file.is_open()) {
+    std::ifstream inputFile(inputFilename);
+    if (!inputFile.is_open())
+    {
         std::cerr << "Can not open input file\n";
         return 2;
     }
 
-    int rows, cols;
-    input_file >> rows >> cols;
+    int rows = 0;
+    int cols = 0;
+    inputFile >> rows >> cols;
 
-    if (rows == 0 || cols == 0) {
-        std::ofstream output_file(output_filename);
-        output_file << "0 0";
-        output_file.close();
+    if (rows == 0 || cols == 0)
+    {
+        std::ofstream outputFile(outputFilename);
+        outputFile << "0 0\n";
+        outputFile.close();
         return 0;
     }
 
-    if (mode == 1 && rows * cols > max_size) {
+    if (mode == 1 && rows * cols > maxSize)
+    {
         std::cerr << "Matrix too big\n";
         return 2;
     }
 
-    int * matrix = create_matrix(mode, rows, cols);
+    int* matrix = createMatrix(mode, rows, cols);
 
-    if (!read_matrix(input_file, matrix, rows, cols)) {
+    if (!readMatrix(inputFile, matrix, rows, cols))
+    {
         std::cerr << "Invalid matrix data\n";
-        if (mode == 2) {
+        if (mode == 2)
+        {
             free(matrix);
         }
         return 2;
     }
 
-    input_file.close();
+    inputFile.close();
 
-    int result1 = SaddlePoints(matrix, rows, cols);
-    int result2 = MaxDiagonalSum(matrix, rows, cols);
+    int result1 = saddlePoints(matrix, rows, cols);
+    int result2 = maxDiagonalSum(matrix, rows, cols);
 
-    std::ofstream output_file(output_filename);
-    output_file << result1 << " " << result2 << "\n";
-    output_file.close();
+    std::ofstream outputFile(outputFilename);
+    outputFile << result1 << " " << result2 << "\n";
+    outputFile.close();
 
-    if (mode == 2) {
+    if (mode == 2)
+    {
         free(matrix);
     }
 
