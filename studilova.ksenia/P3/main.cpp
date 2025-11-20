@@ -189,9 +189,9 @@ int main(int argc, char* argv[])
     int result2 = maxDiagonalSum(matrix, rows, cols);
 
     std::ofstream outputFile(outputFilename);
-    outputFile << result1 << " " << result2 << "\n";
+    outputFile << result1 << " " << result2 << std::endl;
     outputFile.close();
-
+    
     if (mode == 2)
     {
         free(matrix);
