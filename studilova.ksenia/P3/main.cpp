@@ -13,6 +13,16 @@ int * create_matrix(const char mode, size_t rows, size_t cols) {
     }
 }
 
+bool read_matrix(std::ifstream& input, int* matrix, size_t rows, size_t cols) {
+    for (size_t i = 0; i < rows * cols; i++) {
+        input >> matrix[i];
+        if (input.fail()) {
+            return false;
+        }
+    }
+    return true;
+}
+
 int main(int argc, char * argv[]) {
     if (argc < 4) {
         std::cerr << "Not enought arguments\n";
@@ -59,6 +69,14 @@ int main(int argc, char * argv[]) {
     }
 
     int * matrix = create_matrix(mode, rows, cols);
+
+    if (!read_matrix(input_file, matrix, rows, cols)) {
+        std::cerr << "Invalid matrix data\n";
+        if (mode == '2') {
+            free(matrix);
+        }
+        return 2;
+    }
     
     input_file.close();
 
