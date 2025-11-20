@@ -92,6 +92,7 @@ int main() {
   str = mal::createStr(size);
   if (!str) {
     delete[] str;
+    std::cerr << "problem with memory allocation\n";
     return 1;
   }
 
