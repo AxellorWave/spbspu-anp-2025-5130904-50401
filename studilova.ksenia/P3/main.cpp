@@ -36,6 +36,38 @@ namespace studilova {
         return count;
     }
 
+    int MaxDiagonalSum(int* matrix, size_t rows, size_t cols) {
+        int max_sum = 0;
+        
+        for (size_t d = 0; d < cols; d++) {
+            int sum = 0;
+            size_t i = 0, j = d;
+            while (i < rows && j < cols) {
+                sum += matrix[i * cols + j];
+                i++;
+                j++;
+            }
+            if (sum > max_sum) {
+                max_sum = sum;
+            }
+        }
+        
+        for (size_t d = 1; d < rows; d++) {
+            int sum = 0;
+            size_t i = d, j = 0;
+            while (i < rows && j < cols) {
+                sum += matrix[i * cols + j];
+                i++;
+                j++;
+            }
+            if (sum > max_sum) {
+                max_sum = sum;
+            }
+        }
+        
+        return max_sum;
+    }
+
     const size_t max_size = 10000;
     int static_memory[max_size];
     
@@ -119,6 +151,7 @@ int main(int argc, char * argv[]) {
     input_file.close();
 
     int result1 = SaddlePoints(matrix, rows, cols);
+    int result2 = MaxDiagonalSum(matrix, rows, cols);
     
     return 0;
 }
