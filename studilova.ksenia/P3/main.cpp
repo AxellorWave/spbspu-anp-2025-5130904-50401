@@ -2,6 +2,17 @@
 #include <fstream>
 #include <cstdlib>
 
+const size_t max_size = 10000;
+int static_memory[max_size];
+    
+int * create_matrix(const char mode, size_t rows, size_t cols) {
+    if (mode == '1') {
+        return static_memory;
+    } else {
+        return (int*)malloc(rows * cols * sizeof(int));
+    }
+}
+
 int main(int argc, char * argv[]) {
     if (argc < 4) {
         std::cerr << "Not enought arguments\n";
@@ -46,6 +57,10 @@ int main(int argc, char * argv[]) {
         std::cerr << "Matrix too big\n";
         return 2;
     }
+
+    int * matrix = create_matrix(mode, rows, cols);
+    
+    input_file.close();
 
     return 0;
 }
