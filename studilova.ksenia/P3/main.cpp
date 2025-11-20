@@ -2,28 +2,66 @@
 #include <fstream>
 #include <cstdlib>
 
-const size_t max_size = 10000;
-int static_memory[max_size];
-    
-int * create_matrix(const char mode, size_t rows, size_t cols) {
-    if (mode == '1') {
-        return static_memory;
-    } else {
-        return (int*)malloc(rows * cols * sizeof(int));
-    }
-}
+namespace studilova {
 
-bool read_matrix(std::ifstream& input, int* matrix, size_t rows, size_t cols) {
-    for (size_t i = 0; i < rows * cols; i++) {
-        input >> matrix[i];
-        if (input.fail()) {
-            return false;
+    int SaddlePoints(int* matrix, size_t rows, size_t cols) {
+        int count = 0;
+        
+        for (size_t i = 0; i < rows; i++) {
+            for (size_t j = 0; j < cols; j++) {
+                int current = matrix[i * cols + j];
+                bool isMinInRow = true;
+                bool isMaxInCol = true;
+                
+                for (size_t k = 0; k < cols; k++) {
+                    if (matrix[i * cols + k] < current) {
+                        isMinInRow = false;
+                        break;
+                    }
+                }
+                
+                for (size_t k = 0; k < rows; k++) {
+                    if (matrix[k * cols + j] > current) {
+                        isMaxInCol = false;
+                        break;
+                    }
+                }
+                
+                if (isMinInRow && isMaxInCol) {
+                    count++;
+                }
+            }
+        }
+        
+        return count;
+    }
+
+    const size_t max_size = 10000;
+    int static_memory[max_size];
+    
+    int * create_matrix(const char mode, size_t rows, size_t cols) {
+        if (mode == '1') {
+            return static_memory;
+        } else {
+            return (int*)malloc(rows * cols * sizeof(int));
         }
     }
-    return true;
+
+    bool read_matrix(std::ifstream& input, int* matrix, size_t rows, size_t cols) {
+        for (size_t i = 0; i < rows * cols; i++) {
+            input >> matrix[i];
+            if (input.fail()) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
 
 int main(int argc, char * argv[]) {
+
+    using namespace studilova;
+
     if (argc < 4) {
         std::cerr << "Not enought arguments\n";
         return 1;
@@ -80,5 +118,7 @@ int main(int argc, char * argv[]) {
     
     input_file.close();
 
+    int result1 = SaddlePoints(matrix, rows, cols);
+    
     return 0;
 }
