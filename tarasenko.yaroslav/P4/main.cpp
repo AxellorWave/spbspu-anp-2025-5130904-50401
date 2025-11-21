@@ -4,6 +4,14 @@
 
 namespace tarasenko
 {
+  void set_to_zero(char * string, size_t len)
+  {
+    for (size_t i = 0; i < len; ++i)
+    {
+      string[i] = '\0';
+    }
+  }
+
   bool is_vowel(char c)
   {
     return (c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u' || c == 'y');
@@ -89,14 +97,21 @@ int main()
 {
   size_t len = 0;
   char * string = tarasenko::getline(std::cin, len);
-  char * lower_string = new char[len + 1]{};
-  tarasenko::upp_to_low(string, lower_string, len);
-  std::cout << string << '\n';
-  std::cout << lower_string << '\n';
-  delete[] lower_string;
-  char * without_vowels = new char[len + 1]{};
-  tarasenko::remove_vowels(string, without_vowels, len);
-  std::cout << without_vowels << '\n';
-  delete[] without_vowels;
+  char * output= nullptr;
+  try
+  {
+    output = new char[len]{};
+  }
+  catch (...)
+  {
+    std::cerr << "failed to allocate memory\n";
+    return 1;
+  }
+  tarasenko::upp_to_low(string, output, len);
+  std::cout << output << '\n';
+  tarasenko::set_to_zero(output, len);
+  tarasenko::remove_vowels(string, output, len);
+  std::cout << output << '\n';
+  delete[] output;
   delete[] string;
 }
