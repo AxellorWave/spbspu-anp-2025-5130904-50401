@@ -157,6 +157,13 @@ int main(int argc, char* argv[])
     size_t cols = 0;
     inputFile >> rows >> cols;
 
+
+    if (inputFile.fail())
+    {
+        std::cerr << "Can not read matrix dimensions\n";
+        return 2;
+    }
+
     if (rows == 0 || cols == 0)
     {
         std::ofstream outputFile(outputFilename);
@@ -189,7 +196,7 @@ int main(int argc, char* argv[])
     int result2 = maxDiagonalSum(matrix, rows, cols);
 
     std::ofstream outputFile(outputFilename);
-    outputFile << result1 << " " << result2 << std::endl;
+    outputFile << result1 << " " << result2 << "\n";
     outputFile.close();
     if (mode == 2)
     {
