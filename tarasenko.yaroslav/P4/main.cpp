@@ -2,6 +2,26 @@
 #include <iomanip>
 #include <cctype>
 
+bool is_vowel(char c)
+{
+  return (c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u' || c == 'y');
+}
+
+void remove_vowels(const char * string, char * output, size_t len)
+{
+  size_t k = 0;
+  for (size_t i = 0; i < len; ++i)
+  {
+    char current = string[i];
+    char lower_c = tolower(static_cast< unsigned char >(current));
+    if (is_vowel(lower_c))
+    {
+      continue;
+    }
+    output[k] = string[i];
+    k++;
+  }
+}
 
 void upp_to_low(const char * string, char * output, size_t len)
 {
@@ -70,4 +90,10 @@ int main()
   upp_to_low(string, lower_string, len);
   std::cout << string << '\n';
   std::cout << lower_string << '\n';
+  delete[] lower_string;
+  char * without_vowels = new char[len + 1]{};
+  remove_vowels(string, without_vowels, len);
+  std::cout << without_vowels << '\n';
+  delete[] without_vowels;
+  delete[] string;
 }
