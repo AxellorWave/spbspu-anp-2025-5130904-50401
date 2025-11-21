@@ -114,7 +114,7 @@ int main()
     string = tarasenko::getline(std::cin, len);
     output = new char[len + 1]{};
   }
-  catch (std::runtime_error)
+  catch (const std::runtime_error &e)
   {
     std::cerr << "empty input\n";
     return 1;
