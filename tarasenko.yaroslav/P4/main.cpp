@@ -31,6 +31,7 @@ namespace tarasenko
       output[k] = current;
       k++;
     }
+    output[k] = '\0';
   }
 
   void upp_to_low(const char * string, char * output, size_t len)
@@ -47,6 +48,7 @@ namespace tarasenko
         output[i] = string[i];
       }
     }
+    output[len] = '\0';
   }
 
   char * getline(std::istream & in, size_t & len)
@@ -66,6 +68,10 @@ namespace tarasenko
       in >> last_symbol;
       if (last_symbol == '\n')
       {
+        if (!k)
+        {
+          throw std::runtime_error("");
+        }
         break;
       }
       if (k % step == 0)
@@ -106,7 +112,12 @@ int main()
   try
   {
     string = tarasenko::getline(std::cin, len);
-    output = new char[len]{};
+    output = new char[len + 1]{};
+  }
+  catch (std::runtime_error)
+  {
+    std::cerr << "empty input\n";
+    return 1;
   }
   catch (...)
   {
@@ -115,7 +126,7 @@ int main()
   }
   tarasenko::upp_to_low(string, output, len);
   std::cout << output << '\n';
-  tarasenko::set_to_zero(output, len);
+  tarasenko::set_to_zero(output, len + 1);
   tarasenko::remove_vowels(string, output, len);
   std::cout << output << '\n';
   delete[] output;
