@@ -66,6 +66,10 @@ namespace tarasenko
     while (in)
     {
       in >> last_symbol;
+      if (!in)
+      {
+        throw std::runtime_error("");
+      }
       if (last_symbol == '\n')
       {
         if (!k)
