@@ -96,7 +96,7 @@ namespace studilova {
         }
         else
         {
-            return (int*)malloc(rows * cols * sizeof(int));
+            return static_cast<int*>(malloc(rows * cols * sizeof(int)));
         }
     }
 
@@ -153,8 +153,8 @@ int main(int argc, char* argv[])
         return 2;
     }
 
-    int rows = 0;
-    int cols = 0;
+    size_t rows = 0;
+    size_t cols = 0;
     inputFile >> rows >> cols;
 
     if (rows == 0 || cols == 0)
