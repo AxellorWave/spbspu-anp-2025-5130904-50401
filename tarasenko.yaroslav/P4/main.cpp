@@ -1,7 +1,25 @@
 #include <iostream>
 #include <iomanip>
+#include <cctype>
 
-char * getline(std::istream & in, size_t & size)
+
+void upp_to_low(const char * string, char * output, size_t len)
+{
+  for (size_t i = 0; i < len; ++i)
+  {
+    char current = string[i];
+    if (std::isupper(static_cast< unsigned char >(current)))
+    {
+      output[i] = std::tolower(static_cast< unsigned char >(current));
+    }
+    else
+    {
+      output[i] = string[i];
+    }
+  }
+}
+
+char * getline(std::istream & in, size_t & len)
 {
   bool is_skipws = in.flags() & std::ios_base::skipws;
   if (is_skipws)
@@ -36,7 +54,7 @@ char * getline(std::istream & in, size_t & size)
   temp_mem[k] = '\0';
   delete[] string;
   string = temp_mem;
-  size = k;
+  len = k;
   if (is_skipws)
   {
     in >> std::skipws;
@@ -46,6 +64,10 @@ char * getline(std::istream & in, size_t & size)
 
 int main()
 {
-  size_t size = 0;
-  std::cout << getline(std::cin, size) << ' ' << size << '\n';
+  size_t len = 0;
+  char * string = getline(std::cin, len);
+  char * lower_string = new char[len + 1]{};
+  upp_to_low(string, lower_string, len);
+  std::cout << string << '\n';
+  std::cout << lower_string << '\n';
 }
