@@ -28,6 +28,14 @@ char * getline(std::istream & in, size_t & size)
     string = temp_mem;
     k++;
   }
+  char * temp_mem = new char[k + 1];
+  for (size_t i = 0; i < k; ++i)
+  {
+    temp_mem[i] = string[i];
+  }
+  temp_mem[k] = '\0';
+  delete[] string;
+  string = temp_mem;
   size = k;
   if (is_skipws)
   {
