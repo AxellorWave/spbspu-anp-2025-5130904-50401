@@ -28,7 +28,7 @@ namespace tarasenko
       {
         continue;
       }
-      output[k] = string[i];
+      output[k] = current;
       k++;
     }
   }
@@ -56,9 +56,11 @@ namespace tarasenko
     {
       in >> std::noskipws;
     }
+    const size_t step = 10;
     char * string = nullptr;
+    char * temp_mem = nullptr;
+    char last_symbol = '\0';
     size_t k = 0;
-    char last_symbol = '0';
     while (in)
     {
       in >> last_symbol;
@@ -66,24 +68,27 @@ namespace tarasenko
       {
         break;
       }
-      char * temp_mem = new char[k + 1];
-      for (size_t i = 0; i < k; ++i)
+      if (k % step == 0)
       {
-        temp_mem[i] = string[i];
+        try
+        {
+          temp_mem = new char[k + step];
+        }
+        catch (...)
+        {
+          throw;
+        }
+        for (size_t i = 0; i < k; ++i)
+        {
+          temp_mem[i] = string[i];
+        }
+        delete[] string;
+        string = temp_mem;
       }
-      temp_mem[k] = last_symbol;
-      delete[] string;
-      string = temp_mem;
+      string[k] = last_symbol;
       k++;
     }
-    char * temp_mem = new char[k + 1];
-    for (size_t i = 0; i < k; ++i)
-    {
-      temp_mem[i] = string[i];
-    }
-    temp_mem[k] = '\0';
-    delete[] string;
-    string = temp_mem;
+    string[k] = '\0';
     len = k;
     if (is_skipws)
     {
@@ -96,10 +101,11 @@ namespace tarasenko
 int main()
 {
   size_t len = 0;
-  char * string = tarasenko::getline(std::cin, len);
-  char * output= nullptr;
+  char * output = nullptr;
+  char * string = nullptr;
   try
   {
+    string = tarasenko::getline(std::cin, len);
     output = new char[len]{};
   }
   catch (...)
