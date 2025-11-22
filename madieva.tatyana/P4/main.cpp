@@ -21,7 +21,7 @@ int main() {
   char a = 'a';
   size_t i = 0;
   while(std::cin.get(a) && a != '\n') {
-    if (i = max_size - 1) {
+    if (i >= max_size - 1) {
         return 2;
     }
     str1[i] = a;
@@ -35,8 +35,8 @@ int main() {
   while(str2[j] != '\0') {
     j++;
   }
-  size_t size = i + j;
-  char * res = reinterpret_cast<char*>(malloc(sizeof(char) * size + 1));
+  size_t size = i + j + 1;
+  char * res = reinterpret_cast<char*>(malloc(sizeof(char) * size));
   if (res == nullptr) {
     return 2;
   }
