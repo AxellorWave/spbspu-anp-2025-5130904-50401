@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cctype>
 void uni_two_merge(const char * str1, const char * str2, size_t size, char * res) {
   size_t i = 0, k = 0, l = 0;
   while(i < size - 1) {
@@ -12,6 +13,22 @@ void uni_two_merge(const char * str1, const char * str2, size_t size, char * res
       i++;
       l++;
     }
+  }
+  res[i] = '\0';
+}
+void add_nums(const char * str1, const char * str2, size_t size1, size_t size2, char * res) {
+  size_t i = 0;
+    while (i < size1) {
+    res[i] = str1[i];
+    i++;
+  }
+  size_t j = 0;
+  while (j < size2) {
+    if (std::isdigit(str2[j])) {
+      res[i] = str2[j];
+      i++;
+    }
+    j++;
   }
   res[i] = '\0';
 }
@@ -36,11 +53,25 @@ int main() {
     j++;
   }
   size_t size = i + j + 1;
-  char * res = reinterpret_cast<char*>(malloc(sizeof(char) * size));
-  if (res == nullptr) {
+  char * res_two_merge = reinterpret_cast<char*>(malloc(sizeof(char) * size));
+  if (res_two_merge == nullptr) {
     return 2;
   }
-  uni_two_merge(str1, str2, size, res);
-  free(res);
+  uni_two_merge(str1, str2, size, res_two_merge);
+  free(res_two_merge);
+  size_t num_of_digits = 0;
+  size_t size2 = 0;
+  while (str2[size2] != '\0') {
+    if (std::isdigit(str2[size2])) {
+      num_of_digits++;
+    }
+    size2++;
+  }
+  char * res_add_nums = reinterpret_cast<char*>(malloc(sizeof(char) * i + num_of_digits +1));
+  if (res_add_nums == nullptr) {
+    return 2;
+  }
+  add_nums(str1, str2, i, size2, res_add_nums);
+  free(res_add_nums);
   return 0;
 }
