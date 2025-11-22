@@ -1,4 +1,5 @@
 #include <iostream>
+#include <memory>
 #include <cctype>
 void uni_two_merge(const char * str1, const char * str2, size_t size, char * res) {
   size_t i = 0, k = 0, l = 0;
@@ -58,6 +59,10 @@ int main() {
     return 2;
   }
   uni_two_merge(str1, str2, size, res_two_merge);
+  for(size_t p = 0; p < size - 1; p++) {
+    std::cout << res_two_merge[p];
+  }
+  std::cout << "\n";
   free(res_two_merge);
   size_t num_of_digits = 0;
   size_t size2 = 0;
@@ -72,6 +77,10 @@ int main() {
     return 2;
   }
   add_nums(str1, str2, i, size2, res_add_nums);
+   for(size_t p = 0; p < i + num_of_digits; p++) {
+    std::cout << res_add_nums[p];
+  }
+  std::cout << "\n";
   free(res_add_nums);
   return 0;
 }
