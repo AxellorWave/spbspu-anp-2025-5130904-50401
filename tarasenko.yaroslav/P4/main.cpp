@@ -23,7 +23,7 @@ namespace tarasenko
     for (size_t i = 0; i < len; ++i)
     {
       char current = string[i];
-      char lower_c = tolower(static_cast< unsigned char >(current));
+      char lower_c = std::tolower(static_cast< unsigned char >(current));
       if (is_vowel(lower_c))
       {
         continue;
@@ -66,16 +66,12 @@ namespace tarasenko
     while (in)
     {
       in >> last_symbol;
-      if (!in)
+      if (!in || (last_symbol == '\n' && !k))
       {
         throw std::runtime_error("");
       }
       if (last_symbol == '\n')
       {
-        if (!k)
-        {
-          throw std::runtime_error("");
-        }
         break;
       }
       if (k % step == 0)
