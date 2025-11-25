@@ -3,28 +3,35 @@
 
 namespace zhuravleva {
   const size_t Max_size = 10000;
+  int fixed_array[Max_size];
 
-  int** makeMatrix(size_t rows, size_t cols)
+
+
+  int* makeMatrix(size_t rows, size_t cols, bool isfixedsize)
   {
     if (rows == 0 || cols == 0)
     {
       return nullptr;
     }
-    int** matrix = new int* [rows];
-    for (size_t i = 0; i < rows; i++)
+    if (isfixedsize)
     {
-      matrix[i] = new int[cols];
+      return fixed_array;
     }
-    return matrix;
+    else
+    {
+      int* matrix = new int [rows * cols];
+      return matrix;
+
+    }
   }
 
-  bool readMatrixElements(std::ifstream& file, int** matrix, size_t rows, size_t cols)
+  bool readMatrixElements(std::ifstream& file, int* matrix, size_t rows, size_t cols)
   {
     for (size_t i = 0; i < rows; i++)
     {
       for (size_t j = 0; j < cols; j++)
       {
-        if (!(file >> matrix[i][j]))
+        if (!(file >> matrix[i * cols + j]))
         {
           return false;
         }
@@ -33,20 +40,19 @@ namespace zhuravleva {
     return true;
   }
 
-  void freeMatrix(int**& matrix, size_t rows)
+  void freeMatrix(int*& matrix, bool isfixedsize)
   {
     if (matrix)
     {
-      for (size_t i = 0; i < rows; i++)
-      {
-        delete[] matrix[i];
+      if (!isfixedsize)
+      { 
+        delete[] matrix;
       }
-      delete[] matrix;
       matrix = nullptr;
     }
   }
 
-  bool readMatrix(const char* filename, int**& matrix, size_t& rows, size_t& cols, bool isfixedsize)
+  bool readMatrix(const char* filename, int*& matrix, size_t& rows, size_t& cols, bool isfixedsize)
   {
     std::ifstream file(filename);
     if (!file.is_open())
@@ -75,21 +81,20 @@ namespace zhuravleva {
     {
       return false;
     }
-    matrix = makeMatrix(rows, cols);
+    matrix = makeMatrix(rows, cols, isfixedsize);
     if (!matrix)
     {
       return false;
     }
     if (!readMatrixElements(file, matrix, rows, cols))
     {
-      freeMatrix(matrix, rows);
-      matrix = nullptr;
+      freeMatrix(matrix, isfixedsize);
       return false;
     }
     return true;
   }
 
-  size_t colsNoDublicats(int** matrix, size_t rows, size_t cols)
+  size_t colsNoDublicats(int* matrix, size_t rows, size_t cols)
   {
     if (rows == 0 || cols == 0 || matrix == nullptr)
     {
@@ -101,7 +106,7 @@ namespace zhuravleva {
       bool is_dublics = false;
       for (size_t i = 0; i < rows - 1; i++)
       {
-        if (matrix[i][j] == matrix[i + 1][j])
+        if (matrix[i * cols + j] == matrix[(i + 1) * cols + j])
         {
           is_dublics = true;
         }
@@ -113,7 +118,7 @@ namespace zhuravleva {
     }
     return count;
   }
-  size_t diagonalsNoZero(int** matrix, size_t rows, size_t cols)
+  size_t diagonalsNoZero(int* matrix, size_t rows, size_t cols)
   {
     if (rows == 0 || cols == 0 || matrix == nullptr)
     {
@@ -125,7 +130,7 @@ namespace zhuravleva {
       bool has_zero = false;
       for (size_t i = 0; i < rows && i + shift < cols; i++)
       {
-        if (matrix[i][i + shift] == 0)
+        if (matrix[i * cols + (i + shift)] == 0)
         {
           has_zero = true;
         }
@@ -141,7 +146,7 @@ namespace zhuravleva {
       bool has_zero = false;
       for (size_t i = 0; i < cols && i + shift < rows; i++)
       {
-        if (matrix[i + shift][i] == 0)
+        if (matrix[(i + shift) * cols + i] == 0)
         {
           has_zero = true;
         }
@@ -159,28 +164,29 @@ int main(int argc, char* argv[])
 {
   if (argc != 4)
   {
-    std::cerr << "Need 3 arguments: 1) mode 2) input 3) output" << std::endl;
+    std::cerr << "Need 3 arguments: 1) mode 2) input 3) output\n";
     return 1;
   }
   const char* mode = argv[1];
   if (mode[0] != '1' && mode[0] != '2')
   {
-    std::cerr << "Mode must be 1 or 2" << std::endl;
+    std::cerr << "Mode must be 1 or 2\n";
     return 1;
   }
-  int** matrix = nullptr;
+  bool isfixedsize = (mode[0] == '1');
+  int* matrix = nullptr;
   size_t rows, cols;
 
-  if (!zhuravleva::readMatrix(argv[2], matrix, rows, cols, mode[0] == '1'))
+  if (!zhuravleva::readMatrix(argv[2], matrix, rows, cols, isfixedsize))
   {
-    std::cerr << "Invalid matrix" << std::endl;
+    std::cerr << "Invalid matrix\n";
     return 2;
   }
   size_t resultForColsNoDublicats = zhuravleva::colsNoDublicats(matrix, rows, cols);
   size_t resultForDiagonalsNoZero = zhuravleva::diagonalsNoZero(matrix, rows, cols);
   std::ofstream file_output(argv[3]);
   file_output << resultForColsNoDublicats<< " ";
-  file_output << resultForDiagonalsNoZero << std::endl;
-  zhuravleva::freeMatrix(matrix, rows);
+  file_output << resultForDiagonalsNoZero << "\n";
+  zhuravleva::freeMatrix(matrix, isfixedsize);
   return 0;
 }
