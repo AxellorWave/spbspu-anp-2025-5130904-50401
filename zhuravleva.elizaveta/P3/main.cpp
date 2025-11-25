@@ -5,8 +5,6 @@ namespace zhuravleva {
   const size_t Max_size = 10000;
   int fixed_array[Max_size];
 
-
-
   int* makeMatrix(size_t rows, size_t cols, bool isfixedsize)
   {
     if (rows == 0 || cols == 0)
@@ -19,9 +17,8 @@ namespace zhuravleva {
     }
     else
     {
-      int* matrix = new int [rows * cols];
+      int* matrix = new int[rows * cols];
       return matrix;
-
     }
   }
 
@@ -45,7 +42,7 @@ namespace zhuravleva {
     if (matrix)
     {
       if (!isfixedsize)
-      { 
+      {
         delete[] matrix;
       }
       matrix = nullptr;
@@ -66,7 +63,7 @@ namespace zhuravleva {
       matrix = nullptr;
       return false;
     }
-    if(!(file >> rows >> cols))
+    if (!(file >> rows >> cols))
     {
       matrix = nullptr;
       return false;
@@ -118,6 +115,7 @@ namespace zhuravleva {
     }
     return count;
   }
+
   size_t diagonalsNoZero(int* matrix, size_t rows, size_t cols)
   {
     if (rows == 0 || cols == 0 || matrix == nullptr)
@@ -185,7 +183,7 @@ int main(int argc, char* argv[])
   size_t resultForColsNoDublicats = zhuravleva::colsNoDublicats(matrix, rows, cols);
   size_t resultForDiagonalsNoZero = zhuravleva::diagonalsNoZero(matrix, rows, cols);
   std::ofstream file_output(argv[3]);
-  file_output << resultForColsNoDublicats<< " ";
+  file_output << resultForColsNoDublicats << " ";
   file_output << resultForDiagonalsNoZero << "\n";
   zhuravleva::freeMatrix(matrix, isfixedsize);
   return 0;
