@@ -100,17 +100,13 @@ int* createMatrix(int mode, size_t rows, size_t cols, int* staticMemory)
     }
 }
 
-bool readMatrix(std::ifstream& input, int* matrix, size_t rows, size_t cols)
+std::ifstream& readMatrix(std::ifstream& input, int* matrix, size_t rows, size_t cols)
 {
     for (size_t i = 0; i < rows * cols; i++)
     {
         input >> matrix[i];
-        if (input.fail())
-        {
-            return false;
-        }
     }
-    return true;
+    return input;
 }
 
 }
@@ -182,7 +178,8 @@ int main(int argc, char* argv[])
     int stackMemory[maxSize];
     int* matrix = createMatrix(mode, rows, cols, stackMemory);
 
-    if (!readMatrix(inputFile, matrix, rows, cols))
+    readMatrix(inputFile, matrix, rows, cols);
+    if (inputFile.fail())
     {
         std::cerr << "Invalid matrix data\n";
         if (mode == 2)
