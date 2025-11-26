@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
+#include <cctype>
 
 namespace studilova
 {
@@ -126,7 +127,7 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    else if (argv[1][0] < '0' || argv[1][0] > '9')
+    else if (!std::isdigit(argv[1][0]))
     {
     std::cerr << "First parameter is not a number\n";
         return 1;
