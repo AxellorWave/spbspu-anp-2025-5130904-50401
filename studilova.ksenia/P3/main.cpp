@@ -87,9 +87,8 @@ int maxDiagonalSum(int* matrix, size_t rows, size_t cols)
 }
 
 const size_t maxSize = 10000;
-int staticMemory[maxSize];
 
-int* createMatrix(int mode, size_t rows, size_t cols)
+int* createMatrix(int mode, size_t rows, size_t cols, int* staticMemory)
 {
     if (mode == 1)
     {
@@ -180,7 +179,8 @@ int main(int argc, char* argv[])
         return 2;
     }
 
-    int* matrix = createMatrix(mode, rows, cols);
+    int stackMemory[maxSize];
+    int* matrix = createMatrix(mode, rows, cols, stackMemory);
 
     if (!readMatrix(inputFile, matrix, rows, cols))
     {
