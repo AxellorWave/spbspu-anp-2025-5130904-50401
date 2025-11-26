@@ -97,7 +97,7 @@ int* createMatrix(int mode, size_t rows, size_t cols)
     }
     else
     {
-        return static_cast<int*>(malloc(rows * cols * sizeof(int)));
+        return static_cast< int* >(malloc(rows * cols * sizeof(int)));
     }
 }
 
