@@ -2,116 +2,118 @@
 #include <fstream>
 #include <cstdlib>
 
-namespace studilova {
+namespace studilova
+{
 
-    int saddlePoints(int* matrix, size_t rows, size_t cols)
+int saddlePoints(int* matrix, size_t rows, size_t cols)
+{
+    int count = 0;
+
+    for (size_t i = 0; i < rows; i++)
     {
-        int count = 0;
-
-        for (size_t i = 0; i < rows; i++)
+        for (size_t j = 0; j < cols; j++)
         {
-            for (size_t j = 0; j < cols; j++)
+            int current = matrix[i * cols + j];
+            bool isMinInRow = true;
+            bool isMaxInCol = true;
+
+            for (size_t k = 0; k < cols; k++)
             {
-                int current = matrix[i * cols + j];
-                bool isMinInRow = true;
-                bool isMaxInCol = true;
-
-                for (size_t k = 0; k < cols; k++)
+                if (matrix[i * cols + k] < current)
                 {
-                    if (matrix[i * cols + k] < current)
-                    {
-                        isMinInRow = false;
-                        break;
-                    }
-                }
-
-                for (size_t k = 0; k < rows; k++)
-                {
-                    if (matrix[k * cols + j] > current)
-                    {
-                        isMaxInCol = false;
-                        break;
-                    }
-                }
-
-                if (isMinInRow && isMaxInCol)
-                {
-                    count++;
+                    isMinInRow = false;
+                    break;
                 }
             }
-        }
 
-        return count;
+            for (size_t k = 0; k < rows; k++)
+            {
+                if (matrix[k * cols + j] > current)
+                {
+                    isMaxInCol = false;
+                    break;
+                }
+            }
+
+            if (isMinInRow && isMaxInCol)
+            {
+                count++;
+            }
+        }
     }
 
-    int maxDiagonalSum(int* matrix, size_t rows, size_t cols)
+    return count;
+}
+
+int maxDiagonalSum(int* matrix, size_t rows, size_t cols)
+{
+    int maxSum = 0;
+
+    for (size_t d = 0; d < cols; d++)
     {
-        int maxSum = 0;
-
-        for (size_t d = 0; d < cols; d++)
+        int sum = 0;
+        size_t i = 0;
+        size_t j = d;
+        while (i < rows && j < cols)
         {
-            int sum = 0;
-            size_t i = 0;
-            size_t j = d;
-            while (i < rows && j < cols)
-            {
-                sum += matrix[i * cols + j];
-                i++;
-                j++;
-            }
-            if (sum > maxSum)
-            {
-                maxSum = sum;
-            }
+            sum += matrix[i * cols + j];
+            i++;
+            j++;
         }
-
-        for (size_t d = 1; d < rows; d++)
+        if (sum > maxSum)
         {
-            int sum = 0;
-            size_t i = d;
-            size_t j = 0;
-            while (i < rows && j < cols)
-            {
-                sum += matrix[i * cols + j];
-                i++;
-                j++;
-            }
-            if (sum > maxSum)
-            {
-                maxSum = sum;
-            }
+            maxSum = sum;
         }
-
-        return maxSum;
     }
 
-    const size_t maxSize = 10000;
-    int staticMemory[maxSize];
-
-    int* createMatrix(int mode, size_t rows, size_t cols)
+    for (size_t d = 1; d < rows; d++)
     {
-        if (mode == 1)
+        int sum = 0;
+        size_t i = d;
+        size_t j = 0;
+        while (i < rows && j < cols)
         {
-            return staticMemory;
+            sum += matrix[i * cols + j];
+            i++;
+            j++;
         }
-        else
+        if (sum > maxSum)
         {
-            return static_cast<int*>(malloc(rows * cols * sizeof(int)));
+            maxSum = sum;
         }
     }
 
-    bool readMatrix(std::ifstream& input, int* matrix, size_t rows, size_t cols)
+    return maxSum;
+}
+
+const size_t maxSize = 10000;
+int staticMemory[maxSize];
+
+int* createMatrix(int mode, size_t rows, size_t cols)
+{
+    if (mode == 1)
     {
-        for (size_t i = 0; i < rows * cols; i++)
-        {
-            input >> matrix[i];
-            if (input.fail())
-            {
-                return false;
-            }
-        }
-        return true;
+        return staticMemory;
     }
+    else
+    {
+        return static_cast<int*>(malloc(rows * cols * sizeof(int)));
+    }
+}
+
+bool readMatrix(std::ifstream& input, int* matrix, size_t rows, size_t cols)
+{
+    for (size_t i = 0; i < rows * cols; i++)
+    {
+        input >> matrix[i];
+        if (input.fail())
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
 }
 
 int main(int argc, char* argv[])
