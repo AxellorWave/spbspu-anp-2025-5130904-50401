@@ -209,7 +209,7 @@ int main(int argc, char** argv)
   }
   else
   {
-    dynamic_matrix = static_cast<int*>(std::malloc(rows * cols * sizeof(int)));
+    dynamic_matrix = static_cast <int*> (std::malloc(rows * cols * sizeof(int)));
     if (!dynamic_matrix)
     {
       std::cerr << "Memory alloc failed\n";
@@ -223,7 +223,7 @@ int main(int argc, char** argv)
       return 2;
     }
 
-    dynamic_copy = static_cast<int*>(std::malloc(rows * cols * sizeof(int)));
+    dynamic_copy = static_cast <int*> (std::malloc(rows * cols * sizeof(int)));
     if (!dynamic_copy)
     {
       std::cerr << "Memory alloc failed\n";
