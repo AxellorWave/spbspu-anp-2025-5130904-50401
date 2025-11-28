@@ -18,14 +18,26 @@ namespace kondrat
       return false;
     }
 
-    char * endptr = nullptr;
-    long val = std::strtol(argv[1], &endptr, 10);
-
-    if (*endptr != '\0')
+    char * s = argv[1];
+    if (!s || s[0] == '\0')
     {
       std::cerr << "First parameter is not a number\n";
       return false;
     }
+
+    if (s[1] != '\0')
+    {
+      std::cerr << "First parameter is not a number\n";
+      return false;
+    }
+
+    if (s[0] < '0' || s[0] > '9')
+    {
+      std::cerr << "First parameter is not a number\n";
+      return false;
+    }
+
+    int val = s[0] - '0';
 
     if (val != 1 && val != 2)
     {
@@ -33,13 +45,13 @@ namespace kondrat
       return false;
     }
 
-    mode = static_cast<int>(val);
+    mode = val;
     return true;
   }
 
   bool read_matrix_dimensions(std::ifstream & fin, size_t & rows, size_t & cols)
   {
-    long long tmp_r = 0, tmp_c = 0;
+    int tmp_r = 0, tmp_c = 0;
 
     if (!(fin >> tmp_r >> tmp_c))
     {
@@ -58,34 +70,14 @@ namespace kondrat
     return true;
   }
 
-  bool validate_matrix_elements(std::ifstream & fin, size_t rows, size_t cols)
-  {
-    size_t total = rows * cols;
-
-    for (size_t i = 0; i < total; i++)
-    {
-      int x;
-      if (!(fin >> x))
-      {
-        std::cerr << "Invalid matrix\n";
-        return false;
-      }
-    }
-    return true;
-  }
-
-  bool fill_matrix(std::ifstream & fin, int * m, size_t rows, size_t cols)
+  std::ifstream & fill_matrix(std::ifstream & fin, int * m, size_t rows, size_t cols)
   {
     size_t total = rows * cols;
     for (size_t i = 0; i < total; i++)
     {
-      if (!(fin >> m[i]))
-      {
-        std::cerr << "Invalid matrix\n";
-        return false;
-      }
+      fin >> m[i];
     }
-    return true;
+    return fin;
   }
 
   size_t num_col_lsr(int * m, size_t rows, size_t cols)
@@ -138,31 +130,31 @@ namespace kondrat
 
     size_t count = 0;
 
-    for (size_t i = 1; i < rows - 1; i++)
+    for (size_t i = 0; i < rows; ++i)
     {
-      for (size_t j = 1; j < cols - 1; j++)
+      for (size_t j = 0; j < cols; ++j)
       {
-        int num = m[i * cols + j];
-        bool isLocMin = true;
-
-        isLocMin = isLocMin && (num < m[(i - 1) * cols + j]);
-        isLocMin = isLocMin && (num < m[(i + 1) * cols + j]);
-        isLocMin = isLocMin && (num < m[i * cols + (j - 1)]);
-        isLocMin = isLocMin && (num < m[i * cols + (j + 1)]);
-        isLocMin = isLocMin && (num < m[(i - 1) * cols + (j - 1)]);
-        isLocMin = isLocMin && (num < m[(i - 1) * cols + (j + 1)]);
-        isLocMin = isLocMin && (num < m[(i + 1) * cols + (j - 1)]);
-        isLocMin = isLocMin && (num < m[(i + 1) * cols + (j + 1)]);
-
-        if (isLocMin)
+        if ((i != 0 && i != (rows - 1)) && (j != 0 && j != (cols - 1)))
         {
-          count++;
+          int num = m[i * cols + j];
+          bool isLocMin = true;
+          for (int i_i = -1; i_i < 2; ++i_i)
+          {
+            for (int j_j = -1; j_j < 2; ++j_j)
+            {
+              if (!(i_i == 0 && j_j == 0))
+              {
+                isLocMin = isLocMin && (num < m[(i + i_i) * cols + (j + j_j)]);
+              }
+            }
+          }
+          count += isLocMin;
         }
       }
     }
-
     return count;
   }
+
 }
 
 int main(int argc, char ** argv)
@@ -187,55 +179,55 @@ int main(int argc, char ** argv)
     return 2;
   }
 
-  if (!kondrat::validate_matrix_elements(fin, rows, cols))
+  std::ofstream fout(argv[3]);
+  if (!fout)
   {
+    std::cerr << "Cannot open output file\n";
     return 2;
   }
 
-  int * m = nullptr;
-  int m_stack[10000];
-
   if (mode == 1)
   {
-    m = m_stack;
+    int m_stack[10000];
+
+    kondrat::fill_matrix(fin, m_stack, rows, cols);
+    if (!fin)
+    {
+      std::cerr << "Invalid matrix\n";
+      return 2;
+    }
+
+    fin.close();
+
+    size_t local_min_count = kondrat::cnt_loc_min(m_stack, rows, cols);
+    size_t best_col = kondrat::num_col_lsr(m_stack, rows, cols);
+
+    fout << local_min_count << ' ' << best_col << "\n";
   }
   else
   {
-    m = reinterpret_cast<int *>(malloc(rows * cols * sizeof(int)));
+    int * m = reinterpret_cast< int * >(malloc(rows * cols * sizeof(int)));
     if (!m)
     {
       std::cerr << "Bad allocation memory\n";
       return 3;
     }
-  }
 
-  fin.seekg(0);
-  long long tmp_r, tmp_c;
-  fin >> tmp_r >> tmp_c;
+    kondrat::fill_matrix(fin, m, rows, cols);
+    if (!fin)
+    {
+      std::cerr << "Invalid matrix\n";
+      free(m);
+      return 2;
+    }
 
-  if (!kondrat::fill_matrix(fin, m, rows, cols))
-  {
-    if (mode == 2) free(m);
-    return 2;
-  }
+    fin.close();
 
-  fin.close();
+    size_t local_min_count = kondrat::cnt_loc_min(m, rows, cols);
+    size_t best_col = kondrat::num_col_lsr(m, rows, cols);
 
-  std::ofstream fout(argv[3]);
-  if (!fout)
-  {
-    std::cerr << "Cannot open output file\n";
-    if (mode == 2) free(m);
-    return 2;
-  }
+    fout << local_min_count << ' ' << best_col << "\n";
 
-  size_t local_min_count = kondrat::cnt_loc_min(m, rows, cols);
-  size_t best_col = kondrat::num_col_lsr(m, rows, cols);
-
-  fout << local_min_count << ' ' << best_col << "\n";
-
-  if (mode == 2)
-  {
     free(m);
   }
 }
