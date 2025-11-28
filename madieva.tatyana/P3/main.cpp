@@ -16,11 +16,11 @@ namespace madieva
     }
   }
   void freeArray(int * array, char number) {
-    if (number ==  '2') {
-      delete []array;
+    if (number == '2') {
+      delete[] array;
     }
   }
-  bool readMatrix(std::ifstream& input, size_t rows, size_t cols, int * array)
+  bool readMatrix(std::ifstream & input, size_t rows, size_t cols, int * array)
   {
     for (size_t i = 0; i < rows * cols; i++) {
       input >> array[i];
@@ -69,7 +69,7 @@ namespace madieva
       bottom--;
     }
   }
-  void writeMatrix(std::ofstream &output, size_t rows, size_t cols, const int *array) {
+  void writeMatrix(std::ofstream & output, size_t rows, size_t cols, const int * array) {
     output << rows << " " << cols;
     for (size_t i = 0; i < rows * cols; ++i) {
       output << " " << array[i];
@@ -111,9 +111,9 @@ int main(int argc, char ** argv)
     std::cerr << "First parameter is out of range\n";
     return 1;
   }
-  const char* arg = argv[1];
-  const char* inputFile = argv[2];
-  const char* outputFile = argv[3];
+  const char * arg = argv[1];
+  const char * inputFile = argv[2];
+  const char * outputFile = argv[3];
   std::ifstream input(inputFile);
   if (!input.is_open()) {
     std::cerr << "Error when opening input file\n";
@@ -121,7 +121,7 @@ int main(int argc, char ** argv)
   }
   size_t rows = 0, cols = 0;
   input >> rows >> cols;
-  if (input.fail()) {
+  if (!input) {
     std::cerr << "Irregular matrix size\n";
     return 2;
   }
@@ -133,11 +133,11 @@ int main(int argc, char ** argv)
     std::ofstream output(outputFile);
     output << 0 << " " << 0 << "\n";
     return 0;
-}
-  int* matrix = nullptr;
+  }
+  int * matrix = nullptr;
   try {
     matrix = madieva::createArray(arg[0], rows, cols);
-  } catch (const std::bad_alloc& e) {
+  } catch (const std::bad_alloc & e) {
     std::cerr << "Out of memory\n";
     return 2;
   }
