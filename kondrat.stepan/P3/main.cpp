@@ -1,3 +1,4 @@
+#include <cctype>
 #include <cstdlib>
 #include <cstddef>
 #include <iostream>
@@ -31,7 +32,7 @@ namespace kondrat
       return false;
     }
 
-    if (s[0] < '0' || s[0] > '9')
+    if (!std::isdigit(s[0]))
     {
       std::cerr << "First parameter is not a number\n";
       return false;
@@ -65,8 +66,8 @@ namespace kondrat
       return false;
     }
 
-    rows = static_cast<size_t>(tmp_r);
-    cols = static_cast<size_t>(tmp_c);
+    rows = static_cast< size_t >(tmp_r);
+    cols = static_cast< size_t >(tmp_c);
     return true;
   }
 
