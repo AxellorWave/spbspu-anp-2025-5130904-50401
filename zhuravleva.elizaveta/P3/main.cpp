@@ -66,7 +66,7 @@ std::ifstream& readMatrix(std::ifstream& file, int** matrix, size_t& rows, size_
     if (isfixedsize && (cols > 0 && rows > Max_size / cols))
     {
       *matrix = nullptr;
-      return file;  
+      return file;
     }
 
     *matrix = makeMatrix(rows, cols, isfixedsize, fixed_buffer);
