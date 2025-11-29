@@ -196,6 +196,7 @@ int main(int argc, char* argv[])
 
     std::ofstream outputFile(outputFilename);
     outputFile << result1 << " " << result2 << "\n";
+    
     if (mode == 2)
     {
         free(matrix);
