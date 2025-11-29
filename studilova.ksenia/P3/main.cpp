@@ -166,8 +166,8 @@ int main(int argc, char* argv[])
 
   if (mode == 1)
   {
-    if (rows * cols > 10000) 
-    {    
+    if (rows * cols > 10000)
+    {
       std::cerr << "Matrix too big\n";
       return 2;
     }
