@@ -2,28 +2,27 @@
 #include <fstream>
 
 namespace zhuravleva {
-  const size_t Max_size = 10000;
+  const size_t maxSize = 10000;
 
-  int* makeMatrix(size_t rows, size_t cols, bool isfixedsize, int* fixed_buffer)
+  int* makeMatrix(size_t rows, size_t cols, bool isFixedSize, int* fixedBuffer)
   {
     if (rows == 0 || cols == 0)
     {
       return nullptr;
     }
-    if (isfixedsize)
+    if (isFixedSize)
     {
-      if (cols > 0 && rows > (Max_size / cols))
+      if (cols > 0 && rows > (maxSize / cols))
       {
         return nullptr;
       }
-      return fixed_buffer;
+      return fixedBuffer;
     }
     else
     {
       int* matrix = new int[rows * cols];
       return matrix;
     }
-    
   }
 
   bool readMatrixElements(std::ifstream& file, int* matrix, size_t rows, size_t cols)
@@ -41,15 +40,15 @@ namespace zhuravleva {
     return true;
   }
 
-  void freeMatrix(int* matrix, bool isfixedsize)
+  void freeMatrix(int* matrix, bool isFixedSize)
   {
-    if (matrix && !isfixedsize)
+    if (matrix && !isFixedSize)
     {
       delete[] matrix;
     }
   }
 
-std::ifstream& readMatrix(std::ifstream& file, int** matrix, size_t& rows, size_t& cols, bool isfixedsize, int* fixed_buffer)
+  std::ifstream& readMatrix(std::ifstream& file, int** matrix, size_t& rows, size_t& cols, bool isFixedSize, int* fixedBuffer)
   {
     if (!(file >> rows >> cols))
     {
@@ -63,13 +62,13 @@ std::ifstream& readMatrix(std::ifstream& file, int** matrix, size_t& rows, size_
       return file;
     }
 
-    if (isfixedsize && (cols > 0 && rows > Max_size / cols))
+    if (isFixedSize && (cols > 0 && rows > maxSize / cols))
     {
       *matrix = nullptr;
       return file;
     }
 
-    *matrix = makeMatrix(rows, cols, isfixedsize, fixed_buffer);
+    *matrix = makeMatrix(rows, cols, isFixedSize, fixedBuffer);
     if (!*matrix)
     {
       return file;
@@ -77,7 +76,8 @@ std::ifstream& readMatrix(std::ifstream& file, int** matrix, size_t& rows, size_
 
     if (!readMatrixElements(file, *matrix, rows, cols))
     {
-      if (!isfixedsize) {
+      if (!isFixedSize)
+      {
         delete[] *matrix;
       }
       *matrix = nullptr;
@@ -94,15 +94,15 @@ std::ifstream& readMatrix(std::ifstream& file, int** matrix, size_t& rows, size_
     size_t count = 0;
     for (size_t j = 0; j < cols; j++)
     {
-      bool is_dublics = false;
+      bool isDublics = false;
       for (size_t i = 0; i < rows - 1; i++)
       {
         if (matrix[i * cols + j] == matrix[(i + 1) * cols + j])
         {
-          is_dublics = true;
+          isDublics = true;
         }
       }
-      if (!is_dublics)
+      if (!isDublics)
       {
         count++;
       }
@@ -119,15 +119,15 @@ std::ifstream& readMatrix(std::ifstream& file, int** matrix, size_t& rows, size_
     size_t count = 0;
     for (size_t shift = 1; shift < cols; shift++)
     {
-      bool has_zero = false;
+      bool hasZero = false;
       for (size_t i = 0; i < rows && i + shift < cols; i++)
       {
         if (matrix[i * cols + (i + shift)] == 0)
         {
-          has_zero = true;
+          hasZero = true;
         }
       }
-      if (!has_zero)
+      if (!hasZero)
       {
         count++;
       }
@@ -135,15 +135,15 @@ std::ifstream& readMatrix(std::ifstream& file, int** matrix, size_t& rows, size_
 
     for (size_t shift = 1; shift < rows; shift++)
     {
-      bool has_zero = false;
+      bool hasZero = false;
       for (size_t i = 0; i < cols && i + shift < rows; i++)
       {
         if (matrix[(i + shift) * cols + i] == 0)
         {
-          has_zero = true;
+          hasZero = true;
         }
       }
-      if (!has_zero)
+      if (!hasZero)
       {
         count++;
       }
@@ -165,16 +165,16 @@ int main(int argc, char* argv[])
     std::cerr << "Mode must be 1 or 2\n";
     return 1;
   }
-  bool isfixedsize = (mode[0] == '1');
+  bool isFixedSize = (mode[0] == '1');
   int* matrix = nullptr;
   size_t rows, cols;
-  int fixed_buffer[zhuravleva::Max_size];
+  int fixedBuffer[zhuravleva::maxSize];
   std::ifstream file_input(argv[2]);
   if (!file_input) {
     std::cerr << "Error: Cannot open input file.\n";
     return 1;
   }
-  zhuravleva::readMatrix(file_input, &matrix, rows, cols, isfixedsize, fixed_buffer);
+  zhuravleva::readMatrix(file_input, &matrix, rows, cols, isFixedSize, fixedBuffer);
   if (!file_input || matrix == nullptr) {
     std::cerr << "Error: Invalid matrix data or read error.\n";
     return 2;
@@ -184,12 +184,12 @@ int main(int argc, char* argv[])
   std::ofstream file_output(argv[3]);
   if (!file_output) {
     std::cerr << "Error: Cannot open output file.\n";
-    zhuravleva::freeMatrix(matrix, isfixedsize);
+    zhuravleva::freeMatrix(matrix, isFixedSize);
     return 1;
   }
   file_output << resultForColsNoDublicats << " ";
   file_output << resultForDiagonalsNoZero << "\n";
-  zhuravleva::freeMatrix(matrix, isfixedsize);
+  zhuravleva::freeMatrix(matrix, isFixedSize);
   matrix = nullptr;
   return 0;
 }
