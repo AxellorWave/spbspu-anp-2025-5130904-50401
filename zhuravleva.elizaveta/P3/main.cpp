@@ -175,7 +175,7 @@ int main(int argc, char* argv[])
     return 1;
   }
   zhuravleva::readMatrix(file_input, &matrix, rows, cols, isFixedSize, fixedBuffer);
-  if (!file_input || matrix == nullptr) {
+  if (!file_input) {
     std::cerr << "Error: Invalid matrix data or read error.\n";
     return 2;
   }
