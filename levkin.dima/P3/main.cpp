@@ -6,10 +6,9 @@
 
 enum MemoryType { STATIC_MEMORY = 1, DYNAMIC_MEMORY };
 
-static const int MAX_MATRIX_SIZE = 10000;
-static int static_buffer[MAX_MATRIX_SIZE];
 
-int* copy_matrix(int* arr, int r, int c) {
+
+int* copy_matrix(int const * arr, int r, int c) {
     int* copy = new int[r * c]();
     for (int i = 0; i < r * c; ++i) {
         copy[i] = arr[i];
@@ -18,6 +17,10 @@ int* copy_matrix(int* arr, int r, int c) {
 }
 
 int* create_buffer(MemoryType type, int size, bool* is_dynamic) {
+    const int MAX_MATRIX_SIZE = 10000;
+    static int static_buffer[MAX_MATRIX_SIZE];
+    
+
     if (type == DYNAMIC_MEMORY) {
         *is_dynamic = true;
         return new int[size]();
@@ -150,6 +153,8 @@ int main(int argc, char** argv) {
         std::cerr << "1 = static\n2 = dynamic\n";
         return 1;
     }
+     
+    
     MemoryType memory_type = (mode[0] == '1') ? STATIC_MEMORY : DYNAMIC_MEMORY;
     int rows = 0, cols = 0;
     int* buffer = nullptr;
