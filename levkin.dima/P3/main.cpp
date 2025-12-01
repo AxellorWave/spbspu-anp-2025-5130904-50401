@@ -62,7 +62,7 @@ void read_matrix_data(const char* filename, int* buffer, int rows, int cols) {
     file_stream >> rows >> cols;
     for (int i = 0; i < total; ++i) {
         if (!(file_stream >> buffer[i])) {
-            throw std::runtime_error("failed to read matrix element");
+            throw std::logic_error("failed to read matrix element");
         }
     }
 }
