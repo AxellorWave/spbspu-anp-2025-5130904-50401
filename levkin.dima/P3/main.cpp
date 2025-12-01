@@ -1,9 +1,7 @@
-#include <algorithm>
 #include <cstddef>
 #include <exception>
 #include <fstream>
 #include <iostream>
-#include <stdexcept>
 
 enum MemoryType { STATIC_MEMORY = 1, DYNAMIC_MEMORY };
 
@@ -37,30 +35,41 @@ void clear_buffer(int *buffer, bool is_dynamic) {
   }
   buffer = nullptr;
 }
-
-int *init_matrix(const char *filename, MemoryType type, size_t &rows,
-                 size_t &cols, int **buffer, bool &is_dynamic) {
-  std::ifstream file_stream(filename);
-  if (!file_stream) {
-    throw std::runtime_error("cant open input file");
-  }
-  file_stream >> rows >> cols;
-  if (file_stream.fail()) {
-    throw std::runtime_error("file is wrong");
-  }
-  if (rows == 0 || cols == 0) {
-    throw std::length_error("bad dimensions");
-  }
-  size_t total = rows * cols;
-  *buffer = create_buffer(type, total, is_dynamic);
-  for (size_t i = 0; i < total; ++i) {
-    if (!(file_stream >> (*buffer)[i])) {
-      clear_buffer(*buffer, is_dynamic);
-      throw std::runtime_error("failed to read matrix element");
+void read_matrix_dimensions(const char* filename, size_t & rows, size_t & cols) {
+    std::ifstream file_stream(filename);
+    if (!file_stream) {
+        throw std::runtime_error("cannot open input file");
     }
-  }
-  return *buffer;
+    file_stream >> rows >> cols;
+    if (file_stream.fail() || rows == 0 || cols == 0) {
+        throw std::runtime_error("invalid matrix dimensions");
+    }
 }
+int* allocate_matrix(MemoryType type, int rows, int cols, bool & is_dynamic) {
+    int total = rows * cols;
+    return create_buffer(type, total, is_dynamic);
+}
+void read_matrix_data(const char* filename, int* buffer, int rows, int cols) {
+    std::ifstream file_stream(filename);
+    if (!file_stream) {
+        throw std::runtime_error("cannot open input file");
+    }
+    int total = rows * cols;
+    file_stream >> rows >> cols;
+    for (int i = 0; i < total; ++i) {
+        if (!(file_stream >> buffer[i])) {
+            throw std::runtime_error("failed to read matrix element");
+        }
+    }
+}
+
+int* init_matrix(const char* filename, MemoryType type, size_t& rows, size_t& cols, int** buffer, bool& is_dynamic) {
+    read_matrix_dimensions(filename, rows, cols);
+    *buffer = allocate_matrix(type, rows, cols, is_dynamic);
+    read_matrix_data(filename, *buffer, rows, cols);
+    return *buffer;
+}
+
 
 int *lft_bot_ctn(int const *buffer, size_t rows, size_t cols) {
   int *arr = copy_matrix(buffer, rows, cols);
@@ -158,7 +167,7 @@ size_t num_col_lsr(int const *buffer, size_t rows, size_t cols) {
 }
 
 void write_result(const char *filename, size_t rows, size_t cols, int *result,
-                  size_t best_col) {
+    size_t best_col) {
   std::ofstream output_stream(filename);
   if (!output_stream.is_open()) {
     throw std::runtime_error("cant open output file");
@@ -194,9 +203,9 @@ int main(int argc, char **argv) {
     delete[] result;
     clear_buffer(buffer, is_dynamic);
     return 0;
-  } catch (std::length_error &e) {
+  } catch (const std::length_error &e) {
     return 0;
-  } catch (std::exception &e) {
+  } catch (const std::exception &e) {
     std::cerr << "unknown error: " << e.what() << "\n";
     clear_buffer(buffer, is_dynamic);
     return 1;
