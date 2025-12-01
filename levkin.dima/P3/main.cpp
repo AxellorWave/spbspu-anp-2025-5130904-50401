@@ -43,7 +43,7 @@ void read_matrix_dimensions(const char* filename, size_t & rows, size_t & cols) 
     }
     file_stream >> rows >> cols;
     if (file_stream.fail() || rows == 0 || cols == 0) {
-        throw std::runtime_error("invalid matrix dimensions");
+        throw std::length_error("invalid matrix dimensions");
     }
 }
 int* allocate_matrix(MemoryType type, int rows, int cols, bool & is_dynamic) {
