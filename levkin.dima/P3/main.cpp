@@ -42,7 +42,10 @@ void read_matrix_dimensions(const char* filename, size_t & rows, size_t & cols) 
         throw std::runtime_error("cannot open input file");
     }
     file_stream >> rows >> cols;
-    if (file_stream.fail() || rows == 0 || cols == 0) {
+    if (file_stream.fail() ) {
+        throw std::range_error("something wrong with a file");
+    }
+    if (rows == 0 || cols == 0) {
         throw std::length_error("invalid matrix dimensions");
     }
 }
