@@ -2,6 +2,7 @@
 #include <exception>
 #include <fstream>
 #include <iostream>
+#include <stdexcept>
 
 enum MemoryType { STATIC_MEMORY = 1, DYNAMIC_MEMORY };
 
@@ -205,6 +206,8 @@ int main(int argc, char **argv) {
     return 0;
   } catch (const std::length_error &e) {
     return 0;
+  } catch (const std::runtime_error &e) {
+    return 1;
   } catch (const std::exception &e) {
     std::cerr << "unknown error: " << e.what() << "\n";
     clear_buffer(buffer, is_dynamic);
