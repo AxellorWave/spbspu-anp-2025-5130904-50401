@@ -15,47 +15,47 @@ int *copy_matrix(int const *arr, size_t r, size_t c) {
   return copy;
 }
 
-int *create_buffer(MemoryType type, size_t size, bool *is_dynamic) {
+int *create_buffer(MemoryType type, size_t size, bool &is_dynamic) {
   const size_t MAX_MATRIX_SIZE = 10000;
-  static int static_buffer[MAX_MATRIX_SIZE];
 
   if (type == DYNAMIC_MEMORY) {
-    *is_dynamic = true;
+    is_dynamic = true;
     return new int[size]();
   } else {
     if (size > MAX_MATRIX_SIZE) {
       throw std::bad_alloc();
     }
-    *is_dynamic = false;
+    static int static_buffer[MAX_MATRIX_SIZE];
+    is_dynamic = false;
     return static_buffer;
   }
 }
 
-void clear_buffer(int *&buffer, bool is_dynamic) {
+void clear_buffer(int *buffer, bool is_dynamic) {
   if (is_dynamic && buffer) {
     delete[] buffer;
   }
   buffer = nullptr;
 }
 
-int *init_matrix(const char *filename, MemoryType type, size_t *rows,
-                 size_t *cols, int **buffer, bool *is_dynamic) {
+int *init_matrix(const char *filename, MemoryType type, size_t &rows,
+                 size_t &cols, int **buffer, bool &is_dynamic) {
   std::ifstream file_stream(filename);
   if (!file_stream) {
     throw std::runtime_error("cant open input file");
   }
-  file_stream >> *rows >> *cols;
+  file_stream >> rows >> cols;
   if (file_stream.fail()) {
     throw std::runtime_error("file is wrong");
   }
-  if (*rows == 0 || *cols == 0) {
+  if (rows == 0 || cols == 0) {
     throw std::length_error("bad dimensions");
   }
-  size_t total = *rows * *cols;
+  size_t total = rows * cols;
   *buffer = create_buffer(type, total, is_dynamic);
   for (size_t i = 0; i < total; ++i) {
     if (!(file_stream >> (*buffer)[i])) {
-      clear_buffer(*buffer, *is_dynamic);
+      clear_buffer(*buffer, is_dynamic);
       throw std::runtime_error("failed to read matrix element");
     }
   }
@@ -187,7 +187,7 @@ int main(int argc, char **argv) {
   int *buffer = nullptr;
   bool is_dynamic = false;
   try {
-    init_matrix(argv[2], memory_type, &rows, &cols, &buffer, &is_dynamic);
+    init_matrix(argv[2], memory_type, rows, cols, &buffer, is_dynamic);
     int *result = lft_bot_ctn(buffer, rows, cols);
     size_t best_col = num_col_lsr(buffer, rows, cols);
     write_result(argv[3], rows, cols, result, best_col);
