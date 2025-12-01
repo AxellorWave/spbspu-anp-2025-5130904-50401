@@ -6,7 +6,8 @@
 
 enum MemoryType { STATIC_MEMORY = 1, DYNAMIC_MEMORY };
 
-int *copy_matrix(int const *arr, size_t r, size_t c) {
+int *copy_matrix(int const *arr, size_t r, size_t c)
+{
   int *copy = new int[r * c]();
   for (size_t i = 0; i < r * c; ++i) {
     copy[i] = arr[i];
@@ -14,7 +15,8 @@ int *copy_matrix(int const *arr, size_t r, size_t c) {
   return copy;
 }
 
-int *create_buffer(MemoryType type, size_t size, bool &is_dynamic) {
+int *create_buffer(MemoryType type, size_t size, bool &is_dynamic)
+{
   const size_t MAX_MATRIX_SIZE = 10000;
 
   if (type == DYNAMIC_MEMORY) {
@@ -30,52 +32,57 @@ int *create_buffer(MemoryType type, size_t size, bool &is_dynamic) {
   }
 }
 
-void clear_buffer(int *buffer, bool is_dynamic) {
+void clear_buffer(int *buffer, bool is_dynamic)
+{
   if (is_dynamic && buffer) {
     delete[] buffer;
   }
   buffer = nullptr;
 }
-void read_matrix_dimensions(const char* filename, size_t & rows, size_t & cols) {
-    std::ifstream file_stream(filename);
-    if (!file_stream) {
-        throw std::runtime_error("cannot open input file");
-    }
-    file_stream >> rows >> cols;
-    if (file_stream.fail() ) {
-        throw std::range_error("something wrong with a file");
-    }
-    if (rows == 0 || cols == 0) {
-        throw std::length_error("invalid matrix dimensions");
-    }
+void read_matrix_dimensions(const char *filename, size_t &rows, size_t &cols)
+{
+  std::ifstream file_stream(filename);
+  if (!file_stream) {
+    throw std::runtime_error("cannot open input file");
+  }
+  file_stream >> rows >> cols;
+  if (file_stream.fail()) {
+    throw std::range_error("something wrong with a file");
+  }
+  if (rows == 0 || cols == 0) {
+    throw std::length_error("invalid matrix dimensions");
+  }
 }
-int* allocate_matrix(MemoryType type, int rows, int cols, bool & is_dynamic) {
-    int total = rows * cols;
-    return create_buffer(type, total, is_dynamic);
+int *allocate_matrix(MemoryType type, int rows, int cols, bool &is_dynamic)
+{
+  int total = rows * cols;
+  return create_buffer(type, total, is_dynamic);
 }
-void read_matrix_data(const char* filename, int* buffer, int rows, int cols) {
-    std::ifstream file_stream(filename);
-    if (!file_stream) {
-        throw std::runtime_error("cannot open input file");
+void read_matrix_data(const char *filename, int *buffer, int rows, int cols)
+{
+  std::ifstream file_stream(filename);
+  if (!file_stream) {
+    throw std::runtime_error("cannot open input file");
+  }
+  int total = rows * cols;
+  file_stream >> rows >> cols;
+  for (int i = 0; i < total; ++i) {
+    if (!(file_stream >> buffer[i])) {
+      throw std::logic_error("failed to read matrix element");
     }
-    int total = rows * cols;
-    file_stream >> rows >> cols;
-    for (int i = 0; i < total; ++i) {
-        if (!(file_stream >> buffer[i])) {
-            throw std::logic_error("failed to read matrix element");
-        }
-    }
-}
-
-int* init_matrix(const char* filename, MemoryType type, size_t& rows, size_t& cols, int** buffer, bool& is_dynamic) {
-    read_matrix_dimensions(filename, rows, cols);
-    *buffer = allocate_matrix(type, rows, cols, is_dynamic);
-    read_matrix_data(filename, *buffer, rows, cols);
-    return *buffer;
+  }
 }
 
+int *init_matrix(const char *filename, MemoryType type, size_t &rows, size_t &cols, int **buffer, bool &is_dynamic)
+{
+  read_matrix_dimensions(filename, rows, cols);
+  *buffer = allocate_matrix(type, rows, cols, is_dynamic);
+  read_matrix_data(filename, *buffer, rows, cols);
+  return *buffer;
+}
 
-int *lft_bot_ctn(int const *buffer, size_t rows, size_t cols) {
+int *lft_bot_ctn(int const *buffer, size_t rows, size_t cols)
+{
   int *arr = copy_matrix(buffer, rows, cols);
   size_t border_padding[4] = {0, 0, 0, 1};
   size_t x = 0;
@@ -143,7 +150,8 @@ int *lft_bot_ctn(int const *buffer, size_t rows, size_t cols) {
   return arr;
 }
 
-size_t num_col_lsr(int const *buffer, size_t rows, size_t cols) {
+size_t num_col_lsr(int const *buffer, size_t rows, size_t cols)
+{
   if (!buffer || rows == 0 || cols == 0) {
     return 0;
   }
@@ -170,8 +178,8 @@ size_t num_col_lsr(int const *buffer, size_t rows, size_t cols) {
   return best_col;
 }
 
-void write_result(const char *filename, size_t rows, size_t cols, int *result,
-    size_t best_col) {
+void write_result(const char *filename, size_t rows, size_t cols, int *result, size_t best_col)
+{
   std::ofstream output_stream(filename);
   if (!output_stream.is_open()) {
     throw std::runtime_error("cant open output file");
@@ -184,7 +192,8 @@ void write_result(const char *filename, size_t rows, size_t cols, int *result,
   output_stream.close();
 }
 
-int main(int argc, char **argv) {
+int main(int argc, char **argv)
+{
   if (argc != 4) {
     std::cerr << "arg amount is wrong\n";
     return 1;
