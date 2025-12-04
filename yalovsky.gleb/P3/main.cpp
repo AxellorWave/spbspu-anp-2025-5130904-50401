@@ -197,15 +197,15 @@ int main(int argc, char** argv)
 
   if (mode == 1)
   {
-    int static_matrix[MAX_STATIC_SIZE];
-    if (!yalovsky::read_matrix(input, static_matrix, rows, cols))
+    int fixed_matix[MAX_STATIC_SIZE];
+    if (!yalovsky::read_matrix(input, fixed_matix, rows, cols))
     {
       std::cerr << "Invalid input - invalid matrix data\n";
       return 2;
     }
 
-    int static_copy[MAX_STATIC_SIZE];
-    yalovsky::process_matrix(static_matrix, static_copy, rows, cols, output);
+    int fixed_copy[MAX_STATIC_SIZE];
+    yalovsky::process_matrix(fixed_matix, fixed_copy, rows, cols, output);
   }
   else
   {
