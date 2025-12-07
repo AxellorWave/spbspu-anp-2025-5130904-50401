@@ -69,5 +69,22 @@ void zharov::Rectangle::scale(double k)
   height_ *= k;
 }
 
+void scaleByPoint(zharov::Shape * shapes, size_t size, zharov::point_t p, double k)
+{
+  for (size_t i = 0; i < size; ++i) {
+    zharov::point_t pos = shapes[i].getFrameRect().pos;
+    shapes[i].move(p);
+    shapes[i].scale(k);
+    double dx = k * (pos.x - p.x);
+    double dy = k * (pos.y - p.y);
+    shapes[i].move(dx, dy);
+  }
+}
+
+zharov::rectangle_t getFrameRectAll(zharov::Shape * shapes, size_t size)
+{
+
+}
+
 int main()
 {}
