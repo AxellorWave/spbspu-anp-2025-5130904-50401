@@ -4,14 +4,33 @@
 #include <cctype>
 
 namespace malashenko {
-  char * createStr(size_t size) {
-    char * str  = nullptr;
-    str = new char[size];
+  char * createStr(size_t size)
+  {
+    char * str = nullptr;
+    try {
+      str = new char[size];
+    } catch (const std::bad_alloc & e) {
+      std::cerr << "bad alloc\n";
+      return nullptr;
+    }
     return str;
   }
 
-  char * updateStr(char * oldStr, size_t oldSize) {
+  size_t strLen(const char * str) {
+    size_t l = 0;
+    while (str[l] != '\0') {
+      l++;
+    }
+    return l;
+  }
+
+  char * updateStr(char * oldStr, size_t oldSize)
+  {
     char * newStr = createStr(oldSize * 2);
+    if (!newStr) {
+      delete[] oldStr;
+      return nullptr;
+    }
     for (size_t i = 0; i < oldSize; ++i) {
       newStr[i] = oldStr[i];
     }
@@ -19,31 +38,42 @@ namespace malashenko {
     return newStr;
   }
 
-  std::istream & getLine(std::istream & in, char ** str, size_t & size) {
+  char * getLine(std::istream & in)
+  {
     bool is_skipws = in.flags() & std::ios_base::skipws;
     if (is_skipws) {
       in >> std::noskipws;
     }
 
     size_t i = 0;
+    size_t size = 8;
     char sym = 0;
+    char * str = createStr(size);
+    if (!str) {
+      return nullptr;
+    }
 
     while (in >> sym && sym != '\n') {
       if (i == size - 1) {
-        *str = updateStr(*str, size);
+        str = updateStr(str, size);
+        if (!str) {
+          return nullptr;
+        }
         size *= 2;
       }
-      (*str)[i++] = sym;
+      str[i++] = sym;
     }
-    (*str)[i] = '\0';
-    return in;
+    str[i++] = '\0';
 
     if (is_skipws) {
       in >> std::skipws;
     }
+
+    return str;
   }
 
-  size_t repDgt(char * str, size_t size) {
+  size_t repDgt(char * str, size_t size)
+  {
     int nums[10] = {};
     size_t numSize = 0;
 
@@ -63,7 +93,8 @@ namespace malashenko {
   }
 
 
-  char * rmvVol(char * str, size_t size) {
+  char * rmvVol(char * str, size_t size)
+  {
     char vols[] = "aeiouAEIOU";
     char * newStr = createStr(size);
     size_t strLen = 0;
@@ -84,24 +115,17 @@ namespace malashenko {
   }
 }
 
-int main() {
+int main()
+{
   namespace mal = malashenko;
 
-  size_t size = 8;
-  char * str = nullptr;
-  str = mal::createStr(size);
+  
+  char * str = mal::getLine(std::cin);
   if (!str) {
-    delete[] str;
-    std::cerr << "problem with memory allocation\n";
-    return 1;
-  }
-
-  if (!mal::getLine(std::cin, &str, size)) {
-    delete[] str;
     std::cerr << "problem with input\n";
     return 1;
   }
-
+  size_t size = mal::strLen(str);
   size_t isRepDgt = mal::repDgt(str, size);
   char * noVolStr = mal::rmvVol(str, size);
 
