@@ -136,6 +136,10 @@ int main()
   zharov::point_t p;
   std::cout << "Enter k, p.x, p.y: ";
   std::cin >> k >> p.x >> p.y;
+  if (!std::cin || k < 0) {
+    std::cerr << "Bad enter\n";
+    return 1;
+  }
 
   zharov::Shape * shapes[3] = {};
   try {
