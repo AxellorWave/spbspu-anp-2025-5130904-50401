@@ -134,8 +134,8 @@ int main()
 {
   double k = 0.0;
   zharov::point_t p;
-  std::cout << "Enter k, p.x, p.y: ";
-  std::cin >> k >> p.x >> p.y;
+  std::cout << "Ente p.x, p.y, k: ";
+  std::cin >> p.x >> p.y >> k;
   if (!std::cin || k < 0) {
     std::cerr << "Bad enter\n";
     return 1;
