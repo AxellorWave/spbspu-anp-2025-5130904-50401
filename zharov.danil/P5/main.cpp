@@ -9,7 +9,7 @@ namespace zharov {
     double width, height;
     point_t pos;
   };
-  
+
   struct Shape {
     virtual double getArea() const = 0;
     virtual rectangle_t getFrameRect() const = 0;
@@ -118,7 +118,7 @@ void zharov::printInfo(Shape * shapes[], size_t size)
 {
   for (size_t i = 0; i < size; ++i) {
     rectangle_t frame = shapes[i]->getFrameRect();
-    std::cout << i << " area: " << shapes[i]->getArea() << "\n"; 
+    std::cout << i << " area: " << shapes[i]->getArea() << "\n";
     std::cout <<"  frame width: " << frame.width << " ";
     std::cout <<"  frame hight: " << frame.height << " ";
     std::cout <<"  frame center: (" << frame.pos.x << ", " << frame.pos.y << ")\n";
