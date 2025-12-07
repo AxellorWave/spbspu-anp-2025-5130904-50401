@@ -101,7 +101,7 @@ zharov::rectangle_t zharov::getFrameRectAll(Shape * shapes[], size_t size)
   double max_x = frame.pos.x + frame.width / 2;
   double min_y = frame.pos.y - frame.height / 2;
   double max_y = frame.pos.y + frame.height / 2;
-  for (size_t i = 0; i < size; ++i) {
+  for (size_t i = 1; i < size; ++i) {
     frame = shapes[i]->getFrameRect();
     min_x = std::min(min_x, frame.pos.x - frame.width / 2);
     max_x = std::max(max_x, frame.pos.x + frame.width / 2);
