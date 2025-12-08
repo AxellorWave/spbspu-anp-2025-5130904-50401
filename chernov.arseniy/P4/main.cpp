@@ -31,10 +31,11 @@ char * chernov::getline(std::istream & input, size_t & size, const size_t step_s
   if (is_skipws) {
     input >> std::noskipws;
   }
-  size_t str_size = 0, i = 0;
+  size_t str_size = step_size, i = 0;
   char * str = nullptr;
+  chernov::resize(&str, 0, str_size);
   while (input) {
-    if (i == str_size) {
+    if (i >= str_size - 1) {
       chernov::resize(&str, str_size, str_size + step_size);
       str_size += step_size;
     }
@@ -46,7 +47,7 @@ char * chernov::getline(std::istream & input, size_t & size, const size_t step_s
     str[i] = ch;
     ++i;
   }
-  str[i] = 0;
+  str[i] = '\0';
   size = i;
   if (is_skipws) {
     input >> std::skipws;
@@ -80,7 +81,7 @@ void chernov::latRmv(char * new_str, const char * old_str, size_t old_size)
 
 int main()
 {
-  std::istream& input = std::cin;
+  std::istream & input = std::cin;
   size_t size = 0, step_size = 10;
   char * str = nullptr;
   try {
