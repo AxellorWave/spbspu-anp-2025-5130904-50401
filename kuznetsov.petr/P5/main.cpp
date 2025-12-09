@@ -29,7 +29,6 @@ namespace kuznetsov {
     void move(point_t p) override;
     void move(double dx, double dy) override;
     void scale(double m) override;
-
   };
 
 
@@ -42,4 +41,35 @@ int main()
 {
 }
 
+kuznetsov::Rectangle::Rectangle(double w, double h, point_t c):
+  width_(w),
+  height_(h),
+  center_(c)
+{}
 
+double kuznetsov::Rectangle::getArea() const
+{
+  return width_ * height_;
+}
+
+kuznetsov::rectangle_t kuznetsov::Rectangle::getFrameRect() const
+{
+  return {width_, height_, center_};
+}
+
+void kuznetsov::Rectangle::move(point_t p)
+{
+  center_ = p;
+}
+
+void kuznetsov::Rectangle::move(double dx, double dy)
+{
+  center_.x += dx;
+  center_.y += dy;
+}
+
+void kuznetsov::Rectangle::scale(double m)
+{
+  width_ *= m;
+  height_ *= m;
+}
