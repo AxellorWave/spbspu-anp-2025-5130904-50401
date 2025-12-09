@@ -30,9 +30,10 @@ namespace kuznetsov {
     void move(double dx, double dy) override;
     void scale(double m) override;
   };
-  void scaleByPnt(point_t p, double m);
-  double getSumArea();
-  rectangle_t getGenericFrame();
+
+  void scaleByPnt(Shape* f, point_t p, double m);
+  double getSumArea(Shape* array);
+  rectangle_t getGenericFrame(Shape* array);
 
 }
 
@@ -75,3 +76,4 @@ void kuznetsov::Rectangle::scale(double m)
   width_ *= m;
   height_ *= m;
 }
+
