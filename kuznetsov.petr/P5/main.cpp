@@ -30,7 +30,9 @@ namespace kuznetsov {
     void move(double dx, double dy) override;
     void scale(double m) override;
   };
-
+  void scaleByPnt(point_t p, double m);
+  double getSumArea();
+  rectangle_t getGenericFrame();
 
 }
 
