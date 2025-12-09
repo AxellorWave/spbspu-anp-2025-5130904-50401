@@ -31,9 +31,9 @@ namespace kuznetsov {
     void scale(double m) override;
   };
 
-  void scaleByPnt(Shape* f, point_t p, double m);
-  double getSumArea(Shape* array);
-  rectangle_t getGenericFrame(Shape* array);
+  void scaleByPnt(Shape** f, size_t size, point_t p, double m);
+  double getSumArea(Shape** array, size_t size);
+  rectangle_t getGenericFrame(Shape** array, size_t size);
 
 }
 
