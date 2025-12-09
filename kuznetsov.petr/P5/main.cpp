@@ -16,7 +16,22 @@ namespace kuznetsov {
     virtual void move(point_t p) = 0;
     virtual void move(double dx, double dy) = 0;
     virtual void scale(double m) = 0;
+    virtual ~Shape() = default;
   };
+
+  class Rectangle: Shape {
+    double width_, height_;
+    point_t center_;
+  public:
+    Rectangle(double w, double h, point_t c);
+    double getArea() const override;
+    rectangle_t getFrameRect() const override;
+    void move(point_t p) override;
+    void move(double dx, double dy) override;
+    void scale(double m) override;
+
+  };
+
 
 }
 
@@ -26,4 +41,5 @@ namespace kuznetsov {
 int main()
 {
 }
+
 
