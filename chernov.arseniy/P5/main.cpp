@@ -28,10 +28,25 @@ namespace chernov {
     double side_a, side_b;
     point_t center;
   };
+
+  void scaleByPoint(Shape ** shapes, size_t count, double k, point_t p);
 }
 
 int main()
 {}
+
+void chernov::scaleByPoint(Shape ** shapes, size_t count, double k, point_t p)
+{
+  for (size_t i = 0; i < count; ++i) {
+    Shape * shape = shapes[i];
+    point_t pos = shape->getFrameRect().pos;
+    shape->move(p);
+    double dx = k * (pos.x - p.x);
+    double dy = k * (pos.y - p.y);
+    shape->move(dx, dy);
+    shape->scale(k);
+  }
+}
 
 chernov::Rectangle::Rectangle(double a, double b, point_t o):
   side_a(a),
