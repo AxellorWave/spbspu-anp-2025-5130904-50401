@@ -11,6 +11,7 @@ namespace chernov {
   };
 
   struct Shape {
+    virtual ~Shape() = default;
     virtual double getArea() const = 0;
     virtual rectangle_t getFrameRect() const = 0;
     virtual void move(point_t p) = 0;
@@ -40,6 +41,7 @@ int main()
   using namespace chernov;
 
   std::ostream & output = std::cout;
+  int result = 0;
 
   const size_t count = 2;
   Shape * shapes[count];
@@ -53,9 +55,30 @@ int main()
 
   printShapesInfo(output, shapes, names, count);
 
-  scaleByPoint(shapes, count, 3, {1, 2});
+  output << "\n\nEnter x, y and k: ";
 
-  printShapesInfo(output, shapes, names, count);
+  double x = 0, y = 0, k = 0;
+  while (std::cin >> x >> y >> k) {
+    if (k <= 0) {
+      std::cerr << "k cannot be less than or equal to zero\n";
+      result = 1;
+      break;
+    }
+    scaleByPoint(shapes, count, k, {x, y});
+    output << "\n\n";
+    printShapesInfo(output, shapes, names, count);
+    output << "\n\nEnter x, y and k: ";
+  }
+
+  if (std::cin.fail() && !std::cin.eof()) {
+    std::cerr << "bad input\n";
+    result = 1;
+  }
+
+  for (size_t i = 0; i < count; ++i) {
+    delete shapes[i];
+  }
+  return result;
 }
 
 void chernov::scaleByPoint(Shape ** shapes, size_t count, double k, point_t p)
@@ -107,10 +130,10 @@ std::ostream & chernov::printShapesInfo(std::ostream & out, const Shape * const 
 {
   double total_area = 0;
   for (size_t i = 0; i < count; ++i) {
-    printShapeInfo(out, shapes[i], names[i]) << "\n\n";
+    printShapeInfo(out, shapes[i], names[i]) << "\n";
     total_area += shapes[i]->getArea();
   }
-  out << "Total area: " << total_area << "\n\n";
+  out << "Total area: " << total_area << "\n";
   rectangle_t frame = getTotalFrameRect(shapes, count);
   out << "Total frame rectangle:\n";
   out << "  width: " << frame.width << "\n";
