@@ -43,6 +43,18 @@ namespace kuznetsov {
     void scale(double m) override;
   };
 
+  class Square: public Shape {
+    double edge_;
+    point_t center_;
+  public:
+    Square(point_t c, double len);
+    double getArea() const override;
+    rectangle_t getFrameRect() const override;
+    void move(point_t p) override;
+    void move(double dx, double dy) override;
+    void scale(double m) override;
+  };
+
 
   void scaleByPnt(Shape** fs, size_t size, point_t p, double m);
   double getSumArea(Shape** array, size_t size);
@@ -191,4 +203,39 @@ void kuznetsov::Triangle::scale(double m)
 
   c_.x = center_.x + dpc.x * m;
   c_.y = center_.y + dpc.y * m;
+}
+
+kuznetsov::Square::Square(point_t c, double len):
+  center_(c),
+  edge_(len)
+{}
+
+double kuznetsov::Square::getArea() const
+{
+  return edge_ * edge_;
+}
+
+kuznetsov::rectangle_t kuznetsov::Square::getFrameRect() const
+{
+  rectangle_t frame;
+  frame.height = edge_;
+  frame.width = edge_;
+  frame.pos = center_;
+  return frame;
+}
+
+void kuznetsov::Square::move(point_t p)
+{
+  center_ = p;
+}
+
+void kuznetsov::Square::move(double dx, double dy)
+{
+  center_.x += dx;
+  center_.y += dy;
+}
+
+void kuznetsov::Square::scale(double m)
+{
+  edge_*= m;
 }
