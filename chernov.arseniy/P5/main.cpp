@@ -70,7 +70,7 @@ int main()
     output << "\n\nEnter x, y and k: ";
   }
 
-  if (std::cin.fail() && !std::cin.eof()) {
+  if (std::cin.fail()) {
     std::cerr << "bad input\n";
     result = 1;
   }
