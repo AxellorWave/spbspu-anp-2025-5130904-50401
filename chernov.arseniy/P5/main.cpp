@@ -50,7 +50,11 @@ int main()
 
   shapes[1] = new Rectangle(10, 2, {-10, 3});
   names[1] = "Rectangle 2";
-  
+
+  printShapesInfo(output, shapes, names, count);
+
+  scaleByPoint(shapes, count, 3, {1, 2});
+
   printShapesInfo(output, shapes, names, count);
 }
 
