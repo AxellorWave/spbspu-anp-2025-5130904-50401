@@ -19,7 +19,7 @@ namespace kuznetsov {
     virtual ~Shape() = default;
   };
 
-  class Rectangle: Shape {
+  class Rectangle: public Shape {
     double width_, height_;
     point_t center_;
   public:
@@ -31,7 +31,7 @@ namespace kuznetsov {
     void scale(double m) override;
   };
 
-  class Triangle: Shape {
+  class Triangle: public Shape {
     point_t a_, b_, c_;
     point_t center_;
   public:
@@ -49,9 +49,6 @@ namespace kuznetsov {
   rectangle_t getGenericFrame(Shape** array, size_t size);
 
 }
-
-
-
 
 int main()
 {
@@ -135,4 +132,63 @@ kuznetsov::rectangle_t kuznetsov::getGenericFrame(Shape** array, size_t size)
   return genericFrame;
 }
 
+kuznetsov::Triangle::Triangle(point_t a, point_t b, point_t c):
+  a_(a),
+  b_(b),
+  c_(c)
+{
+  double x = (a.x + b.x + c.x) / 2;
+  double y = (a.y + b.y + c.y) / 2;
+  center_ = {x, y};
+}
 
+double kuznetsov::Triangle::getArea() const
+{
+  double s = a_.x * (b_.y - c_.y);
+  s = b_.x * (c_.y - a_.y) + s;
+  s = c_.x * (a_.y - b_.y) + s;
+  s = 0.5 * std::abs(s);
+  return s;
+}
+
+kuznetsov::rectangle_t kuznetsov::Triangle::getFrameRect() const
+{
+  rectangle_t frame;
+  double maxX = std::max(a_.x, std::max(b_.x, c_.x));
+  double minX = std::min(a_.x, std::min(b_.x, c_.x));
+  double maxY = std::max(a_.y, std::max(b_.y, c_.y));
+  double minY = std::min(a_.y, std::min(b_.y, c_.y));
+  double cx = (maxX + minX) / 2;
+  double cy = (maxY + minY) / 2;
+  frame.height = maxY - minY;
+  frame.width = maxX - minX;
+  frame.pos = {cx, cy};
+  return frame;
+}
+
+void kuznetsov::Triangle::move(point_t p)
+{
+  center_ = p;
+}
+
+void kuznetsov::Triangle::move(double dx, double dy)
+{
+  center_.x += dx;
+  center_.y += dy;
+}
+
+void kuznetsov::Triangle::scale(double m)
+{
+  point_t dpa {center_.x - a_.x, center_.y - a_.y};
+  point_t dpb {center_.x - b_.x, center_.y - b_.y};
+  point_t dpc {center_.x - c_.x, center_.y - c_.y};
+
+  a_.x = center_.x + dpa.x * m;
+  a_.y = center_.y + dpa.y * m;
+
+  b_.x = center_.x + dpb.x * m;
+  b_.y = center_.y + dpb.y * m;
+
+  c_.x = center_.x + dpc.x * m;
+  c_.y = center_.y + dpc.y * m;
+}
