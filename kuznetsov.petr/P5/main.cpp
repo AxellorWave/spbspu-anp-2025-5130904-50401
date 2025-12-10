@@ -1,9 +1,21 @@
 #include <iostream>
+#include <stdexcept>
+#include <algorithm>
+#include <cmath>
 
 namespace kuznetsov {
   struct point_t {
     double x, y;
   };
+
+  bool operator==(const point_t& a, const point_t& b)
+  {
+    return a.x == b.x && a.y == b.y;
+  }
+  bool operator!=(const point_t& a, const point_t& b)
+  {
+    return !(a == b);
+  }
 
   struct rectangle_t {
     double width, height;
@@ -56,6 +68,7 @@ namespace kuznetsov {
 
 int main()
 {
+
 }
 
 kuznetsov::Rectangle::Rectangle(double w, double h, point_t c):
@@ -63,8 +76,8 @@ kuznetsov::Rectangle::Rectangle(double w, double h, point_t c):
   height_(h),
   center_(c)
 {
-  if (!w || !h) {
-    throw std::invalid_argument("Invalid size of rect");
+  if (w <= 0 || h <= 0) {
+    throw std::invalid_argument("Invalid size");
   }
 }
 
@@ -91,12 +104,21 @@ void kuznetsov::Rectangle::move(double dx, double dy)
 
 void kuznetsov::Rectangle::scale(double m)
 {
+  if (m <= 0) {
+    throw std::invalid_argument("Incorrect scale argument");
+  }
   width_ *= m;
   height_ *= m;
 }
 
 void kuznetsov::scaleByPnt(Shape** fs, size_t size, point_t p, double m)
 {
+  if (m <= 0) {
+    throw std::invalid_argument("Incorrect scale argument");
+  }
+  if (!size || fs == nullptr) {
+    throw std::invalid_argument("Empty array of shapes");
+  }
   for (size_t i = 0; i < size; ++i) {
     point_t c = fs[i]->getFrameRect().pos;
     double dx = (c.x - p.x) * (m - 1);
@@ -108,6 +130,9 @@ void kuznetsov::scaleByPnt(Shape** fs, size_t size, point_t p, double m)
 
 double kuznetsov::getSumArea(Shape** array, size_t size)
 {
+  if (!size || array == nullptr) {
+    throw std::invalid_argument("Empty array of shapes");
+  }
   double finalArea = 0.0;
   for (size_t i = 0; i < size; ++i) {
     finalArea += array[i]->getArea();
@@ -117,7 +142,10 @@ double kuznetsov::getSumArea(Shape** array, size_t size)
 
 kuznetsov::rectangle_t kuznetsov::getGenericFrame(Shape** array, size_t size)
 {
-  rectangle_t genericFrame;
+  if (!size || array == nullptr) {
+    throw std::invalid_argument("Empty array of shapes");
+  }
+  rectangle_t genericFrame{};
   rectangle_t fr = array[0]->getFrameRect();
   double maxY = fr.pos.y + fr.height / 2;
   double minY = fr.pos.y - fr.height / 2;
@@ -145,8 +173,16 @@ kuznetsov::Triangle::Triangle(point_t a, point_t b, point_t c):
   b_(b),
   c_(c)
 {
-  double x = (a.x + b.x + c.x) / 3;
-  double y = (a.y + b.y + c.y) / 3;
+  bool incorrect = a_ == b_;
+  incorrect = incorrect || a_ == c_;
+  incorrect = incorrect || c_ == b_;
+  bool oneLine = (b_.y - a_.y) * (c_.x - a_.x) == (c_.y - a_.y) * (b_.x - a_.x);
+  incorrect = incorrect || oneLine;
+  if (incorrect) {
+    throw std::invalid_argument("Invalid vertexes, it's line");
+  }
+  double x = (a_.x + b_.x + c_.x) / 3;
+  double y = (a_.y + b_.y + c_.y) / 3;
   center_ = {x, y};
 }
 
@@ -176,20 +212,34 @@ kuznetsov::rectangle_t kuznetsov::Triangle::getFrameRect() const
 
 void kuznetsov::Triangle::move(point_t p)
 {
-  center_ = p;
+  double dx = p.x - center_.x;
+  double dy = p.y - center_.y;
+  move(dx, dy);
 }
 
 void kuznetsov::Triangle::move(double dx, double dy)
 {
+  a_.x += dx;
+  a_.y += dy;
+
+  b_.x += dx;
+  b_.y += dy;
+
+  c_.x += dx;
+  c_.y += dy;
+
   center_.x += dx;
   center_.y += dy;
 }
 
 void kuznetsov::Triangle::scale(double m)
 {
-  point_t dpa {center_.x - a_.x, center_.y - a_.y};
-  point_t dpb {center_.x - b_.x, center_.y - b_.y};
-  point_t dpc {center_.x - c_.x, center_.y - c_.y};
+  if (m <= 0) {
+    throw std::invalid_argument("Incorrect scale argument");
+  }
+  point_t dpa {a_.x - center_.x , a_.y - center_.y};
+  point_t dpb {b_.x - center_.x , b_.y - center_.y};
+  point_t dpc {c_.x - center_.x , c_.y - center_.y};
 
   a_.x = center_.x + dpa.x * m;
   a_.y = center_.y + dpa.y * m;
