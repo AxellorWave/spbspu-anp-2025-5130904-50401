@@ -118,16 +118,20 @@ void zharov::printInfo(Shape * shapes[], size_t size)
 {
   for (size_t i = 0; i < size; ++i) {
     rectangle_t frame = shapes[i]->getFrameRect();
-    std::cout << i << " area: " << shapes[i]->getArea() << "\n";
-    std::cout <<"  frame width: " << frame.width << " ";
-    std::cout <<"  frame hight: " << frame.height << " ";
-    std::cout <<"  frame center: (" << frame.pos.x << ", " << frame.pos.y << ")\n";
+    std::cout << "Shape №"<< i + 1 << "\n"; 
+    std::cout << "  Area: " << shapes[i]->getArea() << "\n";
+    std::cout << "  Frame:\n";
+    std::cout << "    Width: " << frame.width << "\n";
+    std::cout << "    Hight: " << frame.height << "\n";
+    std::cout << "    Center: (" << frame.pos.x << ", " << frame.pos.y << ")\n";
   }
   rectangle_t frame_all = getFrameRectAll(shapes, size);
-  std::cout << "All area: " << getAreaAll(shapes, size) << "\n";
-  std::cout << "All frame width: " << frame_all.width << " ";
-  std::cout << "All frame hight: " << frame_all.height << " ";
-  std::cout << "All frame center: (" << frame_all.pos.x << ", " << frame_all.pos.y << ")\n";
+  std::cout << "All shapes:\n";
+  std::cout << "  Area: " << getAreaAll(shapes, size) << "\n";
+  std::cout << "  Frame:\n";
+  std::cout << "    Width: " << frame_all.width << "\n";
+  std::cout << "    Hight: " << frame_all.height << "\n";
+  std::cout << "    Center: (" << frame_all.pos.x << ", " << frame_all.pos.y << ")\n";
 }
 
 int main()
