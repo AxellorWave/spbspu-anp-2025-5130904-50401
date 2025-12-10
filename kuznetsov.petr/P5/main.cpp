@@ -149,8 +149,8 @@ kuznetsov::Triangle::Triangle(point_t a, point_t b, point_t c):
   b_(b),
   c_(c)
 {
-  double x = (a.x + b.x + c.x) / 2;
-  double y = (a.y + b.y + c.y) / 2;
+  double x = (a.x + b.x + c.x) / 3;
+  double y = (a.y + b.y + c.y) / 3;
   center_ = {x, y};
 }
 
