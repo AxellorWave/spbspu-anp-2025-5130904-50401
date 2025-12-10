@@ -30,6 +30,7 @@ namespace chernov {
   };
 
   void scaleByPoint(Shape ** shapes, size_t count, double k, point_t p);
+  rectangle_t getTotalFrameRect(const Shape * const * shapes, size_t count);
   std::ostream & printShapeInfo(std::ostream & out, const Shape * shape, const char * name);
   std::ostream & printShapesInfo(std::ostream & out, const Shape * const * shapes, const char ** names, size_t count);
 }
@@ -40,12 +41,15 @@ int main()
 
   std::ostream & output = std::cout;
 
-  const size_t count = 1;
+  const size_t count = 2;
   Shape * shapes[count];
   const char * names[count];
 
   shapes[0] = new Rectangle(5, 6, {1, 2});
-  names[0] = "Rectangle";
+  names[0] = "Rectangle 1";
+
+  shapes[1] = new Rectangle(10, 2, {-10, 3});
+  names[1] = "Rectangle 2";
   
   printShapesInfo(output, shapes, names, count);
 }
@@ -63,15 +67,35 @@ void chernov::scaleByPoint(Shape ** shapes, size_t count, double k, point_t p)
   }
 }
 
+chernov::rectangle_t chernov::getTotalFrameRect(const Shape * const * shapes, size_t count)
+{
+  rectangle_t frame = shapes[0]->getFrameRect();
+  double min_x = frame.pos.x - frame.width / 2;
+  double min_y = frame.pos.y - frame.height / 2;
+  double max_x = min_x + frame.width;
+  double max_y = min_y + frame.height;
+  for (size_t i = 1; i < count; ++i) {
+    frame = shapes[i]->getFrameRect();
+    min_x = std::min(min_x, frame.pos.x - frame.width / 2);
+    min_y = std::min(min_y, frame.pos.y - frame.height / 2);
+    max_x = std::max(max_x, frame.pos.x + frame.width / 2);
+    max_y = std::max(max_y, frame.pos.y + frame.height / 2);
+  }
+  double width = max_x - min_x;
+  double height = max_y - min_y;
+  point_t pos = {min_x + width / 2, min_y + height / 2};
+  return {width, height, pos};
+}
+
 std::ostream & chernov::printShapeInfo(std::ostream & out, const Shape * shape, const char * name)
 {
   out << name << ":\n";
   out << "  area: " << shape->getArea() << "\n";
-  rectangle_t frame_rect = shape->getFrameRect();
+  rectangle_t frame = shape->getFrameRect();
   out << "  frame rectangle:\n";
-  out << "    width: " << frame_rect.width << "\n";
-  out << "    height: " << frame_rect.height << "\n";
-  out << "    position: (" << frame_rect.pos.x << "; " << frame_rect.pos.y << ")\n";
+  out << "    width: " << frame.width << "\n";
+  out << "    height: " << frame.height << "\n";
+  out << "    position: (" << frame.pos.x << "; " << frame.pos.y << ")\n";
   return out;
 }
 
@@ -83,6 +107,11 @@ std::ostream & chernov::printShapesInfo(std::ostream & out, const Shape * const 
     total_area += shapes[i]->getArea();
   }
   out << "Total area: " << total_area << "\n\n";
+  rectangle_t frame = getTotalFrameRect(shapes, count);
+  out << "Total frame rectangle:\n";
+  out << "  width: " << frame.width << "\n";
+  out << "  height: " << frame.height << "\n";
+  out << "  position: (" << frame.pos.x << "; " << frame.pos.y << ")\n";
   return out;
 }
 
