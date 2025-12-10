@@ -54,6 +54,23 @@ rectangle_t Rectangle::getFrameRect() const
   return fr_rect;
 }
 
+void Rectangle::move(const point_t& p)
+{
+  pos_ = p;
+}
+
+void Rectangle::move(double dx, double dy)
+{
+  pos_.x += dx;
+  pos_.y += dy;
+}
+
+void Rectangle::scale(double k)
+{
+  width_ *= k;
+  height_ *= k;
+}
+
 int main()
 {
   return 0;
