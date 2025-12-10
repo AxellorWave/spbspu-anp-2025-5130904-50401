@@ -34,6 +34,10 @@ namespace zharov {
   struct Polygon: Shape {
     Polygon(point_t * points, size_t size);
     ~Polygon();
+    Polygon(const Polygon & polygon);
+    Polygon & operator=(const Polygon & polygon);
+    Polygon(Polygon && polygon);
+    Polygon & operator=(Polygon && polygon);
     double getArea() const override;
     rectangle_t getFrameRect() const override;
     void move(point_t p) override;
@@ -107,10 +111,52 @@ zharov::Polygon::~Polygon()
   delete[] points_;
 }
 
+zharov::Polygon::Polygon(const Polygon & polygon):
+  size_(polygon.size_),
+  pos_(polygon.pos_),
+  points_(new point_t[polygon.size_])
+{
+  for (size_t i = 0; i < size_; ++i) {
+    points_[i] = polygon.points_[i];
+  }
+}
+
+zharov::Polygon & zharov::Polygon::operator=(const Polygon & polygon)
+{
+  if (this != &polygon) {
+    delete[] points_;
+  }
+  pos_ = polygon.pos_;
+  size_ = polygon.size_;
+  points_ = new point_t[size_];
+  for (size_t i = 0; i < size_; ++i) {
+    points_[i] = polygon.points_[i];
+  }
+}
+
+zharov::Polygon::Polygon(Polygon && polygon):
+  size_(polygon.size_),
+  pos_(polygon.pos_),
+  points_(polygon.points_)
+{
+  polygon.points_ = nullptr;
+}
+
+zharov::Polygon & zharov::Polygon::operator=(Polygon && polygon)
+{
+  if (this != &polygon) {
+    delete[] points_;
+  }
+  pos_ = polygon.pos_;
+  size_ = polygon.size_;
+  points_ = polygon.points_;
+  polygon.points_ = nullptr;
+}
+
 double zharov::Polygon::getArea() const
 {
   double area = 0.0;
-  for (size_t i =0; i < size_; ++i) {
+  for (size_t i = 0; i < size_; ++i) {
     size_t j = (i + 1) % size_;
     area += points_[i].x * points_[j].y - points_[j].x * points_[i].y;
   }
