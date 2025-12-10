@@ -118,7 +118,7 @@ void zharov::printInfo(Shape * shapes[], size_t size)
 {
   for (size_t i = 0; i < size; ++i) {
     rectangle_t frame = shapes[i]->getFrameRect();
-    std::cout << "Shape №"<< i + 1 << "\n"; 
+    std::cout << "Shape №"<< i + 1 << "\n";
     std::cout << "  Area: " << shapes[i]->getArea() << "\n";
     std::cout << "  Frame:\n";
     std::cout << "    Width: " << frame.width << "\n";
