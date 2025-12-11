@@ -57,6 +57,7 @@ namespace zharov {
 }
 
 zharov::Rectangle::Rectangle(double width, double height, point_t pos):
+  Shape(),
   width_(width),
   height_(height),
   pos_(pos)
@@ -94,6 +95,7 @@ void zharov::Rectangle::scale(double k)
 }
 
 zharov::Polygon::Polygon(point_t * points, size_t size):
+  Shape(),
   size_(size)
 {
   if (size_ < 3) {
@@ -112,6 +114,7 @@ zharov::Polygon::~Polygon()
 }
 
 zharov::Polygon::Polygon(const Polygon & polygon):
+  Shape(),
   size_(polygon.size_),
   pos_(polygon.pos_),
   points_(new point_t[polygon.size_])
@@ -135,6 +138,7 @@ zharov::Polygon & zharov::Polygon::operator=(const Polygon & polygon)
 }
 
 zharov::Polygon::Polygon(Polygon && polygon):
+  Shape(),
   size_(polygon.size_),
   pos_(polygon.pos_),
   points_(polygon.points_)
