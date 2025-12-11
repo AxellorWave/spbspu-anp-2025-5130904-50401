@@ -121,6 +121,7 @@ zharov::Polygon::Polygon(point_t * points, size_t size):
   pos_(getCentroid(points, size))
 {
   if (size_ < 3) {
+    delete[] points_;
     throw std::invalid_argument("Not enough points");
   }
   points_ = new point_t[size_];
