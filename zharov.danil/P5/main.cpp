@@ -124,7 +124,6 @@ zharov::Polygon::Polygon(point_t * points, size_t size):
     delete[] points_;
     throw std::invalid_argument("Not enough points");
   }
-  points_ = new point_t[size_];
   for (size_t i = 0; i < size; ++i) {
     points_[i] = points[i];
   }
