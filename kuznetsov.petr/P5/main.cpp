@@ -76,8 +76,8 @@ int main()
 
   double m = 0.0;
   kuz::point_t p {};
-  std::cout << "Scale, x, y: ";
-  std::cin >> m >> p.x >> p.y;
+  std::cout << "x, y, scale: ";
+  std::cin >> p.x >> p.y >> m;
   if (!std::cin || m <= 0) {
     std::cerr << "Incorrect enter\n";
     return 1;
