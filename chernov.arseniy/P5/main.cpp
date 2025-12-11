@@ -208,7 +208,7 @@ chernov::Polygon::Polygon(point_t * points, size_t size):
   Shape(),
   verts(new point_t[size]),
   count(size),
-  center({0, 0})  
+  center({0, 0})
 {
   for (size_t i = 0; i < count; ++i) {
     verts[i] = points[i];
