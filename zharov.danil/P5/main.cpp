@@ -67,6 +67,8 @@ namespace zharov {
     point_t * points_;
   };
 
+  double getAreaUni(point_t * points, size_t size);
+  rectangle_t getFrameRectUni(point_t * points, size_t size);
   point_t getCentroid(point_t * points, size_t size);
   void scaleByPoint(Shape * shapes[], size_t size, point_t p, double k);
   double getAreaAll(Shape * shapes[], size_t size);
@@ -178,31 +180,12 @@ zharov::Polygon & zharov::Polygon::operator=(Polygon && polygon)
 
 double zharov::Polygon::getArea() const
 {
-  double area = 0.0;
-  for (size_t i = 0; i < size_; ++i) {
-    size_t j = (i + 1) % size_;
-    area += points_[i].x * points_[j].y - points_[j].x * points_[i].y;
-  }
-  return std::abs(area) / 2.0;
+  return getAreaUni(points_, size_);
 }
 
 zharov::rectangle_t zharov::Polygon::getFrameRect() const
 {
-  rectangle_t frame;
-  double min_x = points_[0].x;
-  double max_x = points_[0].x;
-  double min_y = points_[0].y;
-  double max_y = points_[0].y;
-  for (size_t i = 1; i < size_; ++i) {
-    min_x = std::min(min_x, points_[i].x);
-    max_x = std::max(max_x, points_[i].x);
-    min_y = std::min(min_y, points_[i].y);
-    max_y = std::max(max_y, points_[i].y);
-  }
-  frame.width = max_x - min_x;
-  frame.height = max_y - min_y;
-  frame.pos = {min_x + frame.width / 2, min_y + frame.height / 2};
-  return frame;
+  return getFrameRectUni(points_, size_);
 }
 
 void zharov::Polygon::move(double dx, double dy)
@@ -297,6 +280,45 @@ zharov::Concave & zharov::Concave::operator=(Concave && concave)
   pos_ = concave.pos_;
   points_ = concave.points_;
   concave.points_ = nullptr;
+}
+
+double zharov::Concave::getArea() const
+{
+  return getAreaUni(points_, 4);
+}
+
+double zharov::getAreaUni(point_t * points, size_t size)
+{
+  double area = 0.0;
+  for (size_t i = 0; i < size; ++i) {
+    size_t j = (i + 1) % size;
+    area += points[i].x * points[j].y - points[j].x * points[i].y;
+  }
+  return std::abs(area) / 2.0;
+}
+
+zharov::rectangle_t zharov::getFrameRectUni(point_t * points, size_t size)
+{
+  rectangle_t frame;
+  double min_x = points[0].x;
+  double max_x = points[0].x;
+  double min_y = points[0].y;
+  double max_y = points[0].y;
+  for (size_t i = 1; i < size; ++i) {
+    min_x = std::min(min_x, points[i].x);
+    max_x = std::max(max_x, points[i].x);
+    min_y = std::min(min_y, points[i].y);
+    max_y = std::max(max_y, points[i].y);
+  }
+  frame.width = max_x - min_x;
+  frame.height = max_y - min_y;
+  frame.pos = {min_x + frame.width / 2, min_y + frame.height / 2};
+  return frame;
+}
+
+zharov::rectangle_t zharov::Concave::getFrameRect() const
+{
+  return getFrameRectUni(points_, 4);
 }
 
 void zharov::scaleByPoint(Shape * shapes[], size_t size, point_t p, double k)
