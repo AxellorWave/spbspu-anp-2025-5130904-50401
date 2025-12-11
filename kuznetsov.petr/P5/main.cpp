@@ -97,10 +97,10 @@ int main()
 
   if (statusCode == 0) {
     std::cout << "Before:\n";
-    kuz::print(figs, 3);
-    kuz::scaleByPnt(figs, 3, p, m);
+    kuz::print(figs, size);
+    kuz::scaleByPnt(figs, size, p, m);
     std::cout << "After:\n";
-    kuz::print(figs, 3);
+    kuz::print(figs, size);
   }
 
   delete[] figs[0];
