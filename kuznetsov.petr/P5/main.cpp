@@ -57,18 +57,56 @@ namespace kuznetsov {
 
   class Square: public Rectangle {
   public:
-    Square(point_t c, double len);
+    Square(double len, point_t c);
   };
 
   void scaleByPnt(Shape** fs, size_t size, point_t p, double m);
   double getSumArea(Shape** array, size_t size);
   rectangle_t getGenericFrame(Shape** array, size_t size);
+  void print(Shape** fs, size_t s);
 
 }
 
 int main()
 {
+  namespace kuz = kuznetsov;
+  kuz::Shape* figs[3] {nullptr, nullptr, nullptr};
+  size_t size = 3;
+  int statusCode = 0;
 
+  double m = 0.0;
+  kuz::point_t p {};
+  std::cout << "Scale, x, y: ";
+  std::cin >> m >> p.x >> p.y;
+  if (!std::cin || m <= 0) {
+    std::cerr << "Incorrect enter\n";
+    return 1;
+  }
+
+  try {
+    figs[0] = new kuz::Rectangle(3.0, 5.0, {10, 3});
+    figs[1] = new kuz::Triangle({10, 1}, {12, 5}, {8, 3});
+    figs[2] = new kuz::Square(5, {10, 3});
+  } catch (const std::bad_alloc& e) {
+    std::cerr << e.what() << '\n';
+    statusCode = 1;
+  } catch (const std::invalid_argument& e) {
+    std::cerr << e.what() << '\n';
+    statusCode = 1;
+  }
+
+  if (statusCode == 0) {
+    std::cout << "Before:\n";
+    kuz::print(figs, 3);
+    kuz::scaleByPnt(figs, 3, p, m);
+    std::cout << "After:\n";
+    kuz::print(figs, 3);
+  }
+
+  delete[] figs[0];
+  delete[] figs[1];
+  delete[] figs[2];
+  return statusCode;
 }
 
 kuznetsov::Rectangle::Rectangle(double w, double h, point_t c):
@@ -104,18 +142,12 @@ void kuznetsov::Rectangle::move(double dx, double dy)
 
 void kuznetsov::Rectangle::scale(double m)
 {
-  if (m <= 0) {
-    throw std::invalid_argument("Incorrect scale argument");
-  }
   width_ *= m;
   height_ *= m;
 }
 
 void kuznetsov::scaleByPnt(Shape** fs, size_t size, point_t p, double m)
 {
-  if (m <= 0) {
-    throw std::invalid_argument("Incorrect scale argument");
-  }
   if (!size || fs == nullptr) {
     throw std::invalid_argument("Empty array of shapes");
   }
@@ -160,6 +192,7 @@ kuznetsov::rectangle_t kuznetsov::getGenericFrame(Shape** array, size_t size)
     minY = std::min(minY, fr.pos.y - fr.height / 2);
     minX = std::min(minX, fr.pos.x - fr.width / 2);
   }
+
   double cx = (maxX + minX) / 2;
   double cy = (maxY + minY) / 2;
   genericFrame.width = maxX - minX;
@@ -171,7 +204,8 @@ kuznetsov::rectangle_t kuznetsov::getGenericFrame(Shape** array, size_t size)
 kuznetsov::Triangle::Triangle(point_t a, point_t b, point_t c):
   a_(a),
   b_(b),
-  c_(c)
+  c_(c),
+  center_{}
 {
   bool incorrect = a_ == b_;
   incorrect = incorrect || a_ == c_;
@@ -197,7 +231,7 @@ double kuznetsov::Triangle::getArea() const
 
 kuznetsov::rectangle_t kuznetsov::Triangle::getFrameRect() const
 {
-  rectangle_t frame;
+  rectangle_t frame{};
   double maxX = std::max(a_.x, std::max(b_.x, c_.x));
   double minX = std::min(a_.x, std::min(b_.x, c_.x));
   double maxY = std::max(a_.y, std::max(b_.y, c_.y));
@@ -234,9 +268,6 @@ void kuznetsov::Triangle::move(double dx, double dy)
 
 void kuznetsov::Triangle::scale(double m)
 {
-  if (m <= 0) {
-    throw std::invalid_argument("Incorrect scale argument");
-  }
   point_t dpa {a_.x - center_.x , a_.y - center_.y};
   point_t dpb {b_.x - center_.x , b_.y - center_.y};
   point_t dpc {c_.x - center_.x , c_.y - center_.y};
@@ -251,7 +282,27 @@ void kuznetsov::Triangle::scale(double m)
   c_.y = center_.y + dpc.y * m;
 }
 
-kuznetsov::Square::Square(point_t c, double len):
+kuznetsov::Square::Square(double len, point_t c):
   Rectangle(len, len, c)
 {}
 
+void kuznetsov::print(Shape** fs, size_t s)
+{
+  for (size_t i = 0; i < s; ++i) {
+    rectangle_t fr = fs[i]->getFrameRect();
+    std::cout << "Figure " << i << ":\n";
+    std::cout << "\tArea: " << fs[i]->getArea();
+    std::cout << "\n\tFrame rectangle: ";
+    std::cout << "\n\t\tWidth: " << fr.width;
+    std::cout << "\n\t\tHeight: " << fr.height;
+    std::cout << "\n\t\tCenter: " << "x = " << fr.pos.x;
+    std::cout << " " << "y = " << fr.pos.y << '\n';
+  }
+  std::cout << "SumArea: " << getSumArea(fs, s);
+  rectangle_t genFr = getGenericFrame(fs, s);
+  std::cout << "\nGeneric frame: ";
+  std::cout << "\n\tWidth: " << genFr.width;
+  std::cout << "\n\tHeight: " << genFr.height;
+  std::cout << "\n\tCenter: " << "x = " << genFr.pos.x;
+  std::cout << " " << "y = " << genFr.pos.y << '\n';
+}
