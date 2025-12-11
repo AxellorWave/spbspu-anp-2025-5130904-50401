@@ -43,13 +43,13 @@ namespace zharov {
     void move(point_t p) override;
     void move(double dx, double dy) override;
     void scale(double k) override;
-    point_t getCentroid() const;
   private:
     point_t pos_;
     point_t * points_;
     size_t size_;
   };
 
+  point_t getCentroid(point_t * points, size_t size);
   void scaleByPoint(Shape * shapes[], size_t size, point_t p, double k);
   double getAreaAll(Shape * shapes[], size_t size);
   rectangle_t getFrameRectAll(Shape * shapes[], size_t size);
@@ -96,16 +96,17 @@ void zharov::Rectangle::scale(double k)
 
 zharov::Polygon::Polygon(point_t * points, size_t size):
   Shape(),
-  size_(size)
+  size_(size),
+  pos_(getCentroid(points, size)),
+  points_(new point_t[size])
 {
   if (size_ < 3) {
     throw std::invalid_argument("Not enough points");
   }
   points_ = new point_t[size_];
-  for (size_t i =0; i < size; ++i) {
+  for (size_t i = 0; i < size; ++i) {
     points_[i] = points[i];
   }
-  pos_ = getCentroid();
 }
 
 zharov::Polygon::~Polygon()
@@ -201,15 +202,15 @@ void zharov::Polygon::move(point_t p)
   move(p.x - pos_.x, p.y - pos_.y);
 }
 
-zharov::point_t zharov::Polygon::getCentroid() const
+zharov::point_t zharov::getCentroid(point_t * points, size_t size)
 {
   double area = 0.0, cx = 0.0, cy = 0.0;
-  for (size_t i = 0; i < size_; ++i) {
-    size_t j = (i + 1) % size_;
-    double cross = points_[i].x * points_[j].y - points_[j].x * points_[i].y;
+  for (size_t i = 0; i < size; ++i) {
+    size_t j = (i + 1) % size;
+    double cross = points[i].x * points[j].y - points[j].x * points[i].y;
     area += cross;
-    cx += (points_[i].x + points_[j].x) * cross;
-    cy += (points_[i].y + points_[j].y) * cross;
+    cx += (points[i].x + points[j].x) * cross;
+    cy += (points[i].y + points[j].y) * cross;
   }
   area /= 2.0;
   return {cx / (std::abs(area) * 6.0), cy / (std::abs(area) * 6.0)};
