@@ -103,9 +103,9 @@ int main()
     kuz::print(figs, size);
   }
 
-  delete[] figs[0];
-  delete[] figs[1];
-  delete[] figs[2];
+  delete figs[0];
+  delete figs[1];
+  delete figs[2];
   return statusCode;
 }
 
