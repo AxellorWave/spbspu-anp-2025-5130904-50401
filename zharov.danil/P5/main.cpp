@@ -156,6 +156,7 @@ zharov::Polygon & zharov::Polygon::operator=(const Polygon & polygon)
   for (size_t i = 0; i < size_; ++i) {
     points_[i] = polygon.points_[i];
   }
+  return *this;
 }
 
 zharov::Polygon::Polygon(Polygon && polygon):
@@ -176,6 +177,7 @@ zharov::Polygon & zharov::Polygon::operator=(Polygon && polygon)
   size_ = polygon.size_;
   points_ = polygon.points_;
   polygon.points_ = nullptr;
+  return *this;
 }
 
 double zharov::Polygon::getArea() const
@@ -262,6 +264,7 @@ zharov::Concave & zharov::Concave::operator=(const Concave & concave)
   for (size_t i = 0; i < 4; ++i) {
     points_[i] = concave.points_[i];
   }
+  return *this;
 }
 
 zharov::Concave::Concave(Concave && concave):
@@ -280,6 +283,7 @@ zharov::Concave & zharov::Concave::operator=(Concave && concave)
   pos_ = concave.pos_;
   points_ = concave.points_;
   concave.points_ = nullptr;
+  return *this;
 }
 
 double zharov::Concave::getArea() const
@@ -319,6 +323,29 @@ zharov::rectangle_t zharov::getFrameRectUni(point_t * points, size_t size)
 zharov::rectangle_t zharov::Concave::getFrameRect() const
 {
   return getFrameRectUni(points_, 4);
+}
+
+void zharov::Concave::move(point_t p)
+{
+  move(p.x - pos_.x, p.y - pos_.y);
+}
+
+void zharov::Concave::move(double dx, double dy)
+{
+  for (size_t i = 0; i < 4; ++i) {
+    points_[i].x += dx;
+    points_[i].y += dy;
+  }
+  pos_.x += dx;
+  pos_.y += dy;
+}
+
+void zharov::Concave::scale(double k)
+{
+  for (size_t i = 0; i < 4; ++i) {
+    points_[i].x = pos_.x + (points_[i].x - pos_.x) * k;
+    points_[i].y = pos_.y + (points_[i].y - pos_.y) * k;
+  }
 }
 
 void zharov::scaleByPoint(Shape * shapes[], size_t size, point_t p, double k)
@@ -398,7 +425,7 @@ int main()
     {0, 0}, {4, 0}, {0, 3}};
   try {
     shapes[0] = new zharov::Rectangle(5, 7, {0,0});
-    shapes[1] = new zharov::Rectangle(4, 4, {3,8});
+    shapes[1] = new zharov::Concave({0, 2}, {-2, -3}, {2, 0}, {0, 0});
     shapes[2] = new zharov::Polygon(points_polygon, 3);
   } catch (...) {}
   zharov::printInfo(shapes, 3);
