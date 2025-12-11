@@ -49,6 +49,24 @@ namespace zharov {
     size_t size_;
   };
 
+  struct Concave: Shape {
+    Concave(point_t * points, point_t pos);
+    Concave(point_t p1, point_t p2, point_t p3, point_t pos);
+    ~Concave();
+    Concave(const Concave & concave);
+    Concave & operator=(const Concave & concave);
+    Concave(Concave && concave);
+    Concave & operator=(Concave && concave);
+    double getArea() const override;
+    rectangle_t getFrameRect() const override;
+    void move(point_t p) override;
+    void move(double dx, double dy) override;
+    void scale(double k) override;
+  private:
+    point_t pos_;
+    point_t * points_;
+  };
+
   point_t getCentroid(point_t * points, size_t size);
   void scaleByPoint(Shape * shapes[], size_t size, point_t p, double k);
   double getAreaAll(Shape * shapes[], size_t size);
@@ -222,6 +240,63 @@ void zharov::Polygon::scale(double k)
     points_[i].x = pos_.x + (points_[i].x - pos_.x) * k;
     points_[i].y = pos_.y + (points_[i].y - pos_.y) * k;
   }
+}
+
+zharov::Concave::Concave(point_t * points, point_t pos):
+  Shape(),
+  points_(new point_t[4] {points[0], points[1], points[2], points[3]}),
+  pos_(pos)
+{}
+
+zharov::Concave::Concave(point_t p1, point_t p2, point_t p3, point_t pos):
+  Shape(),
+  points_(new point_t[4] {p1, p2, p3, pos}),
+  pos_(pos)
+{}
+
+zharov::Concave::~Concave()
+{
+  delete[] points_;
+}
+
+zharov::Concave::Concave(const Concave & concave):
+  Shape(),
+  pos_(concave.pos_),
+  points_(new point_t[4])
+{
+  for (size_t i = 0; i < 4; ++i) {
+    points_[i] = concave.points_[i];
+  }
+}
+
+zharov::Concave & zharov::Concave::operator=(const Concave & concave)
+{
+  if (this != &concave) {
+    delete[] points_;
+  }
+  pos_ = concave.pos_;
+  points_ = new point_t[4];
+  for (size_t i = 0; i < 4; ++i) {
+    points_[i] = concave.points_[i];
+  }
+}
+
+zharov::Concave::Concave(Concave && concave):
+  Shape(),
+  pos_(concave.pos_),
+  points_(concave.points_)
+{
+  concave.points_ = nullptr;
+}
+
+zharov::Concave & zharov::Concave::operator=(Concave && concave)
+{
+  if (this != &concave) {
+    delete[] points_;
+  }
+  pos_ = concave.pos_;
+  points_ = concave.points_;
+  concave.points_ = nullptr;
 }
 
 void zharov::scaleByPoint(Shape * shapes[], size_t size, point_t p, double k)
