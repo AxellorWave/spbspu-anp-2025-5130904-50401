@@ -1,5 +1,6 @@
 #include <iostream>
 #include <algorithm>
+#include <cstddef>
 
 struct point_t
 {
@@ -61,6 +62,18 @@ private:
   point_t a_, b_, c_, d_;
   double triangleArea(point_t p1, point_t p2, point_t p3) const;  
 };
+
+void ScaleByPnt(Shape ** figures, size_t size, const point_t& k, double a)
+{
+  for (size_t i = 0; i < size; ++i)
+  {
+    point_t g = figures[i]->getFrameRect().pos;
+    double dx = (k.x - g.x) * (a - 1);
+    double dy = (k.x - g.x) * (a - 1);
+    figures[i]->move(dx, dy);
+    figures[i]->scale(a);
+  }
+}
 
 Rectangle::Rectangle(double width, double height, point_t pos) :
   width_(width),
