@@ -1,4 +1,5 @@
 #include <iostream>
+#include <algorithm>
 
 struct point_t
 {
@@ -45,6 +46,20 @@ struct Triangle : Shape
   point_t getCenter() const;
 private:
   point_t a_, b_, c_;
+};
+
+struct Concave : Shape
+{
+  Concave(point_t a, point_t b, point_t c, point_t d);
+  double getArea() const override;
+  rectangle_t getFrameRect() const override;
+  void move(const point_t& p) override;
+  void move(double dx, double dy) override;
+  void scale(double k) override;
+  point_t getCenter() const;
+private:
+  point_t a_, b_, c_, d_;
+  double triangleArea(point_t p1, point_t p2, point_t p3) const;  
 };
 
 Rectangle::Rectangle(double width, double height, point_t pos) :
