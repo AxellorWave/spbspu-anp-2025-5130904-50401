@@ -161,6 +161,74 @@ void Triangle::scale(double k)
   c_.y = center.y + (c_.y - center.y) * k;
 }
 
+point_t Concave::getCenter() const
+{
+  return d_;
+}
+
+Concave::Concave(point_t a, point_t b, point_t c, point_t d) :
+  a_(a),
+  b_(b),
+  c_(c),
+  d_(d)
+{}  
+
+double Concave::getArea() const
+{
+  double area1 = triangleArea(a_, b_, d_);
+  double area2 = triangleArea(b_, c_, d_);
+  return area1 + area2;
+}
+
+rectangle_t Concave::getFrameRect() const
+{
+  rectangle_t fr_rect;
+  double min_x = std::min({a_.x, b_.x, c_.x, d_.x});
+  double max_x = std::max({a_.x, b_.x, c_.x, d_.x});
+  double min_y = std::min({a_.y, b_.y, c_.y, d_.y});
+  double max_y = std::max({a_.y, b_.y, c_.y, d_.y});
+  fr_rect.pos.x = (min_x + max_x) / 2.0;
+  fr_rect.pos.y = (min_y + max_y) / 2.0;
+  fr_rect.width = max_x - min_x;
+  fr_rect.height = max_y - min_y;
+  return fr_rect;
+}
+
+void Concave::move(const point_t& p)
+{
+  double dx = p.x - d_.x;
+  double dy = p.y - d_.y;
+  move(dx, dy);
+}
+
+void Concave::move(double dx, double dy)
+{
+  a_.x += dx;
+  a_.y += dy;
+  b_.x += dx;
+  b_.y += dy;
+  c_.x += dx;
+  c_.y += dy;
+  d_.x += dx;
+  d_.y += dy;
+}
+
+void Concave::scale(double k)
+{
+  point_t center = getCenter();
+  a_.x = center.x + (a_.x - center.x) * k;
+  a_.y = center.y + (a_.y - center.y) * k;
+  b_.x = center.x + (b_.x - center.x) * k;
+  b_.y = center.y + (b_.y - center.y) * k;
+  c_.x = center.x + (c_.x - center.x) * k;
+  c_.y = center.y + (c_.y - center.y) * k;
+}
+
+double Concave::triangleArea(point_t p1, point_t p2, point_t p3) const
+{
+  return 0.5 * std::abs((p2.x - p1.x) * (p3.y - p1.y) - (p3.x - p1.x) * (p2.y - p1.y));
+}
+
 int main()
 {
   return 0;
