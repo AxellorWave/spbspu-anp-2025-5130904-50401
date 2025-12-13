@@ -121,6 +121,10 @@ rectangle_t getAllFrame(Shape** arr, size_t k)
 
 void output(Shape** arr, size_t k)
 {
+  if (arr == nullptr)
+  {
+    throw std::invalid_argument("Invalid arr");
+  }
   for (size_t i = 0; i < k; ++i)
   {
     rectangle_t fr = arr[i]->getFrameRect();
@@ -178,7 +182,7 @@ void Rectangle::move(double dx, double dy)
 
 void Rectangle::scale(double k)
 {
-  if (!k)
+  if (k <= 0)
   {
     throw std::invalid_argument("incorrect coefficient");
   }
@@ -240,7 +244,7 @@ void Triangle::move(double dx, double dy)
 
 void Triangle::scale(double k)
 {
-  if (!k)
+  if (k <= 0)
   {
     throw std::invalid_argument("incorrect coefficient");
   }
@@ -308,7 +312,7 @@ void Concave::move(double dx, double dy)
 
 void Concave::scale(double k)
 {
-  if (!k)
+  if (k <= 0)
   {
     throw std::invalid_argument("incorrect coefficient");
   }
@@ -363,9 +367,9 @@ int main()
   catch(const std::invalid_argument& e)
   {
     std::cerr << e.what() << '\n';
-    delete[] figures[0];
-    delete[] figures[1];
-    delete[] figures[2];
+    delete figures[0];
+    delete figures[1];
+    delete figures[2];
     return 3;
   }
 }
