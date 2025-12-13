@@ -107,6 +107,26 @@ rectangle_t getAllFrame(Shape** arr, size_t k)
   return AllFrame;
 }
 
+void output(Shape** arr, size_t k)
+{
+  for (size_t i = 0; i < k; ++i)
+  {
+    rectangle_t fr = arr[i]->getFrameRect();
+    std::cout << "Figure " << i << ':\n';
+    std::cout << "\tArea " << arr[i]->getArea() << '\n';
+    std::cout << "\tFrame Rectangle:\n";
+    std::cout << "\t\tWidth: " << fr.width << '\n';
+    std::cout << "\t\tHeight: " << fr.height << '\n';
+    std::cout << "\t\tCenter: x = " << fr.pos.x << " y = " << fr.pos.y << '\n';
+  }
+  std::cout << "SumArea: " << getSumArea(arr, k) << '\n';
+  rectangle_t fr2 = getAllFrame(arr, k);
+  std::cout << "AllFrame:\n";
+  std::cout << "\tWidth: " << fr2.width << '\n';
+  std::cout << "\tHeight: " << fr2.height << '\n';
+  std::cout << "\tCenter: x = " << fr2.pos.x << " y = " << fr2.pos.y << '\n';
+}
+
 Rectangle::Rectangle(double width, double height, point_t pos) :
   width_(width),
   height_(height),
