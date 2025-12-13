@@ -315,6 +315,44 @@ Concave::Concave(point_t a, point_t b, point_t c, point_t d) :
   d_(d)
 {}  
 
+Concave::~Concave()
+{}
+
+Concave::Concave(const Concave& other) :
+  a_(other.a_), b_(other.b_), c_(other.c_), d_(other.d_)
+{}
+
+Concave::Concave(Concave&& other) noexcept :
+  a_(std::move(other.a_)),
+  b_(std::move(other.b_)),
+  c_(std::move(other.c_)),
+  d_(std::move(other.d_))
+{}
+
+Concave& Concave::operator=(const Concave& other)
+{
+  if (this != &other)
+  {
+    a_ = other.a_;
+    b_ = other.b_;
+    c_ = other.c_;
+    d_ = other.d_;
+  }
+  return *this;
+}
+
+Concave& Concave::operator=(Concave&& other) noexcept
+{
+  if (this != &other)
+  {
+    a_ = std::move(other.a_);
+    b_ = std::move(other.b_);
+    c_ = std::move(other.c_);
+    d_ = std::move(other.d_);
+  }
+  return *this;
+}
+
 double Concave::getArea() const
 {
   double area1 = triangleArea(a_, b_, d_);
