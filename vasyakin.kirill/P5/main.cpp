@@ -65,6 +65,10 @@ private:
 
 void ScaleByPnt(Shape ** figures, size_t size, const point_t& k, double a)
 {
+  if (!size || figures == nullptr)
+  {
+    throw std::invalid_argument("Empty size or array");
+  }
   for (size_t i = 0; i < size; ++i)
   {
     point_t g = figures[i]->getFrameRect().pos;
@@ -77,6 +81,10 @@ void ScaleByPnt(Shape ** figures, size_t size, const point_t& k, double a)
 
 double getSumArea(Shape** arr, size_t k)
 {
+  if (!k || arr == nullptr)
+  {
+    throw std::invalid_argument("Invalid size or array");
+  }
   double final_area = 0.0;
   for (size_t i = 0; i < k; ++i)
   {
@@ -87,6 +95,10 @@ double getSumArea(Shape** arr, size_t k)
 
 rectangle_t getAllFrame(Shape** arr, size_t k)
 {
+  if (!k || arr == nullptr)
+  {
+    throw std::invalid_argument("Invalid size or array");
+  }
   rectangle_t AllFrame{};
   rectangle_t fr = arr[0]->getFrameRect();
   double min_x = fr.pos.x - fr.width / 2;
@@ -128,10 +140,16 @@ void output(Shape** arr, size_t k)
 }
 
 Rectangle::Rectangle(double width, double height, point_t pos) :
+  Shape(),
   width_(width),
   height_(height),
   pos_(pos)
-{}
+{
+  if (width <= 0 || height <= 0)
+  {
+    throw std::invalid_argument("Invalid size");
+  }
+}
 
 double Rectangle::getArea() const
 {
@@ -160,11 +178,16 @@ void Rectangle::move(double dx, double dy)
 
 void Rectangle::scale(double k)
 {
+  if (!k)
+  {
+    throw std::invalid_argument("incorrect coefficient");
+  }
   width_ *= k;
   height_ *= k;
 }
 
 Triangle::Triangle(point_t a, point_t b, point_t c) :
+  Shape(),
   a_(a),
   b_(b),
   c_(c)
@@ -217,6 +240,10 @@ void Triangle::move(double dx, double dy)
 
 void Triangle::scale(double k)
 {
+  if (!k)
+  {
+    throw std::invalid_argument("incorrect coefficient");
+  }
   point_t center = getCenter();
   a_.x = center.x + (a_.x - center.x) * k;
   a_.y = center.y + (a_.y - center.y) * k;
@@ -232,6 +259,7 @@ point_t Concave::getCenter() const
 }
 
 Concave::Concave(point_t a, point_t b, point_t c, point_t d) :
+  Shape(),
   a_(a),
   b_(b),
   c_(c),
@@ -280,6 +308,10 @@ void Concave::move(double dx, double dy)
 
 void Concave::scale(double k)
 {
+  if (!k)
+  {
+    throw std::invalid_argument("incorrect coefficient");
+  }
   point_t center = getCenter();
   a_.x = center.x + (a_.x - center.x) * k;
   a_.y = center.y + (a_.y - center.y) * k;
