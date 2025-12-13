@@ -69,7 +69,7 @@ void ScaleByPnt(Shape ** figures, size_t size, const point_t& k, double a)
   {
     point_t g = figures[i]->getFrameRect().pos;
     double dx = (k.x - g.x) * (a - 1);
-    double dy = (k.x - g.x) * (a - 1);
+    double dy = (k.y - g.y) * (a - 1);
     figures[i]->move(dx, dy);
     figures[i]->scale(a);
   }
@@ -99,7 +99,7 @@ rectangle_t getAllFrame(Shape** arr, size_t k)
     min_x = std::min(min_x, fr.pos.x - fr.width / 2);
     max_x = std::max(max_x, fr.pos.x + fr.width / 2);
     min_y = std::min(min_y, fr.pos.y - fr.height / 2);
-    max_y = std::max(min_y, fr.pos.y + fr.height / 2);
+    max_y = std::max(max_y, fr.pos.y + fr.height / 2);
   }
   AllFrame.width = max_x - min_x;
   AllFrame.height = max_y - min_y;
@@ -301,7 +301,7 @@ int main()
   double l = 0.0;
   point_t a = {0.0, 0.0};
   std::cout << "x, y, scale: ";
-  std::cin >> a.x >> a.x >> l;
+  std::cin >> a.x >> a.y >> l;
   if (!std::cin || l <= 0.0)
   {
     std::cerr << "Bad input\n";
@@ -315,17 +315,17 @@ int main()
     output(figures, k);
     ScaleByPnt(figures, k, a, l);
     output(figures, k);
-    delete[] figures[0];
-    delete[] figures[1];
-    delete[] figures[2];
+    delete figures[0];
+    delete figures[1];
+    delete figures[2];
     return 0;
   }
   catch(const std::bad_alloc& e)
   {
     std::cerr << e.what() << '\n';
-    delete[] figures[0];
-    delete[] figures[1];
-    delete[] figures[2];
+    delete figures[0];
+    delete figures[1];
+    delete figures[2];
     return 2;
   }
   catch(const std::invalid_argument& e)
