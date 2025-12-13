@@ -430,7 +430,7 @@ int main()
   {
     figures[0] = new Rectangle{3.0, 6.0, {6.0, 4.0}};
     figures[1] = new Triangle{{10, 3}, {12, 4}, {8, 9}};
-    figures[2] = new Concave{{11, 9}, {4, 7}, {10, 4,}, {6, 5}};
+    figures[2] = new Concave{{11, 9}, {4, 7}, {10, 4}, {6, 5}};
     output(figures, k);
     ScaleByPnt(figures, k, a, l);
     output(figures, k);
