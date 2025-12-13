@@ -75,14 +75,36 @@ void ScaleByPnt(Shape ** figures, size_t size, const point_t& k, double a)
   }
 }
 
-double getSumArea(Shape** arr, size_t size)
+double getSumArea(Shape** arr, size_t k)
 {
   double final_area = 0.0;
-  for (size_t i = 0; i < size; ++i)
+  for (size_t i = 0; i < k; ++i)
   {
     final_area += arr[i]->getArea();
   }
   return final_area;
+}
+
+rectangle_t getAllFrame(Shape** arr, size_t k)
+{
+  rectangle_t AllFrame{};
+  rectangle_t fr = arr[0]->getFrameRect();
+  double min_x = fr.pos.x - fr.width / 2;
+  double max_x = fr.pos.x + fr.width / 2;
+  double min_y = fr.pos.y - fr.height / 2;
+  double max_y = fr.pos.y + fr.height / 2;
+  for (size_t i = 1; i < k; ++i)
+  {
+    fr = arr[i]->getFrameRect();
+    min_x = std::min(min_x, fr.pos.x - fr.width / 2);
+    max_x = std::max(max_x, fr.pos.x + fr.width / 2);
+    min_y = std::min(min_y, fr.pos.y - fr.height / 2);
+    max_y = std::max(min_y, fr.pos.y + fr.height / 2);
+  }
+  AllFrame.width = max_x - min_x;
+  AllFrame.height = max_y - min_y;
+  AllFrame.pos = {(min_x + max_x) / 2, (min_y + max_y) / 2};
+  return AllFrame;
 }
 
 Rectangle::Rectangle(double width, double height, point_t pos) :
