@@ -296,5 +296,44 @@ double Concave::triangleArea(point_t p1, point_t p2, point_t p3) const
 
 int main()
 {
-  return 0;
+  Shape* figures[3] = {nullptr, nullptr, nullptr};
+  size_t k = 3;
+  double l = 0.0;
+  point_t a = {0.0, 0.0};
+  std::cout << "x, y, scale: ";
+  std::cin >> a.x >> a.x >> l;
+  if (!std::cin || l <= 0.0)
+  {
+    std::cerr << "Bad input\n";
+    return 1;
+  }
+  try
+  {
+    figures[0] = new Rectangle{3.0, 6.0, {6.0, 4.0}};
+    figures[1] = new Triangle{{10, 3}, {12, 4}, {8, 9}};
+    figures[2] = new Concave{{11, 9}, {4, 7}, {10, 4,}, {6, 5}};
+    output(figures, k);
+    ScaleByPnt(figures, k, a, l);
+    output(figures, k);
+    delete[] figures[0];
+    delete[] figures[1];
+    delete[] figures[2];
+    return 0;
+  }
+  catch(const std::bad_alloc& e)
+  {
+    std::cerr << e.what() << '\n';
+    delete[] figures[0];
+    delete[] figures[1];
+    delete[] figures[2];
+    return 2;
+  }
+  catch(const std::invalid_argument& e)
+  {
+    std::cerr << e.what() << '\n';
+    delete[] figures[0];
+    delete[] figures[1];
+    delete[] figures[2];
+    return 3;
+  }
 }
