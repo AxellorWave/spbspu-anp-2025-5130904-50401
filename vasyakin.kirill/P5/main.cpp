@@ -75,6 +75,16 @@ void ScaleByPnt(Shape ** figures, size_t size, const point_t& k, double a)
   }
 }
 
+double getSumArea(Shape** arr, size_t size)
+{
+  double final_area = 0.0;
+  for (size_t i = 0; i < size; ++i)
+  {
+    final_area += arr[i]->getArea();
+  }
+  return final_area;
+}
+
 Rectangle::Rectangle(double width, double height, point_t pos) :
   width_(width),
   height_(height),
