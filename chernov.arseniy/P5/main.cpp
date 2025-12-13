@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cmath>
 
 namespace chernov {
   struct point_t {
@@ -49,6 +50,17 @@ namespace chernov {
     point_t center;
   };
 
+  struct Bubble: Shape {
+    Bubble(double r, point_t o, point_t a);
+    double getArea() const override;
+    rectangle_t getFrameRect() const override;
+    void move(point_t p) override;
+    void move(double dx, double dy) override;
+    void scale(double k) override;
+    double radius;
+    point_t center, anchor;
+  };
+
   void scaleByPoint(Shape ** shapes, size_t count, double k, point_t p);
   rectangle_t getTotalFrameRect(const Shape * const * shapes, size_t count);
   std::ostream & printShapeInfo(std::ostream & out, const Shape * shape, const char * name);
@@ -62,7 +74,7 @@ int main()
   std::ostream & output = std::cout;
   int result = 0;
 
-  const size_t count = 4;
+  const size_t count = 5;
   Shape * shapes[count];
   const char * names[count];
 
@@ -81,6 +93,9 @@ int main()
   points_count = 8;
   shapes[3] = new Polygon(points2, points_count);
   names[3] = "Polygon 2";
+
+  shapes[4] = new Bubble(10, {0, 0}, {2, 2});
+  names[4] = "Bubble";
 
   printShapesInfo(output, shapes, names, count);
 
@@ -112,12 +127,16 @@ int main()
 
 void chernov::scaleByPoint(Shape ** shapes, size_t count, double k, point_t p)
 {
+  if (k <= 0) {
+    throw std::invalid_argument("k must be positive");
+  }
   for (size_t i = 0; i < count; ++i) {
     Shape * shape = shapes[i];
-    point_t pos = shape->getFrameRect().pos;
+    point_t first_pos = shape->getFrameRect().pos;
     shape->move(p);
-    double dx = k * (pos.x - p.x);
-    double dy = k * (pos.y - p.y);
+    point_t second_pos = shape->getFrameRect().pos;
+    double dx = k * (first_pos.x - second_pos.x);
+    double dy = k * (first_pos.y - second_pos.y);
     shape->move(dx, dy);
     shape->scale(k);
   }
@@ -176,7 +195,11 @@ chernov::Rectangle::Rectangle(double a, double b, point_t o):
   side_x(a),
   side_y(b),
   center(o)
-{}
+{
+  if (side_x <= 0 || side_y <= 0) {
+    throw std::invalid_argument("the side must be greater than 0");
+  }
+}
 
 double chernov::Rectangle::getArea() const
 {
@@ -210,6 +233,9 @@ chernov::Polygon::Polygon(point_t * points, size_t size):
   count(size),
   center({0, 0})
 {
+  if (count < 3) {
+    throw std::invalid_argument("the count must not be less than 3");
+  }
   for (size_t i = 0; i < count; ++i) {
     verts[i] = points[i];
   }
@@ -343,4 +369,57 @@ chernov::point_t chernov::Polygon::getCentroid() const
   cx /= 6 * signed_area;
   cy /= 6 * signed_area;
   return {cx, cy};
+}
+
+chernov::Bubble::Bubble(double r, point_t o, point_t a):
+  radius(r),
+  center(o),
+  anchor(a)
+{
+  if ((o.x - a.x) * (o.x - a.x) + (o.y - a.y) * (o.y - a.y) > r * r) {
+    throw std::invalid_argument("the anchor must be inside the circle");
+  }
+  if (o.x == a.x && o.y == a.y) {
+    throw std::invalid_argument("the anchor must not be equal to the center");
+  }
+  if (r <= 0) {
+    throw std::invalid_argument("the radius must be greater than 0");
+  }
+}
+
+double chernov::Bubble::getArea() const
+{
+  const double PI = acos(-1.0);
+  double area = PI * radius * radius;
+  return area;
+}
+
+chernov::rectangle_t chernov::Bubble::getFrameRect() const
+{
+  double size = 2 * radius;
+  return {size, size, center};
+}
+
+void chernov::Bubble::move(point_t p)
+{
+  double dx = p.x - anchor.x;
+  double dy = p.y - anchor.y;
+  move(dx, dy);
+}
+
+void chernov::Bubble::move(double dx, double dy)
+{
+  anchor.x += dx;
+  anchor.y += dy;
+  center.x += dx;
+  center.y += dy;
+}
+
+void chernov::Bubble::scale(double k)
+{
+  radius *= k;
+  double dx = center.x - anchor.x;
+  double dy = center.y - anchor.y;
+  center.x = anchor.x + k * dx;
+  center.y = anchor.y + k * dy;
 }
