@@ -39,11 +39,6 @@ private:
 struct Triangle : Shape
 {
   Triangle(point_t a, point_t b, point_t c);
-  ~Triangle() override;
-  Triangle(const Triangle& other);
-  Triangle(Triangle&& other) noexcept;
-  Triangle& operator=(const Triangle& other);
-  Triangle& operator=(Triangle&& other) noexcept;
   double getArea() const override;
   rectangle_t getFrameRect() const override;
   void move(const point_t& p) override;
@@ -57,11 +52,6 @@ private:
 struct Concave : Shape
 {
   Concave(point_t a, point_t b, point_t c, point_t d);
-  ~Concave() override;
-  Concave(const Concave& other);
-  Concave(Concave&& other) noexcept;
-  Concave& operator=(const Concave& other);
-  Concave& operator=(Concave&& other) noexcept;
   double getArea() const override;
   rectangle_t getFrameRect() const override;
   void move(const point_t& p) override;
@@ -207,41 +197,6 @@ Triangle::Triangle(point_t a, point_t b, point_t c) :
   c_(c)
 {}
 
-Triangle::~Triangle()
-{}
-
-Triangle::Triangle(const Triangle& other) :
-  a_(other.a_), b_(other.b_), c_(other.c_)
-{}
-
-Triangle::Triangle(Triangle&& other) noexcept :
-  a_(std::move(other.a_)),
-  b_(std::move(other.b_)),
-  c_(std::move(other.c_))
-{}
-
-Triangle& Triangle::operator=(const Triangle& other)
-{
-  if (this != &other)
-  {
-    a_ = other.a_;
-    b_ = other.b_;
-    c_ = other.c_;
-  }
-  return *this;
-}
-
-Triangle& Triangle::operator=(Triangle&& other) noexcept
-{
-  if (this != &other)
-  {
-    a_ = std::move(other.a_);
-    b_ = std::move(other.b_);
-    c_ = std::move(other.c_);
-  }
-  return *this;
-}
-
 point_t Triangle::getCenter() const
 {
   point_t center;
@@ -313,45 +268,7 @@ Concave::Concave(point_t a, point_t b, point_t c, point_t d) :
   b_(b),
   c_(c),
   d_(d)
-{}  
-
-Concave::~Concave()
 {}
-
-Concave::Concave(const Concave& other) :
-  a_(other.a_), b_(other.b_), c_(other.c_), d_(other.d_)
-{}
-
-Concave::Concave(Concave&& other) noexcept :
-  a_(std::move(other.a_)),
-  b_(std::move(other.b_)),
-  c_(std::move(other.c_)),
-  d_(std::move(other.d_))
-{}
-
-Concave& Concave::operator=(const Concave& other)
-{
-  if (this != &other)
-  {
-    a_ = other.a_;
-    b_ = other.b_;
-    c_ = other.c_;
-    d_ = other.d_;
-  }
-  return *this;
-}
-
-Concave& Concave::operator=(Concave&& other) noexcept
-{
-  if (this != &other)
-  {
-    a_ = std::move(other.a_);
-    b_ = std::move(other.b_);
-    c_ = std::move(other.c_);
-    d_ = std::move(other.d_);
-  }
-  return *this;
-}
 
 double Concave::getArea() const
 {
