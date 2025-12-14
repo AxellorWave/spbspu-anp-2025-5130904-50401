@@ -1,6 +1,7 @@
 #include <iostream>
 #include <algorithm>
 #include <cstddef>
+#include <stdexcept>
 
 struct point_t
 {
@@ -99,6 +100,10 @@ rectangle_t getAllFrame(Shape** arr, size_t k)
   {
     throw std::invalid_argument("Invalid size or array");
   }
+  if (arr[0] == nullptr)
+  {
+    throw std::invalid_argument("First element is nullptr");
+  }
   rectangle_t AllFrame{};
   rectangle_t fr = arr[0]->getFrameRect();
   double min_x = fr.pos.x - fr.width / 2;
@@ -107,6 +112,10 @@ rectangle_t getAllFrame(Shape** arr, size_t k)
   double max_y = fr.pos.y + fr.height / 2;
   for (size_t i = 1; i < k; ++i)
   {
+    if (arr[i] == nullptr)
+    {
+      throw std::invalid_argument("Array contains nullptr");
+    }
     fr = arr[i]->getFrameRect();
     min_x = std::min(min_x, fr.pos.x - fr.width / 2);
     max_x = std::max(max_x, fr.pos.x + fr.width / 2);
@@ -128,7 +137,7 @@ void output(Shape** arr, size_t k)
   for (size_t i = 0; i < k; ++i)
   {
     rectangle_t fr = arr[i]->getFrameRect();
-    std::cout << "Figure " << i << ':\n';
+    std::cout << "Figure " << i + 1<< ':\n';
     std::cout << "\tArea " << arr[i]->getArea() << '\n';
     std::cout << "\tFrame Rectangle:\n";
     std::cout << "\t\tWidth: " << fr.width << '\n';
@@ -351,25 +360,27 @@ int main()
     output(figures, k);
     ScaleByPnt(figures, k, a, l);
     output(figures, k);
-    delete figures[0];
-    delete figures[1];
-    delete figures[2];
+    for (size_t i = 0; i < k; ++i)
+    {
+      delete figures[i];
+    }
     return 0;
   }
   catch(const std::bad_alloc& e)
   {
     std::cerr << e.what() << '\n';
-    delete figures[0];
-    delete figures[1];
-    delete figures[2];
-    return 2;
   }
   catch(const std::invalid_argument& e)
   {
     std::cerr << e.what() << '\n';
-    delete figures[0];
-    delete figures[1];
-    delete figures[2];
-    return 3;
   }
+  catch (const std::exception& e)
+  {
+    std::cerr << e.what() << '\n';
+  }
+  for (size_t i = 0; i < k; ++i)
+  {
+    delete figures[i];
+  }
+  return 1;
 }
