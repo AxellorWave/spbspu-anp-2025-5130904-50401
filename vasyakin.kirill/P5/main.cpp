@@ -61,7 +61,7 @@ struct Concave : Shape
   point_t getCenter() const;
 private:
   point_t a_, b_, c_, d_;
-  double triangleArea(point_t p1, point_t p2, point_t p3) const;  
+  double triangleArea(point_t p1, point_t p2, point_t p3) const;
 };
 
 void ScaleByPnt(Shape ** figures, size_t size, const point_t& k, double a)
