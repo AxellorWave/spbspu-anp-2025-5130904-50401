@@ -1,7 +1,7 @@
 #include <iostream>
 #include <memory>
 #include <cctype>
-void uni_two_merge(const char * str1, const char * str2, size_t size, char * res)
+void mergeTwoAlternatingLines(const char * str1, const char * str2, size_t size, char * res)
 {
   size_t i = 0, k = 0, l = 0;
   while (i < size - 1) {
@@ -18,7 +18,7 @@ void uni_two_merge(const char * str1, const char * str2, size_t size, char * res
   }
   res[i] = '\0';
 }
-void add_nums(const char * str1, const char * str2, size_t size1, size_t size2, char * res)
+void addNums(const char * str1, const char * str2, size_t size1, size_t size2, char * res)
 {
   size_t i = 0;
   while (i < size1) {
@@ -34,6 +34,12 @@ void add_nums(const char * str1, const char * str2, size_t size1, size_t size2, 
     j++;
   }
   res[i] = '\0';
+}
+void readingAnArray(const char * array, size_t size)
+{
+  for (size_t i = 0; i < size; i++) {
+    std::cout << array[i];
+  }
 }
 int main() {
   int const max_size = 256;
@@ -60,7 +66,8 @@ int main() {
   if (res_two_merge == nullptr) {
     return 2;
   }
-  uni_two_merge(str1, str2, size, res_two_merge);
+  mergeTwoAlternatingLines(str1, str2, size, res_two_merge);
+  readingAnArray(res_two_merge, size);
   for (size_t p = 0; p < size - 1; p++) {
     std::cout << res_two_merge[p];
   }
@@ -74,14 +81,13 @@ int main() {
     }
     size2++;
   }
-  char * res_add_nums = reinterpret_cast< char* >(malloc(sizeof(char) * i + num_of_digits + 1));
+  size_t length_array = i + num_of_digits + 1;
+  char * res_add_nums = reinterpret_cast< char* >(malloc(sizeof(char) * length_array));
   if (res_add_nums == nullptr) {
     return 2;
   }
-  add_nums(str1, str2, i, size2, res_add_nums);
-  for (size_t p = 0; p < i + num_of_digits; p++) {
-    std::cout << res_add_nums[p];
-  }
+  addNums(str1, str2, i, size2, res_add_nums);
+  readingAnArray(res_add_nums, length_array);
   std::cout << "\n";
   free(res_add_nums);
   return 0;
