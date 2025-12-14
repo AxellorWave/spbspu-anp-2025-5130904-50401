@@ -1,9 +1,10 @@
 #include <iostream>
 #include <memory>
 #include <cctype>
-void uni_two_merge(const char * str1, const char * str2, size_t size, char * res) {
+void uni_two_merge(const char * str1, const char * str2, size_t size, char * res)
+{
   size_t i = 0, k = 0, l = 0;
-  while(i < size - 1) {
+  while (i < size - 1) {
     if (str1[k] != '\0') {
       res[i] = str1[k];
       k++;
@@ -17,9 +18,10 @@ void uni_two_merge(const char * str1, const char * str2, size_t size, char * res
   }
   res[i] = '\0';
 }
-void add_nums(const char * str1, const char * str2, size_t size1, size_t size2, char * res) {
+void add_nums(const char * str1, const char * str2, size_t size1, size_t size2, char * res)
+{
   size_t i = 0;
-    while (i < size1) {
+  while (i < size1) {
     res[i] = str1[i];
     i++;
   }
@@ -38,7 +40,7 @@ int main() {
   char str1[max_size] = {};
   char a = 'a';
   size_t i = 0;
-  while(std::cin.get(a) && a != '\n') {
+  while (std::cin.get(a) && a != '\n') {
     if (i >= max_size - 1) {
         return 2;
     }
@@ -50,16 +52,16 @@ int main() {
   }
   const char * str2 = {"def "};
   size_t j = 0;
-  while(str2[j] != '\0') {
+  while (str2[j] != '\0') {
     j++;
   }
   size_t size = i + j + 1;
-  char * res_two_merge = reinterpret_cast<char*>(malloc(sizeof(char) * size));
+  char * res_two_merge = reinterpret_cast< char* >(malloc(sizeof(char) * size));
   if (res_two_merge == nullptr) {
     return 2;
   }
   uni_two_merge(str1, str2, size, res_two_merge);
-  for(size_t p = 0; p < size - 1; p++) {
+  for (size_t p = 0; p < size - 1; p++) {
     std::cout << res_two_merge[p];
   }
   std::cout << "\n";
@@ -72,12 +74,12 @@ int main() {
     }
     size2++;
   }
-  char * res_add_nums = reinterpret_cast<char*>(malloc(sizeof(char) * i + num_of_digits +1));
+  char * res_add_nums = reinterpret_cast< char* >(malloc(sizeof(char) * i + num_of_digits + 1));
   if (res_add_nums == nullptr) {
     return 2;
   }
   add_nums(str1, str2, i, size2, res_add_nums);
-   for(size_t p = 0; p < i + num_of_digits; p++) {
+  for (size_t p = 0; p < i + num_of_digits; p++) {
     std::cout << res_add_nums[p];
   }
   std::cout << "\n";
