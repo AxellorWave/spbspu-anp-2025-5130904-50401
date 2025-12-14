@@ -37,7 +37,7 @@ void addNums(const char * str1, const char * str2, size_t size1, size_t size2, c
 }
 void readingAnArray(const char * array, size_t size)
 {
-  for (size_t i = 0; i < size; i++) {
+  for (size_t i = 0; i < size - 1; i++) {
     std::cout << array[i];
   }
 }
@@ -68,9 +68,6 @@ int main() {
   }
   mergeTwoAlternatingLines(str1, str2, size, res_two_merge);
   readingAnArray(res_two_merge, size);
-  for (size_t p = 0; p < size - 1; p++) {
-    std::cout << res_two_merge[p];
-  }
   std::cout << "\n";
   free(res_two_merge);
   size_t num_of_digits = 0;
