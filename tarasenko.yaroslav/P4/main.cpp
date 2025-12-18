@@ -23,7 +23,7 @@ namespace tarasenko
     for (size_t i = 0; i < len; ++i)
     {
       char current = string[i];
-      char lower_c = std::tolower(static_cast< unsigned char >(current));
+      char lower_c = std::tolower(current);
       if (is_vowel(lower_c))
       {
         continue;
@@ -41,7 +41,7 @@ namespace tarasenko
       char current = string[i];
       if (std::isupper(static_cast< unsigned char >(current)))
       {
-        output[i] = std::tolower(static_cast< unsigned char >(current));
+        output[i] = std::tolower(current);
       }
       else
       {
@@ -68,7 +68,8 @@ namespace tarasenko
       in >> last_symbol;
       if (!in || (last_symbol == '\n' && !k))
       {
-        throw std::runtime_error("");
+        delete[] string;
+        throw std::runtime_error("input error");
       }
       if (last_symbol == '\n')
       {
@@ -76,14 +77,7 @@ namespace tarasenko
       }
       if (k % step == 0)
       {
-        try
-        {
-          temp_mem = new char[k + step];
-        }
-        catch (...)
-        {
-          throw;
-        }
+        temp_mem = new char[k + step];
         for (size_t i = 0; i < k; ++i)
         {
           temp_mem[i] = string[i];
@@ -116,10 +110,10 @@ int main()
   }
   catch (const std::runtime_error &e)
   {
-    std::cerr << "empty input\n";
+    std::cerr << e.what() << '\n';
     return 1;
   }
-  catch (...)
+  catch (const std::bad_alloc &)
   {
     std::cerr << "failed to allocate memory\n";
     return 1;
