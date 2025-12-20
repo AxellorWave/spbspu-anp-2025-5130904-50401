@@ -44,9 +44,9 @@ namespace zharov {
     void move(double dx, double dy) override;
     void scale(double k) override;
   private:
-    point_t pos_;
-    point_t * points_;
     size_t size_;
+    point_t * points_;
+    point_t pos_;
   };
 
   struct Concave: Shape {
@@ -63,8 +63,8 @@ namespace zharov {
     void move(double dx, double dy) override;
     void scale(double k) override;
   private:
-    point_t pos_;
     point_t * points_;
+    point_t pos_;
   };
 
   double getAreaUni(point_t * points, size_t size);
@@ -117,13 +117,13 @@ void zharov::Rectangle::scale(double k)
 zharov::Polygon::Polygon(point_t * points, size_t size):
   Shape(),
   size_(size),
-  pos_(getCentroid(points, size)),
-  points_(new point_t[size])
+  points_(new point_t[size]),
+  pos_(getCentroid(points, size))
 {
   if (size_ < 3) {
+    delete[] points_;
     throw std::invalid_argument("Not enough points");
   }
-  points_ = new point_t[size_];
   for (size_t i = 0; i < size; ++i) {
     points_[i] = points[i];
   }
@@ -137,8 +137,8 @@ zharov::Polygon::~Polygon()
 zharov::Polygon::Polygon(const Polygon & polygon):
   Shape(),
   size_(polygon.size_),
-  pos_(polygon.pos_),
-  points_(new point_t[polygon.size_])
+  points_(new point_t[polygon.size_]),
+  pos_(polygon.pos_)
 {
   for (size_t i = 0; i < size_; ++i) {
     points_[i] = polygon.points_[i];
@@ -162,8 +162,8 @@ zharov::Polygon & zharov::Polygon::operator=(const Polygon & polygon)
 zharov::Polygon::Polygon(Polygon && polygon):
   Shape(),
   size_(polygon.size_),
-  pos_(polygon.pos_),
-  points_(polygon.points_)
+  points_(polygon.points_),
+  pos_(polygon.pos_)
 {
   polygon.points_ = nullptr;
 }
@@ -246,8 +246,8 @@ zharov::Concave::~Concave()
 
 zharov::Concave::Concave(const Concave & concave):
   Shape(),
-  pos_(concave.pos_),
-  points_(new point_t[4])
+  points_(new point_t[4]),
+  pos_(concave.pos_)
 {
   for (size_t i = 0; i < 4; ++i) {
     points_[i] = concave.points_[i];
@@ -269,8 +269,8 @@ zharov::Concave & zharov::Concave::operator=(const Concave & concave)
 
 zharov::Concave::Concave(Concave && concave):
   Shape(),
-  pos_(concave.pos_),
-  points_(concave.points_)
+  points_(concave.points_),
+  pos_(concave.pos_)
 {
   concave.points_ = nullptr;
 }
