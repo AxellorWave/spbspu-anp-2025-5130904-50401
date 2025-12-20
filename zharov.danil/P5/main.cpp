@@ -420,18 +420,27 @@ int main()
     return 1;
   }
 
-  zharov::Shape * shapes[3] = {};
+  zharov::Shape * shapes[3] = {nullptr, nullptr, nullptr};
   zharov::point_t * points_polygon = new zharov::point_t[3] {
     {0, 0}, {4, 0}, {0, 3}};
+  int code = 0;
   try {
     shapes[0] = new zharov::Rectangle(5, 7, {0,0});
     shapes[1] = new zharov::Concave({0, 2}, {-2, -3}, {2, 0}, {0, 0});
     shapes[2] = new zharov::Polygon(points_polygon, 3);
-  } catch (...) {}
-  zharov::printInfo(shapes, 3);
-  zharov::scaleByPoint(shapes, 3, {p.x, p.y}, k);
-  std::cout << "\n";
-  zharov::printInfo(shapes, 3);
+  } catch (const std::bad_alloc & e) {
+    std::cerr << e.what() << "\n";
+    code = 1;
+  } catch (const std::invalid_argument & e) {
+    std::cerr << e.what() << "\n";
+    code = 1;
+  }
+  if (code == 0) {
+    zharov::printInfo(shapes, 3);
+    zharov::scaleByPoint(shapes, 3, {p.x, p.y}, k);
+    std::cout << "\n";
+    zharov::printInfo(shapes, 3);
+  }
 
   delete shapes[0];
   delete shapes[1];
