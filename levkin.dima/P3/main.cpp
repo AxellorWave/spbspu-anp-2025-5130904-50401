@@ -56,10 +56,7 @@ int main(int argc, char **argv)
 
     if ((!input.eof() && input.fail()) || (elems_count != cols * rows))
     {
-      if (mode == 2)
-      {
-        delete[] arr;
-      }
+      delete[] arr;
       std::cerr << "Wierd matrix file\n";
       return 2;
     }
@@ -72,33 +69,24 @@ int main(int argc, char **argv)
 
     levkin::print_matrix(output, result, cols, rows);
     output << best_col;
-
-    if (mode == 2)
-    {
-      delete[] arr;
-    }
+    delete[] arr;
   }
   catch (const std::bad_alloc &e)
   {
+    delete[] arr;
     std::cerr << "Error memory allocation\n";
     return 2;
   }
   catch (const std::runtime_error &e)
   {
-    if (mode == 2)
-    {
-      delete[] arr;
-    }
+    delete[] arr;
     std::cerr << e.what() << "\n";
     return 1;
   }
   catch (...)
   {
+    delete[] arr;
     std::cerr << "Error during task execution, something went wrong\n";
-    if (mode == 2)
-    {
-      delete[] arr;
-    }
     return 2;
   }
 }
