@@ -76,6 +76,7 @@ int main(int argc, char **argv)
     levkin::print_matrix(output, result, cols, rows);
     output << best_col;
     delete[] deletion_pointer;
+    delete[] result;
   }
   catch (const std::bad_alloc &e)
   {
