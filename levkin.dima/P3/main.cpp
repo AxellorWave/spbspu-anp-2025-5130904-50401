@@ -20,6 +20,7 @@ namespace levkin
 int main(int argc, char **argv)
 {
   size_t mode = 0;
+  int *deletion_pointer = nullptr;
   int *arr = nullptr;
   if (argc != 4)
   {
@@ -49,14 +50,19 @@ int main(int argc, char **argv)
     int static_arr[10000] = {};
 
     input >> cols >> rows;
-    arr = mode == 1 ? static_arr : new int[cols * rows];
+    if (mode == 1) {
+      arr = static_arr;
+    } else {
+      arr = new int[cols * rows];
+      deletion_pointer = arr;
+    }
 
     size_t elems_count = 0;
     levkin::read_matrix(input, arr, cols, rows, elems_count);
 
     if ((!input.eof() && input.fail()) || (elems_count != cols * rows))
     {
-      delete[] arr;
+      delete[] deletion_pointer;
       std::cerr << "Wierd matrix file\n";
       return 2;
     }
@@ -69,23 +75,23 @@ int main(int argc, char **argv)
 
     levkin::print_matrix(output, result, cols, rows);
     output << best_col;
-    delete[] arr;
+    delete[] deletion_pointer;
   }
   catch (const std::bad_alloc &e)
   {
-    delete[] arr;
+    delete[] deletion_pointer;
     std::cerr << "Error memory allocation\n";
     return 2;
   }
   catch (const std::runtime_error &e)
   {
-    delete[] arr;
+    delete[] deletion_pointer;
     std::cerr << e.what() << "\n";
     return 1;
   }
   catch (...)
   {
-    delete[] arr;
+    delete[] deletion_pointer;
     std::cerr << "Error during task execution, something went wrong\n";
     return 2;
   }
