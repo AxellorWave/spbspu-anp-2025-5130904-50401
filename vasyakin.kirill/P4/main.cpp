@@ -7,21 +7,11 @@
 #include <limits>
 namespace vasyakin
 {
-  size_t stringLength(const char* str);
   void cutLetters(const char* str, char* str1);
   void excludeCharsFromSecond(const char* str1, const char* str2, char* result);
   char* extend(char* a, size_t k, size_t k1);
-  char* getline(std::istream& input);
+  char* getline(std::istream& input, size_t& length);
   const size_t MAX = std::numeric_limits< size_t >::max();
-}
-size_t vasyakin::stringLength(const char* str)
-{
-  size_t count = 0;
-  while(str[count] != '\0')
-  {
-    count++;
-  }
-  return count;
 }
 char* vasyakin::extend(char* a, size_t k, size_t k1)
 {
@@ -38,7 +28,7 @@ char* vasyakin::extend(char* a, size_t k, size_t k1)
   free(a);
   return new_arr;
 }
-char* vasyakin::getline(std::istream& input)
+char* vasyakin::getline(std::istream& input, size_t& length)
 {
   char* str = reinterpret_cast< char* >(malloc(sizeof(char)));
   if (str == nullptr)
@@ -75,6 +65,7 @@ char* vasyakin::getline(std::istream& input)
   {
     input >> std::skipws;
   }
+  length = len;
   return str;
 }
 void vasyakin::cutLetters(const char* str, char* str1)
@@ -114,7 +105,8 @@ void vasyakin::excludeCharsFromSecond(const char* str1, const char* str2, char* 
 }
 int main()
 {
-  char* str = vasyakin::getline(std::cin);
+  size_t str_len = 0;
+  char* str = vasyakin::getline(std::cin, str_len);
   if (str == nullptr)
   {
     std::cerr << "Memory allocation failed or overflow error" << '\n';
@@ -132,21 +124,14 @@ int main()
     free(str);
     return 1;
   }
-  size_t str_len = vasyakin::stringLength(str);
   char* result1 = reinterpret_cast< char* >(malloc(sizeof(char) * (str_len + 1)));
   char* result2 = reinterpret_cast< char* >(malloc(sizeof(char) * (str_len + 1)));
   if (!result1 || !result2)
   {
     std::cerr << "Memory allocation failed" << '\n';
     free(str);
-    if (result1)
-    {
-      free(result1);
-    }
-    if (result2)
-    {
-      free(result2);
-    }
+    free(result1);
+    free(result2);
     return 1;
   }
   const char* str1 = "abc";
