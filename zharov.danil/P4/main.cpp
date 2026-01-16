@@ -1,10 +1,12 @@
 #include <iostream>
 #include <iomanip>
 #include <cctype>
+#include <cstring>
 
 namespace zharov
 {
-  char ** splitLine(char * str, size_t & len);
+  bool isSpace(char c);
+  char ** splitLine(char * str, size_t & len, bool(*sep)(char));
   void extendArr(char *** str, size_t old_size, size_t new_size);
   char * getLine(std::istream & in, size_t & len);
   void extendStr(char ** str, size_t old_size, size_t new_size);
@@ -32,7 +34,7 @@ int main()
   char ** arr_str = nullptr;
   size_t len_arr = 0;
   try {
-    arr_str = zharov::splitLine(str, len_arr);
+    arr_str = zharov::splitLine(str, len_arr, zharov::isSpace);
   } catch (const std::bad_alloc &) {
     delete[] str;
     std::cerr << "Bad alloc\n";
@@ -106,11 +108,15 @@ void zharov::extendArr(char *** arr_str, size_t old_size, size_t new_size)
   *arr_str = new_arr;
 }
 
-char ** zharov::splitLine(char * str, size_t & len)
+bool zharov::isSpace(char c)
 {
-  char sep = ' ';
+  return std::isspace(c);
+}
+
+char ** zharov::splitLine(char * str, size_t & len, bool(*sep)(char))
+{
   size_t size = 10;
-  size_t step = 5;
+  size_t step = 2;
   char ** arr_str = new char * [size];
   bool is_last_sep = true;
   size_t i = 0;
@@ -118,15 +124,14 @@ char ** zharov::splitLine(char * str, size_t & len)
   for (; str[i] != '\0'; ++i) {
     if (len == size) {
       try {
-        zharov::extendArr(&arr_str, size, size + step);
+        zharov::extendArr(&arr_str, size, size * step);
       } catch (const std::bad_alloc &) {
         zharov::destroyArr(arr_str, len);
         throw;
       }
-      size += step;
+      size *= step;
     }
-
-    if (str[i] == sep) {
+    if (sep(str[i])) {
       if (!is_last_sep) {
         char * new_str = nullptr;
         try {
@@ -169,7 +174,7 @@ char ** zharov::splitLine(char * str, size_t & len)
 char * zharov::getLine(std::istream & in, size_t & len)
 {
   size_t size = 10;
-  size_t step = 5;
+  size_t step = 2;
   char end = '\n';
   bool is_skipws = in.flags() & std::ios_base::skipws;
   if (is_skipws) {
@@ -181,12 +186,12 @@ char * zharov::getLine(std::istream & in, size_t & len)
   while (in >> sym && sym != end) {
     if (size == len) {
       try {
-        zharov::extendStr(& str, size, size + step + 1);
+        zharov::extendStr(&str, size, size * step);
       } catch (const std::bad_alloc &) {
         delete[] str;
         throw;
       }
-      size += step;
+      size *= step;
     }
     str[len] = sym;
     ++len;
