@@ -1,92 +1,69 @@
 #include <iostream>
 #include <cctype>
-#include <iomanip>
-
+#include "read_string.hpp"
+#include "read_words.hpp"
 
 namespace kuznetsov {
-  char* getLine(std::istream& in, size_t& i);
-  void extend(char** str, size_t oldSize, size_t newSize);
   void removeVow(char* buff, const char* str);
   int checkSeqSym(const char* str);
+  bool isSpace(char t);
+  void deleting(char** arr, size_t k);
 }
 
 int main()
 {
   namespace kuz = kuznetsov;
   size_t size = 0;
-  char* str = nullptr;
+  char** str = nullptr;
+  size_t* sizes = nullptr;
 
-  str = kuz::getLine(std::cin, size);
+  str = kuz::getWords(std::cin, size, &sizes, kuz::isSpace);
+
   if (!std::cin) {
-    delete[] str;
+    kuz::deleting(str, size);
+    delete[] sizes;
     return 1;
   }
-
-  char* buffer = nullptr;
-  try {
-     buffer = new char[size]{};
-  } catch (const std::bad_alloc& e) {
-    delete[] str;
-    std::cerr << "Bad alloc buffer\n";
-    return 2;
-  }
-
-  kuz::removeVow(buffer, str);
-
-  std::cout << buffer << '\n';
-  std::cout << kuz::checkSeqSym(str) << '\n';
-
-  delete[] buffer;
-  delete[] str;
-}
-
-char* kuznetsov::getLine(std::istream& in, size_t& size)
-{
-  char* buff = new char[8];
-  size_t i = 8;
-  size_t s = 0;
-  bool is_skinws = in.flags() & std::ios::skipws;
-  if (is_skinws) {
-    in >> std::noskipws;
-  }
-  while (in >> buff[s] && buff[s] != '\n') {
-    if (s + 4 >= i) {
-      try {
-        extend(&buff, i, i + 8);
-      } catch (const std::bad_alloc&) {
-        delete[] buff;
-        throw;
-      }
-      i += 8;
+  for (size_t i = 0; i < size; ++i) {
+    char* buffer = nullptr;
+    try {
+      buffer = new char[sizes[i] + 1] {};
+    } catch (const std::bad_alloc&) {
+      delete[] sizes;
+      kuz::deleting(str, size);
+      std::cerr << "Bad alloc buffer\n";
+      return 2;
     }
-    ++s;
+
+    kuz::removeVow(buffer, str[i]);
+    std::cout << buffer << '\n';
+    std::cout << kuz::checkSeqSym(str[i]) << '\n';
+
+    delete[] buffer;
   }
-  size = s;
-  buff[s] = '\0';
-  if (is_skinws) {
-    in >> std::skipws;
-  }
-  return buff;
+
+  delete[] sizes;
+  kuz::deleting(str, size);
 }
 
-void kuznetsov::extend(char** str, size_t oldSize, size_t newSize)
+bool kuznetsov::isSpace(char t)
 {
-  char* extendedStr = new char[newSize];
-  for (size_t i = 0; i < oldSize; ++i) {
-    extendedStr[i] = (*str)[i];
+  return std::isspace(t);
+}
+
+void kuznetsov::deleting(char** arr, size_t k)
+{
+  for (size_t i = 0; i < k; ++i) {
+    delete[] arr[i];
   }
-  for (size_t i = oldSize; i < newSize; ++i) {
-    extendedStr[i] = 0;
-  }
-  delete[] *str;
-  *str = extendedStr;
+  delete[] arr;
 }
 
 void kuznetsov::removeVow(char* buff, const char* str)
 {
   char vow[] = "aeiou";
   size_t nextPast = 0;
-  for (size_t i = 0; *(str + i) != '\0'; ++i ) {
+  for (size_t i = 0; str[i] != '\0'; ++i ) {
     size_t j = 0;
     for (; j < 5; ++j) {
       if (tolower(str[i]) == vow[j]) {
@@ -98,15 +75,18 @@ void kuznetsov::removeVow(char* buff, const char* str)
       nextPast++;
     }
   }
+  buff[nextPast] = '\0';
 }
 
 int kuznetsov::checkSeqSym(const char* str)
 {
-  for (size_t i = 1; str[i] != '\n'; ++i) {
-    if (str[i-1] == str[i]) {
+  if (str[0] == '\0') {
+    return 0;
+  }
+  for (size_t i = 1; str[i] != '\0'; ++i) {
+    if (str[i - 1] == str[i]) {
       return 1;
     }
   }
   return 0;
 }
-
