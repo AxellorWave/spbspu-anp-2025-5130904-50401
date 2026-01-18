@@ -446,4 +446,5 @@ int main()
   delete shapes[1];
   delete shapes[2];
   delete[] points_polygon;
+  return code;
 }
