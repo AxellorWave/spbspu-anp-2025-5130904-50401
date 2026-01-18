@@ -1,11 +1,18 @@
 #ifndef SQUARE_HPP
 #define SQUARE_HPP
-#include "rectangle.hpp"
+#include "shape.hpp"
 namespace kuznetsov {
 
-  class Square: public Rectangle {
+  class Square: public Shape {
+    point_t center_;
+    double len_;
   public:
     Square(double len, point_t c);
+    double getArea() const override;
+    rectangle_t getFrameRect() const override;
+    void move(point_t p) override;
+    void move(double dx, double dy) override;
+    void scale(double m) override;
   };
 
 }
