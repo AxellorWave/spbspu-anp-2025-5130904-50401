@@ -4,8 +4,6 @@
 
 namespace kuznetsov {
   class Rectangle: public Shape {
-    point_t center_;
-    double width_, height_;
   public:
     Rectangle(double w, double h, point_t c);
     double getArea() const override;
@@ -13,6 +11,9 @@ namespace kuznetsov {
     void move(point_t p) override;
     void move(double dx, double dy) override;
     void scale(double m) override;
+  private:
+    point_t center_;
+    double width_, height_;
   };
 }
 
