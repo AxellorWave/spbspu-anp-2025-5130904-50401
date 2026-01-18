@@ -9,7 +9,7 @@ namespace kuznetsov {
   double getSumArea(const Shape* const* array, size_t size);
   rectangle_t getFrame(const Shape* const* array, size_t size);
   void printFrame(const rectangle_t& r);
-  void printShape(const kuznetsov::Shape* shape, size_t index);
+  void printShape(const Shape* shape, size_t index);
   void print(const Shape* const* fs, size_t s);
 }
 
