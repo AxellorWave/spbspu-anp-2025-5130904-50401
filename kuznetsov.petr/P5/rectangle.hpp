@@ -4,8 +4,8 @@
 
 namespace kuznetsov {
   class Rectangle: public Shape {
-    double width_, height_;
     point_t center_;
+    double width_, height_;
   public:
     Rectangle(double w, double h, point_t c);
     double getArea() const override;

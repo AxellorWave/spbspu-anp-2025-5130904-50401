@@ -2,9 +2,9 @@
 #include <stdexcept>
 
 kuznetsov::Rectangle::Rectangle(double w, double h, point_t c):
+  center_(c),
   width_(w),
-  height_(h),
-  center_(c)
+  height_(h)
 {
   if (w <= 0 || h <= 0) {
     throw std::invalid_argument("Invalid size");
