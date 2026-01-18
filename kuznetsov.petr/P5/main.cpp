@@ -6,15 +6,15 @@
 
 namespace kuznetsov {
   void scaleByPnt(Shape** fs, size_t size, point_t p, double m);
-  double getSumArea(Shape** array, size_t size);
-  rectangle_t getFrame(Shape** array, size_t size);
-  void print(Shape** fs, size_t s);
+  double getSumArea(const Shape* const* array, size_t size);
+  rectangle_t getFrame(const Shape* const* array, size_t size);
+  void print(const Shape* const* fs, size_t s);
 }
 
 int main()
 {
   namespace kuz = kuznetsov;
-  kuz::Shape* figs[3] {nullptr, nullptr, nullptr};
+  kuz::Shape* figs[3]{nullptr, nullptr, nullptr};
   size_t size = 3;
   int statusCode = 0;
 
@@ -67,7 +67,7 @@ void kuznetsov::scaleByPnt(Shape** fs, size_t size, point_t p, double m)
   }
 }
 
-double kuznetsov::getSumArea(Shape** array, size_t size)
+double kuznetsov::getSumArea(const Shape* const* array, size_t size)
 {
   if (!size || array == nullptr) {
     throw std::invalid_argument("Empty array of shapes");
@@ -79,7 +79,7 @@ double kuznetsov::getSumArea(Shape** array, size_t size)
   return finalArea;
 }
 
-kuznetsov::rectangle_t kuznetsov::getFrame(Shape** array, size_t size)
+kuznetsov::rectangle_t kuznetsov::getFrame(const Shape* const* array, size_t size)
 {
   if (!size || array == nullptr) {
     throw std::invalid_argument("Empty array of shapes");
@@ -92,7 +92,7 @@ kuznetsov::rectangle_t kuznetsov::getFrame(Shape** array, size_t size)
   double minX = fr.pos.x - fr.width / 2;
 
   for (size_t i = 1; i < size; ++i) {
-    Shape* f = array[i];
+    const Shape* f = array[i];
     fr = f->getFrameRect();
     maxY = std::max(maxY, fr.pos.y + fr.height / 2);
     maxX = std::max(maxX, fr.pos.x + fr.width / 2);
@@ -108,7 +108,7 @@ kuznetsov::rectangle_t kuznetsov::getFrame(Shape** array, size_t size)
   return genericFrame;
 }
 
-void kuznetsov::print(Shape** fs, size_t s)
+void kuznetsov::print(const Shape* const* fs, size_t s)
 {
   for (size_t i = 0; i < s; ++i) {
     rectangle_t fr = fs[i]->getFrameRect();
