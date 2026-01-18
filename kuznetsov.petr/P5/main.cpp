@@ -7,7 +7,7 @@
 namespace kuznetsov {
   void scaleByPnt(Shape** fs, size_t size, point_t p, double m);
   double getSumArea(Shape** array, size_t size);
-  rectangle_t getGenericFrame(Shape** array, size_t size);
+  rectangle_t getFrame(Shape** array, size_t size);
   void print(Shape** fs, size_t s);
 }
 
@@ -79,7 +79,7 @@ double kuznetsov::getSumArea(Shape** array, size_t size)
   return finalArea;
 }
 
-kuznetsov::rectangle_t kuznetsov::getGenericFrame(Shape** array, size_t size)
+kuznetsov::rectangle_t kuznetsov::getFrame(Shape** array, size_t size)
 {
   if (!size || array == nullptr) {
     throw std::invalid_argument("Empty array of shapes");
@@ -121,7 +121,7 @@ void kuznetsov::print(Shape** fs, size_t s)
     std::cout << " " << "y = " << fr.pos.y << '\n';
   }
   std::cout << "SumArea: " << getSumArea(fs, s);
-  rectangle_t genFr = getGenericFrame(fs, s);
+  rectangle_t genFr = getFrame(fs, s);
   std::cout << "\nGeneric frame: ";
   std::cout << "\n\tWidth: " << genFr.width;
   std::cout << "\n\tHeight: " << genFr.height;
