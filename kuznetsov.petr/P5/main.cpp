@@ -8,6 +8,8 @@ namespace kuznetsov {
   void scaleByPnt(Shape** fs, size_t size, point_t p, double m);
   double getSumArea(const Shape* const* array, size_t size);
   rectangle_t getFrame(const Shape* const* array, size_t size);
+  void printFrame(const rectangle_t& r);
+  void printShape(const kuznetsov::Shape* shape, size_t index);
   void print(const Shape* const* fs, size_t s);
 }
 
@@ -108,23 +110,29 @@ kuznetsov::rectangle_t kuznetsov::getFrame(const Shape* const* array, size_t siz
   return genericFrame;
 }
 
+void kuznetsov::printFrame(const rectangle_t& r)
+{
+  std::cout << "\t\t" << "Width: " << r.width;
+  std::cout << "\n" << "\t\t" << "Height: " << r.height;
+  std::cout << "\n" << "\t\t" << "Center: x = " << r.pos.x;
+  std::cout << " y = " << r.pos.y << '\n';
+}
+
+void kuznetsov::printShape(const Shape* shape, size_t index)
+{
+  std::cout << "Figure " << index << ":\n";
+  std::cout << "\tArea: " << shape->getArea();
+  std::cout << "\n\tFrame rectangle:\n";
+  printFrame(shape->getFrameRect());
+}
+
 void kuznetsov::print(const Shape* const* fs, size_t s)
 {
   for (size_t i = 0; i < s; ++i) {
-    rectangle_t fr = fs[i]->getFrameRect();
-    std::cout << "Figure " << i << ":\n";
-    std::cout << "\tArea: " << fs[i]->getArea();
-    std::cout << "\n\tFrame rectangle: ";
-    std::cout << "\n\t\tWidth: " << fr.width;
-    std::cout << "\n\t\tHeight: " << fr.height;
-    std::cout << "\n\t\tCenter: " << "x = " << fr.pos.x;
-    std::cout << " " << "y = " << fr.pos.y << '\n';
+    printShape(fs[i], i);
   }
-  std::cout << "SumArea: " << getSumArea(fs, s);
-  rectangle_t genFr = getFrame(fs, s);
-  std::cout << "\nGeneric frame: ";
-  std::cout << "\n\tWidth: " << genFr.width;
-  std::cout << "\n\tHeight: " << genFr.height;
-  std::cout << "\n\tCenter: " << "x = " << genFr.pos.x;
-  std::cout << " " << "y = " << genFr.pos.y << '\n';
+
+  std::cout << "SumArea: " << getSumArea(fs, s) << '\n';
+  std::cout << "Generic frame:\n";
+  printFrame(getFrame(fs, s));
 }
