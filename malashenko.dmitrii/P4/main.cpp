@@ -118,6 +118,7 @@ int main()
   char * str = mal::getLine(std::cin);
   if (!str || std::cin.fail()) {
     std::cerr << "problem with input\n";
+    delete[] str;
     return 1;
   }
   size_t size = mal::strLen(str);
