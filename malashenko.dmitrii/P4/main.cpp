@@ -116,11 +116,16 @@ int main()
 {
   namespace mal = malashenko;
   char * str = mal::getLine(std::cin);
-  if (!str) {
+  if (!str || std::cin.fail()) {
     std::cerr << "problem with input\n";
     return 1;
   }
   size_t size = mal::strLen(str);
+  if (!size) {
+    std::cerr << "The input must not be empty\n";
+    delete[] str;
+    return 1;
+  }
   size_t isRepDgt = mal::repDgt(str, size);
   char * noVolStr = mal::rmvVol(str, size);
 
