@@ -79,6 +79,10 @@ void vasyakin::scaleByPnt(Shape** figures, size_t size, const point_t& k, double
   {
     throw std::invalid_argument("Empty size or array");
   }
+  if (a <= 0)
+  {
+    throw std::invalid_argument("scale coefficient must be positive");
+  }
   for (size_t i = 0; i < size; ++i)
   {
     const point_t g = figures[i]->getFrameRect().pos;
