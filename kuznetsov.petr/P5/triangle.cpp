@@ -32,17 +32,13 @@ double kuznetsov::Triangle::getArea() const
 
 kuznetsov::rectangle_t kuznetsov::Triangle::getFrameRect() const
 {
-  rectangle_t frame{};
   double maxX = std::max(a_.x, std::max(b_.x, c_.x));
   double minX = std::min(a_.x, std::min(b_.x, c_.x));
   double maxY = std::max(a_.y, std::max(b_.y, c_.y));
   double minY = std::min(a_.y, std::min(b_.y, c_.y));
   double cx = (maxX + minX) / 2;
   double cy = (maxY + minY) / 2;
-  frame.height = maxY - minY;
-  frame.width = maxX - minX;
-  frame.pos = {cx, cy};
-  return frame;
+  return {maxX - minX, maxY - minY, {cx, cy}};
 }
 
 void kuznetsov::Triangle::move(point_t p)
