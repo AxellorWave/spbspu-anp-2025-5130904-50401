@@ -26,9 +26,9 @@ namespace vasyakin
     virtual ~Shape() = default;
   };
 
-  struct Rectangle : Shape
+  struct Rectangle: Shape
   {
-    Rectangle(double width, double height, point_t pos);
+    Rectangle(double width, double height, const point_t& pos);
     double getArea() const override;
     rectangle_t getFrameRect() const override;
     void move(const point_t& p) override;
@@ -39,9 +39,9 @@ namespace vasyakin
     point_t pos_;
   };
 
-  struct Triangle : Shape
+  struct Triangle: Shape
   {
-    Triangle(point_t a, point_t b, point_t c);
+    Triangle(const point_t& a, const point_t& b, const point_t& c);
     double getArea() const override;
     rectangle_t getFrameRect() const override;
     void move(const point_t& p) override;
@@ -52,9 +52,9 @@ namespace vasyakin
     point_t a_, b_, c_;
   };
 
-  struct Concave : Shape
+  struct Concave: Shape
   {
-    Concave(point_t a, point_t b, point_t c, point_t d);
+    Concave(const point_t& a, const point_t& b, const point_t& c, const point_t& d);
     double getArea() const override;
     rectangle_t getFrameRect() const override;
     void move(const point_t& p) override;
@@ -63,14 +63,15 @@ namespace vasyakin
     point_t getCenter() const;
   private:
     point_t a_, b_, c_, d_;
-    double triangleArea(point_t p1, point_t p2, point_t p3) const;
+    double triangleArea(const point_t& p1, const point_t& p2, const point_t& p3) const;
   };
-  void ScaleByPnt(Shape ** figures, size_t size, const point_t& k, double a);
-  double getSumArea(Shape** arr, size_t k);
-  rectangle_t getAllFrame(Shape** arr, size_t k);
-  void output(Shape** arr, size_t k);
+  void scaleByPnt(Shape** figures, size_t size, const point_t& k, double a);
+  double getSumArea(const Shape* const* arr, size_t k);
+  rectangle_t getAllFrame(const Shape* const* arr, size_t k);
+  void output(const Shape* const* arr, size_t k);
 }
-void vasyakin::ScaleByPnt(Shape ** figures, size_t size, const point_t& k, double a)
+
+void vasyakin::scaleByPnt(Shape** figures, size_t size, const point_t& k, double a)
 {
   if (!size || figures == nullptr)
   {
@@ -78,15 +79,15 @@ void vasyakin::ScaleByPnt(Shape ** figures, size_t size, const point_t& k, doubl
   }
   for (size_t i = 0; i < size; ++i)
   {
-    point_t g = figures[i]->getFrameRect().pos;
-    double dx = (k.x - g.x) * (a - 1);
-    double dy = (k.y - g.y) * (a - 1);
+    const point_t g = figures[i]->getFrameRect().pos;
+    const double dx = (k.x - g.x) * (a - 1);
+    const double dy = (k.y - g.y) * (a - 1);
     figures[i]->move(dx, dy);
     figures[i]->scale(a);
   }
 }
 
-double vasyakin::getSumArea(Shape** arr, size_t k)
+double vasyakin::getSumArea(const Shape* const* arr, size_t k)
 {
   if (!k || arr == nullptr)
   {
@@ -100,7 +101,7 @@ double vasyakin::getSumArea(Shape** arr, size_t k)
   return final_area;
 }
 
-vasyakin::rectangle_t vasyakin::getAllFrame(Shape** arr, size_t k)
+vasyakin::rectangle_t vasyakin::getAllFrame(const Shape* const* arr, size_t k)
 {
   if (!k || arr == nullptr)
   {
@@ -110,7 +111,7 @@ vasyakin::rectangle_t vasyakin::getAllFrame(Shape** arr, size_t k)
   {
     throw std::invalid_argument("First element is nullptr");
   }
-  rectangle_t AllFrame{};
+  rectangle_t allFrame{};
   rectangle_t fr = arr[0]->getFrameRect();
   double min_x = fr.pos.x - fr.width / 2;
   double max_x = fr.pos.x + fr.width / 2;
@@ -128,13 +129,13 @@ vasyakin::rectangle_t vasyakin::getAllFrame(Shape** arr, size_t k)
     min_y = std::min(min_y, fr.pos.y - fr.height / 2);
     max_y = std::max(max_y, fr.pos.y + fr.height / 2);
   }
-  AllFrame.width = max_x - min_x;
-  AllFrame.height = max_y - min_y;
-  AllFrame.pos = {(min_x + max_x) / 2, (min_y + max_y) / 2};
-  return AllFrame;
+  allFrame.width = max_x - min_x;
+  allFrame.height = max_y - min_y;
+  allFrame.pos = {(min_x + max_x) / 2, (min_y + max_y) / 2};
+  return allFrame;
 }
 
-void vasyakin::output(Shape** arr, size_t k)
+void vasyakin::output(const Shape* const* arr, size_t k)
 {
   if (arr == nullptr)
   {
@@ -142,7 +143,7 @@ void vasyakin::output(Shape** arr, size_t k)
   }
   for (size_t i = 0; i < k; ++i)
   {
-    rectangle_t fr = arr[i]->getFrameRect();
+    const rectangle_t fr = arr[i]->getFrameRect();
     std::cout << "Figure " << i + 1 << ":\n";
     std::cout << "\tArea " << arr[i]->getArea() << '\n';
     std::cout << "\tFrame Rectangle:\n";
@@ -151,14 +152,14 @@ void vasyakin::output(Shape** arr, size_t k)
     std::cout << "\t\tCenter: x = " << fr.pos.x << " y = " << fr.pos.y << '\n';
   }
   std::cout << "SumArea: " << getSumArea(arr, k) << '\n';
-  rectangle_t fr2 = getAllFrame(arr, k);
+  const rectangle_t fr2 = getAllFrame(arr, k);
   std::cout << "AllFrame:\n";
   std::cout << "\tWidth: " << fr2.width << '\n';
   std::cout << "\tHeight: " << fr2.height << '\n';
   std::cout << "\tCenter: x = " << fr2.pos.x << " y = " << fr2.pos.y << '\n';
 }
 
-vasyakin::Rectangle::Rectangle(double width, double height, point_t pos) :
+vasyakin::Rectangle::Rectangle(const double width, const double height, const point_t& pos):
   Shape(),
   width_(width),
   height_(height),
@@ -205,7 +206,7 @@ void vasyakin::Rectangle::scale(double k)
   height_ *= k;
 }
 
-vasyakin::Triangle::Triangle(point_t a, point_t b, point_t c) :
+vasyakin::Triangle::Triangle(const point_t& a, const point_t& b, const point_t& c):
   Shape(),
   a_(a),
   b_(b),
@@ -277,7 +278,7 @@ vasyakin::point_t vasyakin::Concave::getCenter() const
   return d_;
 }
 
-vasyakin::Concave::Concave(point_t a, point_t b, point_t c, point_t d) :
+vasyakin::Concave::Concave(const point_t& a, const point_t& b, const point_t& c, const point_t& d):
   Shape(),
   a_(a),
   b_(b),
@@ -340,14 +341,14 @@ void vasyakin::Concave::scale(double k)
   c_.y = center.y + (c_.y - center.y) * k;
 }
 
-double vasyakin::Concave::triangleArea(point_t p1, point_t p2, point_t p3) const
+double vasyakin::Concave::triangleArea(const point_t& p1, const point_t& p2, const point_t& p3) const
 {
   return 0.5 * std::abs((p2.x - p1.x) * (p3.y - p1.y) - (p3.x - p1.x) * (p2.y - p1.y));
 }
 
 int main()
 {
-  vasyakin::Shape* figures[3] = {nullptr, nullptr, nullptr};
+  vasyakin::Shape** figures = new vasyakin::Shape*[3]{nullptr, nullptr, nullptr};
   size_t k = 3;
   double l = 0.0;
   vasyakin::point_t a = {0.0, 0.0};
@@ -364,12 +365,13 @@ int main()
     figures[1] = new vasyakin::Triangle{{10, 3}, {12, 4}, {8, 9}};
     figures[2] = new vasyakin::Concave{{11, 9}, {4, 7}, {10, 4}, {6, 5}};
     vasyakin::output(figures, k);
-    vasyakin::ScaleByPnt(figures, k, a, l);
+    vasyakin::scaleByPnt(figures, k, a, l);
     vasyakin::output(figures, k);
     for (size_t i = 0; i < k; ++i)
     {
       delete figures[i];
     }
+    delete[] figures;
     return 0;
   }
   catch(const std::bad_alloc& e)
