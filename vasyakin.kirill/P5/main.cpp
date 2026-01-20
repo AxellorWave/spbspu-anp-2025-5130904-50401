@@ -111,7 +111,6 @@ vasyakin::rectangle_t vasyakin::getAllFrame(const Shape* const* arr, size_t k)
   {
     throw std::invalid_argument("First element is nullptr");
   }
-  rectangle_t allFrame{};
   rectangle_t fr = arr[0]->getFrameRect();
   double min_x = fr.pos.x - fr.width / 2;
   double max_x = fr.pos.x + fr.width / 2;
@@ -129,9 +128,11 @@ vasyakin::rectangle_t vasyakin::getAllFrame(const Shape* const* arr, size_t k)
     min_y = std::min(min_y, fr.pos.y - fr.height / 2);
     max_y = std::max(max_y, fr.pos.y + fr.height / 2);
   }
-  allFrame.width = max_x - min_x;
-  allFrame.height = max_y - min_y;
-  allFrame.pos = {(min_x + max_x) / 2, (min_y + max_y) / 2};
+  rectangle_t allFrame{
+    max_x - min_x,
+    max_y - min_y,
+    {(min_x + max_x) / 2, (min_y + max_y) / 2}
+  };
   return allFrame;
 }
 
