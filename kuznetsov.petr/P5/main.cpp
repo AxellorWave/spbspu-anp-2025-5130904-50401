@@ -86,7 +86,6 @@ kuznetsov::rectangle_t kuznetsov::getFrame(const Shape* const* array, size_t siz
   if (!size || array == nullptr) {
     throw std::invalid_argument("Empty array of shapes");
   }
-  rectangle_t genericFrame{};
   rectangle_t fr = array[0]->getFrameRect();
   double maxY = fr.pos.y + fr.height / 2;
   double minY = fr.pos.y - fr.height / 2;
@@ -104,10 +103,7 @@ kuznetsov::rectangle_t kuznetsov::getFrame(const Shape* const* array, size_t siz
 
   double cx = (maxX + minX) / 2;
   double cy = (maxY + minY) / 2;
-  genericFrame.width = maxX - minX;
-  genericFrame.height = maxY - minY;
-  genericFrame.pos = {cx, cy};
-  return genericFrame;
+  return {maxX - minX, maxY - minY, {cx, cy}};
 }
 
 void kuznetsov::printFrame(const rectangle_t& r)
