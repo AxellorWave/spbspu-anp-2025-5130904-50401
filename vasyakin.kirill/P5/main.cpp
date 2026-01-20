@@ -68,7 +68,9 @@ namespace vasyakin
   void scaleByPnt(Shape** figures, size_t size, const point_t& k, double a);
   double getSumArea(const Shape* const* arr, size_t k);
   rectangle_t getAllFrame(const Shape* const* arr, size_t k);
-  void output(const Shape* const* arr, size_t k);
+  void printFrame(const rectangle_t& r);
+  void printShape(const Shape* arr, size_t i);
+  void print(const Shape* const* figures, size_t k);
 }
 
 void vasyakin::scaleByPnt(Shape** figures, size_t size, const point_t& k, double a)
@@ -136,28 +138,35 @@ vasyakin::rectangle_t vasyakin::getAllFrame(const Shape* const* arr, size_t k)
   return allFrame;
 }
 
-void vasyakin::output(const Shape* const* arr, size_t k)
+void vasyakin::printFrame(const rectangle_t& r)
 {
-  if (arr == nullptr)
+  std::cout << "\t\t" << "Width: " << r.width << "\n";
+  std::cout << "\t\t" << "Height: " << r.height << "\n";
+  std::cout << "\t\t" << "Center: x = " << r.pos.x;
+  std::cout << " y = " << r.pos.y << '\n';
+}
+
+void vasyakin::printShape(const Shape* shape, size_t i)
+{
+  std::cout << "Figure " << i + 1 << ":\n";
+  std::cout << "\tArea: " << shape->getArea();
+  std::cout << "\n\tFrame rectangle:\n";
+  printFrame(shape->getFrameRect());
+}
+
+void vasyakin::print(const Shape* const* figures, size_t k)
+{
+  if (figures == nullptr)
   {
     throw std::invalid_argument("Invalid arr");
   }
   for (size_t i = 0; i < k; ++i)
   {
-    const rectangle_t fr = arr[i]->getFrameRect();
-    std::cout << "Figure " << i + 1 << ":\n";
-    std::cout << "\tArea " << arr[i]->getArea() << '\n';
-    std::cout << "\tFrame Rectangle:\n";
-    std::cout << "\t\tWidth: " << fr.width << '\n';
-    std::cout << "\t\tHeight: " << fr.height << '\n';
-    std::cout << "\t\tCenter: x = " << fr.pos.x << " y = " << fr.pos.y << '\n';
+    printShape(figures[i], i);
   }
-  std::cout << "SumArea: " << getSumArea(arr, k) << '\n';
-  const rectangle_t fr2 = getAllFrame(arr, k);
-  std::cout << "AllFrame:\n";
-  std::cout << "\tWidth: " << fr2.width << '\n';
-  std::cout << "\tHeight: " << fr2.height << '\n';
-  std::cout << "\tCenter: x = " << fr2.pos.x << " y = " << fr2.pos.y << '\n';
+  std::cout << "SumArea: " << getSumArea(figures, k) << '\n';
+  std::cout << "Generic frame:\n";
+  printFrame(getAllFrame(figures, k));
 }
 
 vasyakin::Rectangle::Rectangle(const double width, const double height, const point_t& pos):
@@ -365,9 +374,9 @@ int main()
     figures[0] = new vasyakin::Rectangle{3.0, 6.0, {6.0, 4.0}};
     figures[1] = new vasyakin::Triangle{{10, 3}, {12, 4}, {8, 9}};
     figures[2] = new vasyakin::Concave{{11, 9}, {4, 7}, {10, 4}, {6, 5}};
-    vasyakin::output(figures, k);
+    vasyakin::print(figures, k);
     vasyakin::scaleByPnt(figures, k, a, l);
-    vasyakin::output(figures, k);
+    vasyakin::print(figures, k);
     for (size_t i = 0; i < k; ++i)
     {
       delete figures[i];
