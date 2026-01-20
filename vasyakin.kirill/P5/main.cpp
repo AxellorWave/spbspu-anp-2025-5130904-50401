@@ -238,16 +238,11 @@ double vasyakin::Triangle::getArea() const
 
 vasyakin::rectangle_t vasyakin::Triangle::getFrameRect() const
 {
-  rectangle_t fr_rect;
   double min_x = std::min({a_.x, b_.x, c_.x});
   double max_x = std::max({a_.x, b_.x, c_.x});
   double min_y = std::min({a_.y, b_.y, c_.y});
   double max_y = std::max({a_.y, b_.y, c_.y});
-  fr_rect.pos.x = (min_x + max_x) / 2.0;
-  fr_rect.pos.y = (min_y + max_y) / 2.0;
-  fr_rect.width = max_x - min_x;
-  fr_rect.height = max_y - min_y;
-  return fr_rect;
+  return {max_x - min_x, max_y - min_y, {(min_x + max_x) / 2.0, (min_y + max_y) / 2.0}};
 }
 
 void vasyakin::Triangle::move(const point_t& p)
@@ -305,16 +300,11 @@ double vasyakin::Concave::getArea() const
 
 vasyakin::rectangle_t vasyakin::Concave::getFrameRect() const
 {
-  rectangle_t fr_rect;
   double min_x = std::min({a_.x, b_.x, c_.x, d_.x});
   double max_x = std::max({a_.x, b_.x, c_.x, d_.x});
   double min_y = std::min({a_.y, b_.y, c_.y, d_.y});
   double max_y = std::max({a_.y, b_.y, c_.y, d_.y});
-  fr_rect.pos.x = (min_x + max_x) / 2.0;
-  fr_rect.pos.y = (min_y + max_y) / 2.0;
-  fr_rect.width = max_x - min_x;
-  fr_rect.height = max_y - min_y;
-  return fr_rect;
+  return {max_x - min_x, max_y - min_y, {(min_x + max_x) / 2.0, (min_y + max_y) / 2.0}};
 }
 
 void vasyakin::Concave::move(const point_t& p)
