@@ -192,11 +192,7 @@ double vasyakin::Rectangle::getArea() const
 
 vasyakin::rectangle_t vasyakin::Rectangle::getFrameRect() const
 {
-  rectangle_t fr_rect;
-  fr_rect.width = width_;
-  fr_rect.height = height_;
-  fr_rect.pos = pos_;
-  return fr_rect;
+  return {width_, height_, pos_};
 }
 
 void vasyakin::Rectangle::move(const point_t& p)
