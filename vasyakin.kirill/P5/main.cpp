@@ -225,10 +225,7 @@ vasyakin::Triangle::Triangle(const point_t& a, const point_t& b, const point_t& 
 
 vasyakin::point_t vasyakin::Triangle::getCenter() const
 {
-  point_t center;
-  center.x = (a_.x + b_.x + c_.x) / 3.0;
-  center.y = (a_.y + b_.y + c_.y) / 3.0;
-  return center;
+  return {(a_.x + b_.x + c_.x) / 3.0, (a_.y + b_.y + c_.y) / 3.0};
 }
 
 double vasyakin::Triangle::getArea() const
@@ -357,6 +354,7 @@ int main()
   if (!std::cin || l <= 0.0)
   {
     std::cerr << "Bad input\n";
+    delete[] figures;
     return 1;
   }
   try
@@ -390,5 +388,6 @@ int main()
   {
     delete figures[i];
   }
+  delete[] figures;
   return 1;
 }
