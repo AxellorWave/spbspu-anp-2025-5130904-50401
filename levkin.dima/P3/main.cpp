@@ -7,7 +7,6 @@
 
 namespace levkin
 {
-  size_t max(size_t a, size_t b) { return a > b ? a : b; }
   int * copy(const int *, size_t);
   std::istream &read_matrix(std::istream &, int *, size_t, size_t, size_t &);
   std::ostream &print_matrix(std::ostream &output, const int *, size_t , size_t );
@@ -218,7 +217,7 @@ size_t levkin::num_col_lsr(int const *buffer, size_t rows, size_t cols)
       } else {
         cur_len = 1;
       }
-      max_len = levkin::max(max_len, cur_len);
+      max_len = std::max(max_len, cur_len);
     }
     if (max_len > best_len) {
       best_len = max_len;
