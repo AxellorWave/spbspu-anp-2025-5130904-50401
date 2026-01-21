@@ -8,11 +8,9 @@
 namespace levkin
 {
   size_t max(size_t a, size_t b) { return a > b ? a : b; }
-
   int * copy(const int *, size_t);
   std::istream &read_matrix(std::istream &, int *, size_t, size_t, size_t &);
   std::ostream &print_matrix(std::ostream &output, const int *, size_t , size_t );
-
   int *lft_bot_ctn(int const *, size_t, size_t);
   size_t num_col_lsr(int const *, size_t, size_t);
 }
