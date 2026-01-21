@@ -32,9 +32,12 @@ void kuznetsov::Rectangle::move(double dx, double dy)
   center_.y += dy;
 }
 
-void kuznetsov::Rectangle::scale(double m)
+void kuznetsov::Rectangle::scale(double positiveK)
 {
-  width_ *= m;
-  height_ *= m;
+  if (positiveK <= 0.0) {
+    throw std::invalid_argument("Scale factor must be positive");
+  }
+  width_ *= positiveK;
+  height_ *= positiveK;
 }
 

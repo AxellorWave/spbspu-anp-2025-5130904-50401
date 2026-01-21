@@ -44,9 +44,13 @@ int main()
   if (statusCode == 0) {
     std::cout << "Before:\n";
     kuz::print(figs, size);
-    kuz::scaleByPnt(figs, size, p, m);
-    std::cout << "After:\n";
-    kuz::print(figs, size);
+    try {
+      kuz::scaleByPnt(figs, size, p, m);
+      std::cout << "After:\n";
+      kuz::print(figs, size);
+    } catch (...) {
+      statusCode = 1;
+    }
   }
 
   delete figs[0];
