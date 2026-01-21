@@ -31,16 +31,11 @@ int main(int argc, char **argv)
   try
   {
     char * mode_str = argv[1];
-    if (mode_str[0] == '1')
-    {
+    if (mode_str[0] == '1') {
         mode = 1;
-    }
-    else if (mode_str[0] == '2')
-    {
+    } else if (mode_str[0] == '2') {
         mode = 2;
-    }
-    else
-    {
+    } else {
         throw std::runtime_error("Wierd mode");
     }
 
