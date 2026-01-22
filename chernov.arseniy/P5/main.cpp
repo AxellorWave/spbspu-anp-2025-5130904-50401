@@ -65,7 +65,7 @@ namespace chernov {
   void scaleByPoint(Shape ** shapes, size_t count, double k, point_t p);
   rectangle_t getBoundingRect(const Shape * const * shapes, size_t count);
   std::ostream & printShapeInfo(std::ostream & out, const Shape * shape, const char * name);
-  std::ostream & printShapesInfo(std::ostream & out, const Shape * const * shapes, const char ** names, size_t count);
+  std::ostream & printShapesInfo(std::ostream & out, const Shape * const * shapes, const char * const * names, size_t count);
 }
 
 int main()
@@ -181,7 +181,7 @@ std::ostream & chernov::printShapeInfo(std::ostream & out, const Shape * shape, 
   return out;
 }
 
-std::ostream & chernov::printShapesInfo(std::ostream & out, const Shape * const * shapes, const char ** names, size_t count)
+std::ostream & chernov::printShapesInfo(std::ostream & out, const Shape * const * shapes, const char * const * names, size_t count)
 {
   double total_area = 0;
   for (size_t i = 0; i < count; ++i) {
