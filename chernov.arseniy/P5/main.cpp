@@ -197,7 +197,7 @@ std::ostream & chernov::printShapesInfo(std::ostream & out, const Shape * const 
     double area = shapes[i]->getArea();
     rectangle_t frame = shapes[i]->getFrameRect();
     printShapeInfo(out, area, frame, names[i]) << "\n";
-    total_area += shapes[i]->getArea();
+    total_area += area;
   }
   rectangle_t total_frame = getBoundingRect(shapes, count);
   printShapeInfo(out, total_area, total_frame, "Total");
