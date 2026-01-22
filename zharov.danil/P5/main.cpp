@@ -145,7 +145,7 @@ zharov::Polygon & zharov::Polygon::operator=(const Polygon & polygon)
   if (this == &polygon) {
     return *this;
   }
-  point_t * points = new point_t[polygon.size_]; 
+  point_t * points = new point_t[polygon.size_];
   for (size_t i = 0; i < size_; ++i) {
     points[i] = polygon.points_[i];
   }
@@ -259,7 +259,6 @@ double zharov::getAreaUni(const point_t * points, size_t size)
 
 zharov::rectangle_t zharov::getFrameRectUni(const point_t * points, size_t size)
 {
-  rectangle_t frame;
   double min_x = points[0].x;
   double max_x = points[0].x;
   double min_y = points[0].y;
@@ -270,10 +269,10 @@ zharov::rectangle_t zharov::getFrameRectUni(const point_t * points, size_t size)
     min_y = std::min(min_y, points[i].y);
     max_y = std::max(max_y, points[i].y);
   }
-  frame.width = max_x - min_x;
-  frame.height = max_y - min_y;
-  frame.pos = {min_x + frame.width / 2, min_y + frame.height / 2};
-  return frame;
+  double width = max_x - min_x;
+  double height = max_y - min_y;
+  point_t pos = {min_x + width / 2, min_y + height / 2};
+  return {width, height, pos};
 }
 
 zharov::rectangle_t zharov::Concave::getFrameRect() const
@@ -330,21 +329,14 @@ double zharov::getAreaAll(Shape * shapes[], size_t size)
 
 zharov::rectangle_t zharov::getFrameRectAll(Shape * shapes[], size_t size)
 {
-  rectangle_t frame = shapes[0]->getFrameRect();
-  double min_x = frame.pos.x - frame.width / 2;
-  double max_x = frame.pos.x + frame.width / 2;
-  double min_y = frame.pos.y - frame.height / 2;
-  double max_y = frame.pos.y + frame.height / 2;
-  for (size_t i = 1; i < size; ++i) {
-    frame = shapes[i]->getFrameRect();
-    min_x = std::min(min_x, frame.pos.x - frame.width / 2);
-    max_x = std::max(max_x, frame.pos.x + frame.width / 2);
-    min_y = std::min(min_y, frame.pos.y - frame.height / 2);
-    max_y = std::max(max_y, frame.pos.y + frame.height / 2);
+  point_t * points = new point_t[size * 2];
+  for (size_t i = 0; i < size; ++i) {
+    rectangle_t frame = shapes[i]->getFrameRect();
+    points[i * 2] = {frame.pos.x - frame.width / 2, frame.pos.y - frame.height / 2};
+    points[i * 2 + 1] = {frame.pos.x + frame.width / 2, frame.pos.y + frame.height / 2};
   }
-  frame.width = max_x - min_x;
-  frame.height = max_y - min_y;
-  frame.pos = {min_x + frame.width / 2, min_y + frame.height / 2};
+  rectangle_t frame = getFrameRectUni(points, size * 2);
+  delete[] points;
   return frame;
 }
 
