@@ -1,6 +1,7 @@
 #ifndef SHAPE_HPP
 #define SHAPE_HPP
 #include "geom.hpp"
+#include <stdexcept>
 namespace kuznetsov {
 
   struct Shape {
@@ -10,6 +11,13 @@ namespace kuznetsov {
     virtual void move(double dx, double dy) = 0;
     virtual void scale(double positiveK) = 0;
     virtual ~Shape() = default;
+    void scaleSafe(double positiveK)
+    {
+      if (positiveK <= 0.0) {
+        throw std::invalid_argument("Scale factor must be positive");
+      }
+      scale(positiveK);
+    }
   };
 
 }

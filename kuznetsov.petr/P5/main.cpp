@@ -45,6 +45,7 @@ int main()
     std::cout << "Before:\n";
     kuz::print(figs, size);
     try {
+      figs[2]->scaleSafe(m);
       kuz::scaleByPnt(figs, size, p, m);
       std::cout << "After:\n";
       kuz::print(figs, size);

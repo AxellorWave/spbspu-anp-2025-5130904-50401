@@ -33,9 +33,6 @@ void kuznetsov::Square::move(double dx, double dy)
 
 void kuznetsov::Square::scale(double positiveK)
 {
-  if (positiveK <= 0.0) {
-    throw std::invalid_argument("Scale factor must be positive");
-  }
   len_ *= positiveK;
 }
 

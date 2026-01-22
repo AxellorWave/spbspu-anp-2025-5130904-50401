@@ -65,9 +65,6 @@ void kuznetsov::Triangle::move(double dx, double dy)
 
 void kuznetsov::Triangle::scale(double positiveK)
 {
-  if (positiveK <= 0.0) {
-    throw std::invalid_argument("Scale factor must be positive");
-  }
   point_t dpa {a_.x - center_.x , a_.y - center_.y};
   point_t dpb {b_.x - center_.x , b_.y - center_.y};
   point_t dpc {c_.x - center_.x , c_.y - center_.y};
