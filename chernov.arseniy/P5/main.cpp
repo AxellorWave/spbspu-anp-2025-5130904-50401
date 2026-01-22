@@ -268,7 +268,7 @@ chernov::Polygon::Polygon(const Polygon & p):
 
 chernov::Polygon & chernov::Polygon::operator=(const Polygon & p)
 {
-  if (this == &p) {
+  if (this == std::addressof(p)) {
     return *this;
   }
   point_t * points = new point_t[p.count];
@@ -293,7 +293,7 @@ chernov::Polygon::Polygon(Polygon && p):
 
 chernov::Polygon & chernov::Polygon::operator=(Polygon && p)
 {
-  if (this == &p) {
+  if (this == std::addressof(p)) {
     return *this;
   }
   delete [] verts;
