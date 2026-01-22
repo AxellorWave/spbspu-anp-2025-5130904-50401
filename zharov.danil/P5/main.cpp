@@ -15,7 +15,7 @@ namespace zharov {
     virtual rectangle_t getFrameRect() const = 0;
     virtual void move(point_t p) = 0;
     virtual void move(double dx, double dy) = 0;
-    virtual void scale(double k) = 0;
+    virtual void scale(double positiv_k) = 0;
     virtual ~Shape() = default;
   };
 
@@ -25,7 +25,7 @@ namespace zharov {
     rectangle_t getFrameRect() const override;
     void move(point_t p) override;
     void move(double dx, double dy) override;
-    void scale(double k) override;
+    void scale(double positive_k) override;
   private:
     double width_, height_;
     point_t pos_;
@@ -42,7 +42,7 @@ namespace zharov {
     rectangle_t getFrameRect() const override;
     void move(point_t p) override;
     void move(double dx, double dy) override;
-    void scale(double k) override;
+    void scale(double positive_k) override;
   private:
     size_t size_;
     point_t * points_;
@@ -56,7 +56,7 @@ namespace zharov {
     rectangle_t getFrameRect() const override;
     void move(point_t p) override;
     void move(double dx, double dy) override;
-    void scale(double k) override;
+    void scale(double positive_k) override;
   private:
     point_t points_[4];
     point_t pos_;
@@ -65,7 +65,7 @@ namespace zharov {
   double getAreaUni(const point_t * points, size_t size);
   rectangle_t getFrameRectUni(const point_t * points, size_t size);
   point_t getCentroid(const point_t * points, size_t size);
-  void scaleByPoint(Shape * shapes[], size_t size, point_t p, double k);
+  void scaleByPoint(Shape * shapes[], size_t size, point_t p, double positive_k);
   double getAreaAll(Shape * shapes[], size_t size);
   rectangle_t getFrameRectAll(Shape * shapes[], size_t size);
   void printInfo(Shape * shapes[], size_t size);
@@ -100,10 +100,13 @@ void zharov::Rectangle::move(double dx, double dy)
   pos_.y += dy;
 }
 
-void zharov::Rectangle::scale(double k)
+void zharov::Rectangle::scale(double positive_k)
 {
-  width_ *= k;
-  height_ *= k;
+  if (positive_k <= 0.0) {
+    throw std::invalid_argument("Scale factor must be positive");
+  }
+  width_ *= positive_k;
+  height_ *= positive_k;
 }
 
 zharov::Polygon::Polygon(const point_t * points, size_t size):
@@ -214,11 +217,14 @@ zharov::point_t zharov::getCentroid(const point_t * points, size_t size)
   return {cx / (std::abs(area) * 6.0), cy / (std::abs(area) * 6.0)};
 }
 
-void zharov::Polygon::scale(double k)
+void zharov::Polygon::scale(double positive_k)
 {
+  if (positive_k <= 0.0) {
+    throw std::invalid_argument("Scale factor must be positive");
+  }
   for (size_t i = 0; i < size_; ++i) {
-    points_[i].x = pos_.x + (points_[i].x - pos_.x) * k;
-    points_[i].y = pos_.y + (points_[i].y - pos_.y) * k;
+    points_[i].x = pos_.x + (points_[i].x - pos_.x) * positive_k;
+    points_[i].y = pos_.y + (points_[i].y - pos_.y) * positive_k;
   }
 }
 
@@ -290,22 +296,25 @@ void zharov::Concave::move(double dx, double dy)
   pos_.y += dy;
 }
 
-void zharov::Concave::scale(double k)
+void zharov::Concave::scale(double positive_k)
 {
+  if (positive_k <= 0.0) {
+    throw std::invalid_argument("Scale factor must be positive");
+  }
   for (size_t i = 0; i < 4; ++i) {
-    points_[i].x = pos_.x + (points_[i].x - pos_.x) * k;
-    points_[i].y = pos_.y + (points_[i].y - pos_.y) * k;
+    points_[i].x = pos_.x + (points_[i].x - pos_.x) * positive_k;
+    points_[i].y = pos_.y + (points_[i].y - pos_.y) * positive_k;
   }
 }
 
-void zharov::scaleByPoint(Shape * shapes[], size_t size, point_t p, double k)
+void zharov::scaleByPoint(Shape * shapes[], size_t size, point_t p, double positive_k)
 {
   for (size_t i = 0; i < size; ++i) {
     point_t pos = shapes[i]->getFrameRect().pos;
     shapes[i]->move(p);
-    double dx = k * (pos.x - shapes[i]->getFrameRect().pos.x);
-    double dy = k * (pos.y - shapes[i]->getFrameRect().pos.y);
-    shapes[i]->scale(k);
+    double dx = positive_k * (pos.x - shapes[i]->getFrameRect().pos.x);
+    double dy = positive_k * (pos.y - shapes[i]->getFrameRect().pos.y);
+    shapes[i]->scale(positive_k);
     shapes[i]->move(dx, dy);
   }
 }
@@ -360,15 +369,6 @@ void zharov::printInfoHelp(double area, rectangle_t frame)
 
 int main()
 {
-  double k = 0.0;
-  zharov::point_t p;
-  std::cout << "Ente p.x, p.y, k: ";
-  std::cin >> p.x >> p.y >> k;
-  if (!std::cin || k < 0) {
-    std::cerr << "Bad enter\n";
-    return 1;
-  }
-
   zharov::Shape * shapes[3] = {nullptr, nullptr, nullptr};
   zharov::point_t points_polygon[3] = {{0, 0}, {4, 0}, {0, 3}};
   int code = 0;
@@ -376,15 +376,23 @@ int main()
     shapes[0] = new zharov::Rectangle(5, 7, {0,0});
     shapes[1] = new zharov::Concave({0, 2}, {-2, -3}, {2, 0}, {0, 0});
     shapes[2] = new zharov::Polygon(points_polygon, 3);
+    zharov::printInfo(shapes, 3);
+
+    double positive_k = 0.0;
+    zharov::point_t p;
+    std::cout << "Enter p.x, p.y, positive k: ";
+    std::cin >> p.x >> p.y >> positive_k;
+    if (!std::cin) {
+      std::cerr << "Bad enter\n";
+      code = 1;
+    } else {
+      zharov::scaleByPoint(shapes, 3, {p.x, p.y}, positive_k);
+      std::cout << "\n";
+      zharov::printInfo(shapes, 3);
+    }
   } catch (const std::exception & e) {
     std::cerr << e.what() << "\n";
     code = 1;
-  }
-  if (code == 0) {
-    zharov::printInfo(shapes, 3);
-    zharov::scaleByPoint(shapes, 3, {p.x, p.y}, k);
-    std::cout << "\n";
-    zharov::printInfo(shapes, 3);
   }
 
   delete shapes[0];
