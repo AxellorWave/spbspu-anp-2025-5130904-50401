@@ -63,6 +63,7 @@ namespace chernov {
   };
 
   void scaleByPoint(Shape ** shapes, size_t count, double k, point_t p);
+  rectangle_t getFrameRectByVerts(const point_t * verts, size_t count);
   rectangle_t getBoundingRect(const Shape * const * shapes, size_t count);
   std::ostream & printShapeInfo(std::ostream & out, const Shape * shape, const char * name);
   std::ostream & printShapesInfo(std::ostream & out, const Shape * const * shapes, const char * const * names, size_t count);
@@ -103,27 +104,27 @@ int main()
 
     output << "\n\nEnter x, y and k: ";
 
+    double x = 0, y = 0, k = 0;
+    while (std::cin >> x >> y >> k) {
+      if (k <= 0.0) {
+        std::cerr << "k cannot be less than or equal to zero\n";
+        result = 1;
+        break;
+      }
+      scaleByPoint(shapes, count, k, {x, y});
+      output << "\n\n";
+      printShapesInfo(output, shapes, names, count);
+      output << "\n\nEnter x, y and k: ";
+    }
+
+    if (std::cin.fail() && (!std::cin.eof() || k == 0)) {
+      std::cerr << "bad input\n";
+      result = 1;
+    }
+
   } catch (const std::bad_alloc & e) {
     std::cerr << "bad alloc\n";
     result = 2;
-  }
-
-  double x = 0, y = 0, k = 0;
-  while (!result && std::cin >> x >> y >> k) {
-    if (k <= 0.0) {
-      std::cerr << "k cannot be less than or equal to zero\n";
-      result = 1;
-      break;
-    }
-    scaleByPoint(shapes, count, k, {x, y});
-    output << "\n\n";
-    printShapesInfo(output, shapes, names, count);
-    output << "\n\nEnter x, y and k: ";
-  }
-
-  if (std::cin.fail() && (!std::cin.eof() || k == 0)) {
-    std::cerr << "bad input\n";
-    result = 1;
   }
 
   for (size_t i = 0; i < count; ++i) {
@@ -149,24 +150,33 @@ void chernov::scaleByPoint(Shape ** shapes, size_t count, double k, point_t p)
   }
 }
 
-chernov::rectangle_t chernov::getBoundingRect(const Shape * const * shapes, size_t count)
+chernov::rectangle_t chernov::getFrameRectByVerts(const point_t * verts, size_t count)
 {
-  rectangle_t frame = shapes[0]->getFrameRect();
-  double min_x = frame.pos.x - frame.width / 2;
-  double min_y = frame.pos.y - frame.height / 2;
-  double max_x = min_x + frame.width;
-  double max_y = min_y + frame.height;
-  for (size_t i = 1; i < count; ++i) {
-    frame = shapes[i]->getFrameRect();
-    min_x = std::min(min_x, frame.pos.x - frame.width / 2);
-    min_y = std::min(min_y, frame.pos.y - frame.height / 2);
-    max_x = std::max(max_x, frame.pos.x + frame.width / 2);
-    max_y = std::max(max_y, frame.pos.y + frame.height / 2);
+  double min_x = verts[0].x, min_y = verts[0].y;
+  double max_x = min_x, max_y = min_y;
+  for (size_t i = 0; i < count; ++i) {
+    min_x = std::min(min_x, verts[i].x);
+    min_y = std::min(min_y, verts[i].y);
+    max_x = std::max(max_x, verts[i].x);
+    max_y = std::max(max_y, verts[i].y);
   }
   double width = max_x - min_x;
   double height = max_y - min_y;
   point_t pos = {min_x + width / 2, min_y + height / 2};
   return {width, height, pos};
+}
+
+chernov::rectangle_t chernov::getBoundingRect(const Shape * const * shapes, size_t count)
+{
+  point_t * verts = new point_t[count * 2];
+  for (size_t i = 0; i < count; ++i) {
+    rectangle_t frame = shapes[i]->getFrameRect();
+    verts[2 * i] = {frame.pos.x - frame.width / 2, frame.pos.y - frame.height / 2};
+    verts[2 * i + 1] = {frame.pos.x + frame.width / 2, frame.pos.y + frame.height / 2};
+  }
+  rectangle_t frame_rect = getFrameRectByVerts(verts, count);
+  delete [] verts;
+  return frame_rect;
 }
 
 std::ostream & chernov::printShapeInfo(std::ostream & out, const Shape * shape, const char * name)
@@ -325,18 +335,7 @@ double chernov::Polygon::getArea() const
 
 chernov::rectangle_t chernov::Polygon::getFrameRect() const
 {
-  double min_x = verts[0].x, min_y = verts[0].y;
-  double max_x = min_x, max_y = min_y;
-  for (size_t i = 0; i < count; ++i) {
-    min_x = std::min(min_x, verts[i].x);
-    min_y = std::min(min_y, verts[i].y);
-    max_x = std::max(max_x, verts[i].x);
-    max_y = std::max(max_y, verts[i].y);
-  }
-  double width = max_x - min_x;
-  double height = max_y - min_y;
-  point_t pos = {min_x + width / 2, min_y + height / 2};
-  return {width, height, pos};
+  return getFrameRectByVerts(verts, count);
 }
 
 void chernov::Polygon::move(point_t p)
