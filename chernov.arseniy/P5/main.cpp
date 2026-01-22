@@ -65,7 +65,7 @@ namespace chernov {
   void scaleByPoint(Shape ** shapes, size_t count, double k, point_t p);
   rectangle_t getFrameRectByVerts(const point_t * verts, size_t count);
   rectangle_t getBoundingRect(const Shape * const * shapes, size_t count);
-  std::ostream & printShapeInfo(std::ostream & out, const Shape * shape, const char * name);
+  std::ostream & printShapeInfo(std::ostream & out, double area, rectangle_t frame, const char * name);
   std::ostream & printShapesInfo(std::ostream & out, const Shape * const * shapes, const char * const * names, size_t count);
 }
 
@@ -179,11 +179,10 @@ chernov::rectangle_t chernov::getBoundingRect(const Shape * const * shapes, size
   return frame_rect;
 }
 
-std::ostream & chernov::printShapeInfo(std::ostream & out, const Shape * shape, const char * name)
+std::ostream & chernov::printShapeInfo(std::ostream & out, double area, rectangle_t frame, const char * name)
 {
   out << name << ":\n";
-  out << "  area: " << shape->getArea() << "\n";
-  rectangle_t frame = shape->getFrameRect();
+  out << "  area: " << area << "\n";
   out << "  frame rectangle:\n";
   out << "    width: " << frame.width << "\n";
   out << "    height: " << frame.height << "\n";
@@ -195,15 +194,13 @@ std::ostream & chernov::printShapesInfo(std::ostream & out, const Shape * const 
 {
   double total_area = 0;
   for (size_t i = 0; i < count; ++i) {
-    printShapeInfo(out, shapes[i], names[i]) << "\n";
+    double area = shapes[i]->getArea();
+    rectangle_t frame = shapes[i]->getFrameRect();
+    printShapeInfo(out, area, frame, names[i]) << "\n";
     total_area += shapes[i]->getArea();
   }
-  out << "Total area: " << total_area << "\n";
-  rectangle_t frame = getBoundingRect(shapes, count);
-  out << "Total frame rectangle:\n";
-  out << "  width: " << frame.width << "\n";
-  out << "  height: " << frame.height << "\n";
-  out << "  position: (" << frame.pos.x << "; " << frame.pos.y << ")\n";
+  rectangle_t total_frame = getBoundingRect(shapes, count);
+  printShapeInfo(out, total_area, total_frame, "Total");
   return out;
 }
 
