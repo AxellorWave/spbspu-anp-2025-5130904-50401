@@ -34,7 +34,7 @@ namespace zhuravleva {
     return file;
   }
 
-  size_t colsNoDublicats(int* matrix, size_t rows, size_t cols)
+  size_t colsNoDublicats(const int* matrix, size_t rows, size_t cols)
   {
     if (rows == 0 || cols == 0 || matrix == nullptr)
     {
@@ -59,7 +59,7 @@ namespace zhuravleva {
     return count;
   }
 
-  size_t diagonalsNoZero(int* matrix, size_t rows, size_t cols)
+  size_t diagonalsNoZero(const int* matrix, size_t rows, size_t cols)
   {
     if (rows == 0 || cols == 0 || matrix == nullptr)
     {
@@ -115,7 +115,10 @@ int main(int argc, char* argv[])
     return 1;
   }
   bool isFixedSize = (mode[0] == '1');
+
   int* matrix = nullptr;
+  const int* matrixForRead = nullptr;
+
   size_t rows = 0, cols = 0;
   int fixedBuffer[zhuravleva::maxSize];
   std::ifstream file_input(argv[2]);
@@ -150,9 +153,9 @@ int main(int argc, char* argv[])
     }
     return 2;
   }
-
-  size_t resultForColsNoDublicats = zhuravleva::colsNoDublicats(matrix, rows, cols);
-  size_t resultForDiagonalsNoZero = zhuravleva::diagonalsNoZero(matrix, rows, cols);
+  matrixForRead = matrix;
+  size_t resultForColsNoDublicats = zhuravleva::colsNoDublicats(matrixForRead, rows, cols);
+  size_t resultForDiagonalsNoZero = zhuravleva::diagonalsNoZero(matrixForRead, rows, cols);
 
   std::ofstream file_output(argv[3]);
   if (!file_output) {
