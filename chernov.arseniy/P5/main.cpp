@@ -17,7 +17,7 @@ namespace chernov {
     virtual rectangle_t getFrameRect() const = 0;
     virtual void move(point_t p) = 0;
     virtual void move(double dx, double dy) = 0;
-    virtual void scale(double k) = 0;
+    virtual void scale(double positive_k) = 0;
   };
 
   struct Rectangle: Shape {
@@ -110,7 +110,7 @@ int main()
 
   double x = 0, y = 0, k = 0;
   while (!result && std::cin >> x >> y >> k) {
-    if (k <= 0) {
+    if (k <= 0.0) {
       std::cerr << "k cannot be less than or equal to zero\n";
       result = 1;
       break;
@@ -134,8 +134,8 @@ int main()
 
 void chernov::scaleByPoint(Shape ** shapes, size_t count, double k, point_t p)
 {
-  if (k <= 0) {
-    throw std::invalid_argument("k must be positive");
+  if (k <= 0.0) {
+    throw std::invalid_argument("scale factor must be positive");
   }
   for (size_t i = 0; i < count; ++i) {
     Shape * shape = shapes[i];
@@ -230,6 +230,9 @@ void chernov::Rectangle::move(double dx, double dy)
 
 void chernov::Rectangle::scale(double k)
 {
+  if (k <= 0.0) {
+    throw std::invalid_argument("scale factor must be positive");
+  }
   side_x *= k;
   side_y *= k;
 }
@@ -355,6 +358,9 @@ void chernov::Polygon::move(double dx, double dy)
 
 void chernov::Polygon::scale(double k)
 {
+  if (k <= 0.0) {
+    throw std::invalid_argument("scale factor must be positive");
+  }
   for (size_t i = 0; i < count; ++i) {
     double dx = k * (verts[i].x - center.x);
     double dy = k * (verts[i].y - center.y);
@@ -425,6 +431,9 @@ void chernov::Bubble::move(double dx, double dy)
 
 void chernov::Bubble::scale(double k)
 {
+  if (k <= 0.0) {
+    throw std::invalid_argument("scale factor must be positive");
+  }
   radius *= k;
   double dx = center.x - anchor.x;
   double dy = center.y - anchor.y;
