@@ -76,34 +76,40 @@ int main()
   int result = 0;
 
   const size_t count = 5;
-  Shape * shapes[count];
+  Shape * shapes[count]{};
   const char * names[count];
 
-  shapes[0] = new Rectangle(5, 6, {1, 2});
-  names[0] = "Rectangle 1";
+  try {
+    shapes[0] = new Rectangle(5, 6, {1, 2});
+    names[0] = "Rectangle 1";
 
-  shapes[1] = new Rectangle(10, 2, {-10, 3});
-  names[1] = "Rectangle 2";
+    shapes[1] = new Rectangle(10, 2, {-10, 3});
+    names[1] = "Rectangle 2";
 
-  point_t points1[] = {{0, 0}, {1, 0}, {1, 1}, {0, 1}};
-  size_t points_count = 4;
-  shapes[2] = new Polygon(points1, points_count);
-  names[2] = "Polygon 1";
+    point_t points1[] = {{0, 0}, {1, 0}, {1, 1}, {0, 1}};
+    size_t points_count = 4;
+    shapes[2] = new Polygon(points1, points_count);
+    names[2] = "Polygon 1";
 
-  point_t points2[] = {{0, 0}, {4, 1}, {5, 4}, {5, 8}, {4, 10}, {3, 8}, {2, 5}, {-1, 1}};
-  points_count = 8;
-  shapes[3] = new Polygon(points2, points_count);
-  names[3] = "Polygon 2";
+    point_t points2[] = {{0, 0}, {4, 1}, {5, 4}, {5, 8}, {4, 10}, {3, 8}, {2, 5}, {-1, 1}};
+    points_count = 8;
+    shapes[3] = new Polygon(points2, points_count);
+    names[3] = "Polygon 2";
 
-  shapes[4] = new Bubble(10, {0, 0}, {2, 2});
-  names[4] = "Bubble";
+    shapes[4] = new Bubble(10, {0, 0}, {2, 2});
+    names[4] = "Bubble";
 
-  printShapesInfo(output, shapes, names, count);
+    printShapesInfo(output, shapes, names, count);
 
-  output << "\n\nEnter x, y and k: ";
+    output << "\n\nEnter x, y and k: ";
+
+  } catch (const std::bad_alloc & e) {
+    std::cerr << "bad alloc\n";
+    result = 2;
+  }
 
   double x = 0, y = 0, k = 0;
-  while (std::cin >> x >> y >> k) {
+  while (!result && std::cin >> x >> y >> k) {
     if (k <= 0) {
       std::cerr << "k cannot be less than or equal to zero\n";
       result = 1;
