@@ -23,6 +23,7 @@ namespace vasyakin
     virtual void move(const point_t& p) = 0;
     virtual void move(double dx, double dy) = 0;
     virtual void scale(double k) = 0;
+    virtual void scaleUnchecked(double k) = 0;
     virtual ~Shape() = default;
   };
 
@@ -34,6 +35,7 @@ namespace vasyakin
     void move(const point_t& p) override;
     void move(double dx, double dy) override;
     void scale(double k) override;
+    void scaleUnchecked(double k) override;
   private:
     double width_, height_;
     point_t pos_;
@@ -47,6 +49,7 @@ namespace vasyakin
     void move(const point_t& p) override;
     void move(double dx, double dy) override;
     void scale(double k) override;
+    void scaleUnchecked(double k) override;
     point_t getCenter() const;
   private:
     point_t a_, b_, c_;
@@ -60,6 +63,7 @@ namespace vasyakin
     void move(const point_t& p) override;
     void move(double dx, double dy) override;
     void scale(double k) override;
+    void scaleUnchecked(double k) override;
     point_t getCenter() const;
   private:
     point_t a_, b_, c_, d_;
@@ -89,7 +93,7 @@ void vasyakin::scaleByPnt(Shape** figures, size_t size, const point_t& k, double
     const double dx = (k.x - g.x) * (a - 1);
     const double dy = (k.y - g.y) * (a - 1);
     figures[i]->move(dx, dy);
-    figures[i]->scale(a);
+    figures[i]->scaleUnchecked(a);
   }
 }
 
@@ -212,6 +216,11 @@ void vasyakin::Rectangle::scale(double k)
   {
     throw std::invalid_argument("incorrect coefficient");
   }
+  scaleUnchecked(k);
+}
+
+void vasyakin::Rectangle::scaleUnchecked(double k)
+{
   width_ *= k;
   height_ *= k;
 }
@@ -266,6 +275,11 @@ void vasyakin::Triangle::scale(double k)
   {
     throw std::invalid_argument("incorrect coefficient");
   }
+  scaleUnchecked(k);
+}
+
+void vasyakin::Triangle::scaleUnchecked(double k)
+{
   point_t center = getCenter();
   a_.x = center.x + (a_.x - center.x) * k;
   a_.y = center.y + (a_.y - center.y) * k;
@@ -329,6 +343,11 @@ void vasyakin::Concave::scale(double k)
   {
     throw std::invalid_argument("incorrect coefficient");
   }
+  scaleUnchecked(k);
+}
+
+void vasyakin::Concave::scaleUnchecked(double k)
+{
   point_t center = getCenter();
   a_.x = center.x + (a_.x - center.x) * k;
   a_.y = center.y + (a_.y - center.y) * k;
