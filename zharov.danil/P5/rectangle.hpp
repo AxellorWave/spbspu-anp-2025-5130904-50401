@@ -1,5 +1,5 @@
 #ifndef RECTANGLE_HPP
-#define RECTANGLT_HPP
+#define RECTANGLE_HPP
 #include "shape.hpp"
 
 namespace zharov
