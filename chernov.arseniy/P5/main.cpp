@@ -241,6 +241,7 @@ chernov::Polygon::Polygon(point_t * points, size_t size):
   center({0, 0})
 {
   if (count < 3) {
+    delete [] verts;
     throw std::invalid_argument("the count must not be less than 3");
   }
   for (size_t i = 0; i < count; ++i) {
