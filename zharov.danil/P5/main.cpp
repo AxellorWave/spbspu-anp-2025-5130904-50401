@@ -32,7 +32,7 @@ namespace zharov {
   };
 
   struct Polygon: Shape {
-    Polygon(point_t * points, size_t size);
+    Polygon(const point_t * points, size_t size);
     ~Polygon();
     Polygon(const Polygon & polygon);
     Polygon & operator=(const Polygon & polygon);
@@ -50,7 +50,7 @@ namespace zharov {
   };
 
   struct Concave: Shape {
-    Concave(point_t * points, point_t pos);
+    Concave(const point_t * points, point_t pos);
     Concave(point_t p1, point_t p2, point_t p3, point_t pos);
     double getArea() const override;
     rectangle_t getFrameRect() const override;
@@ -64,7 +64,7 @@ namespace zharov {
 
   double getAreaUni(const point_t * points, size_t size);
   rectangle_t getFrameRectUni(const point_t * points, size_t size);
-  point_t getCentroid(point_t * points, size_t size);
+  point_t getCentroid(const point_t * points, size_t size);
   void scaleByPoint(Shape * shapes[], size_t size, point_t p, double k);
   double getAreaAll(Shape * shapes[], size_t size);
   rectangle_t getFrameRectAll(Shape * shapes[], size_t size);
@@ -86,11 +86,7 @@ double zharov::Rectangle::getArea() const
 
 zharov::rectangle_t zharov::Rectangle::getFrameRect() const
 {
-  rectangle_t frame_rect;
-  frame_rect.width = width_;
-  frame_rect.height = height_;
-  frame_rect.pos = pos_;
-  return frame_rect;
+  return {width_, height_, pos_};
 }
 
 void zharov::Rectangle::move(point_t p)
@@ -110,7 +106,7 @@ void zharov::Rectangle::scale(double k)
   height_ *= k;
 }
 
-zharov::Polygon::Polygon(point_t * points, size_t size):
+zharov::Polygon::Polygon(const point_t * points, size_t size):
   Shape(),
   size_(size),
   points_(new point_t[size]),
@@ -143,15 +139,17 @@ zharov::Polygon::Polygon(const Polygon & polygon):
 
 zharov::Polygon & zharov::Polygon::operator=(const Polygon & polygon)
 {
-  if (this != &polygon) {
-    delete[] points_;
+  if (this == &polygon) {
+    return *this;
   }
+  point_t * points = new point_t[polygon.size_]; 
+  for (size_t i = 0; i < size_; ++i) {
+    points[i] = polygon.points_[i];
+  }
+  delete[] points_;
   pos_ = polygon.pos_;
   size_ = polygon.size_;
-  points_ = new point_t[size_];
-  for (size_t i = 0; i < size_; ++i) {
-    points_[i] = polygon.points_[i];
-  }
+  points_ = points;
   return *this;
 }
 
@@ -166,9 +164,10 @@ zharov::Polygon::Polygon(Polygon && polygon):
 
 zharov::Polygon & zharov::Polygon::operator=(Polygon && polygon)
 {
-  if (this != &polygon) {
-    delete[] points_;
+  if (this == &polygon) {
+    return *this;
   }
+  delete[] points_;
   pos_ = polygon.pos_;
   size_ = polygon.size_;
   points_ = polygon.points_;
@@ -201,7 +200,7 @@ void zharov::Polygon::move(point_t p)
   move(p.x - pos_.x, p.y - pos_.y);
 }
 
-zharov::point_t zharov::getCentroid(point_t * points, size_t size)
+zharov::point_t zharov::getCentroid(const point_t * points, size_t size)
 {
   double area = 0.0, cx = 0.0, cy = 0.0;
   for (size_t i = 0; i < size; ++i) {
@@ -223,7 +222,7 @@ void zharov::Polygon::scale(double k)
   }
 }
 
-zharov::Concave::Concave(point_t * points, point_t pos):
+zharov::Concave::Concave(const point_t * points, point_t pos):
   Shape(),
   points_{points[0], points[1], points[2], points[3]},
   pos_(pos)
@@ -343,7 +342,7 @@ zharov::rectangle_t zharov::getFrameRectAll(Shape * shapes[], size_t size)
 void zharov::printInfo(Shape * shapes[], size_t size)
 {
   for (size_t i = 0; i < size; ++i) {
-    std::cout << "Shape №"<< i + 1 << "\n";
+    std::cout << "Shape #"<< i + 1 << "\n";
     printInfoHelp(shapes[i]->getArea(), shapes[i]->getFrameRect());
   }
   std::cout << "All shapes:\n";
@@ -377,10 +376,7 @@ int main()
     shapes[0] = new zharov::Rectangle(5, 7, {0,0});
     shapes[1] = new zharov::Concave({0, 2}, {-2, -3}, {2, 0}, {0, 0});
     shapes[2] = new zharov::Polygon(points_polygon, 3);
-  } catch (const std::bad_alloc & e) {
-    std::cerr << e.what() << "\n";
-    code = 1;
-  } catch (const std::invalid_argument & e) {
+  } catch (const std::exception & e) {
     std::cerr << e.what() << "\n";
     code = 1;
   }
