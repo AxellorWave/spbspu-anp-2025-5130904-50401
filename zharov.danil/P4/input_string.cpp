@@ -1,6 +1,6 @@
 #include "input_string.hpp"
-#include "resize.hpp"
 #include <iomanip>
+#include "resize.hpp"
 
 char * zharov::getLine(std::istream & in, size_t & len)
 {

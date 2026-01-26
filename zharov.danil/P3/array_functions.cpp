@@ -1,6 +1,6 @@
 #include "array_functions.hpp"
-#include "variants.hpp"
 #include <fstream>
+#include "variants.hpp"
 
 std::istream & zharov::inputMatrix(std::istream & input, int * mtx, size_t rows, size_t cols)
 {

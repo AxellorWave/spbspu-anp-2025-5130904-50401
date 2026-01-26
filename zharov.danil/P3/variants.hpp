@@ -1,6 +1,5 @@
 #ifndef VARIANTS_HPP
 #define VARIANTS_HPP
-
 #include <cstddef>
 
 namespace zharov
