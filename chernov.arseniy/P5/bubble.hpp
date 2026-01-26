@@ -12,6 +12,7 @@ namespace chernov {
     void move(point_t p) override;
     void move(double dx, double dy) override;
     void scale(double k) override;
+  private:
     double radius;
     point_t center, anchor;
   };

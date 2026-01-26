@@ -20,6 +20,7 @@ namespace chernov {
     void scale(double k) override;
     double getSignedArea() const;
     point_t getCentroid() const;
+  private:
     point_t * verts;
     size_t count;
     point_t center;
