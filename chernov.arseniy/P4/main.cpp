@@ -1,5 +1,5 @@
-#include <iostream>
 #include <iomanip>
+#include <iostream>
 #include "input.hpp"
 #include "resize.hpp"
 

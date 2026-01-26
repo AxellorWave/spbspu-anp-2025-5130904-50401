@@ -1,5 +1,5 @@
-#include <iostream>
 #include <fstream>
+#include <iostream>
 #include "array_funcs.hpp"
 #include "variants.hpp"
 

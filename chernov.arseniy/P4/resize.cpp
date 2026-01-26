@@ -1,5 +1,5 @@
-#include <iomanip>
 #include "resize.hpp"
+#include <iomanip>
 
 void chernov::destroy(char ** strs, size_t k)
 {

@@ -1,5 +1,5 @@
-#include <limits>
 #include "variants.hpp"
+#include <limits>
 #include "array_funcs.hpp"
 
 void chernov::fllIncWav(int * mtx, size_t rows, size_t cols)

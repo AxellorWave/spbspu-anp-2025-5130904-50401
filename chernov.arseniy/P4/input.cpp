@@ -1,5 +1,5 @@
-#include <iostream>
 #include "input.hpp"
+#include <iostream>
 #include "resize.hpp"
 
 char * chernov::getline(std::istream & input, size_t & size, bool (*check_sym)(char), \

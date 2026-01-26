@@ -1,5 +1,5 @@
-#include <iostream>
 #include "array_funcs.hpp"
+#include <iostream>
 #include "variants.hpp"
 
 std::istream & chernov::matrixInput(std::istream & input, int * mtx, size_t rows, size_t cols)
