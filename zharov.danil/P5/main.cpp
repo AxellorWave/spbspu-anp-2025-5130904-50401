@@ -6,7 +6,7 @@
 #include "concave.hpp"
 
 namespace zharov {
-  void printInfo(Shape * shapes[], size_t size);
+  void printInfo(const Shape * const shapes[], size_t size);
   void printInfoHelp(double area, rectangle_t frame);
 }
 
@@ -44,7 +44,7 @@ int main()
   return code;
 }
 
-void zharov::printInfo(Shape * shapes[], size_t size)
+void zharov::printInfo(const Shape * const shapes[], size_t size)
 {
   for (size_t i = 0; i < size; ++i) {
     std::cout << "Shape #"<< i + 1 << "\n";

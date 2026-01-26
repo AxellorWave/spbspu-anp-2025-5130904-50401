@@ -34,7 +34,7 @@ zharov::Polygon::Polygon(const Polygon & polygon):
 
 zharov::Polygon & zharov::Polygon::operator=(const Polygon & polygon)
 {
-  if (this == &polygon) {
+  if (this == std::addressof(polygon)) {
     return *this;
   }
   point_t * points = new point_t[polygon.size_];
@@ -59,7 +59,7 @@ zharov::Polygon::Polygon(Polygon && polygon):
 
 zharov::Polygon & zharov::Polygon::operator=(Polygon && polygon)
 {
-  if (this == &polygon) {
+  if (this == std::addressof(polygon)) {
     return *this;
   }
   delete[] points_;

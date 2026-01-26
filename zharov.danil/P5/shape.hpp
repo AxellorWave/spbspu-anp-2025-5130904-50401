@@ -13,8 +13,8 @@ namespace zharov
   virtual ~Shape() = default;
   };
 
-  void scaleByPoint(Shape * shapes[], size_t size, point_t p, double positive_k);
-  double getAreaAll(Shape * shapes[], size_t size);
-  rectangle_t getFrameRectAll(Shape * shapes[], size_t size);
+  void scaleByPoint(Shape * const shapes[], size_t size, point_t p, double positive_k);
+  double getAreaAll(const Shape * const shapes[], size_t size);
+  rectangle_t getFrameRectAll(const Shape * const shapes[], size_t size);
 }
 #endif

@@ -1,6 +1,6 @@
 #include "shape.hpp"
 
-void zharov::scaleByPoint(Shape * shapes[], size_t size, point_t p, double positive_k)
+void zharov::scaleByPoint(Shape * const shapes[], size_t size, point_t p, double positive_k)
 {
   for (size_t i = 0; i < size; ++i) {
     point_t pos = shapes[i]->getFrameRect().pos;
@@ -12,7 +12,7 @@ void zharov::scaleByPoint(Shape * shapes[], size_t size, point_t p, double posit
   }
 }
 
-double zharov::getAreaAll(Shape * shapes[], size_t size)
+double zharov::getAreaAll(const Shape * const shapes[], size_t size)
 {
   double sum = 0;
   for (size_t i = 0; i < size; ++i) {
@@ -21,7 +21,7 @@ double zharov::getAreaAll(Shape * shapes[], size_t size)
   return sum;
 }
 
-zharov::rectangle_t zharov::getFrameRectAll(Shape * shapes[], size_t size)
+zharov::rectangle_t zharov::getFrameRectAll(const Shape * const shapes[], size_t size)
 {
   point_t * points = new point_t[size * 2];
   for (size_t i = 0; i < size; ++i) {
