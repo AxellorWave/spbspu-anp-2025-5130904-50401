@@ -17,7 +17,7 @@ namespace zharov
       }
       scale(positive_k);
     }
-  protected: 
+  protected:
     virtual void scale(double positive_k) = 0;
   public:
     virtual ~Shape() = default;
