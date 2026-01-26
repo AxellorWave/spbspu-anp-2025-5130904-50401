@@ -97,9 +97,6 @@ void zharov::Polygon::move(point_t p)
 
 void zharov::Polygon::scale(double positive_k)
 {
-  if (positive_k <= 0.0) {
-    throw std::invalid_argument("Scale factor must be positive");
-  }
   for (size_t i = 0; i < size_; ++i) {
     points_[i].x = pos_.x + (points_[i].x - pos_.x) * positive_k;
     points_[i].y = pos_.y + (points_[i].y - pos_.y) * positive_k;

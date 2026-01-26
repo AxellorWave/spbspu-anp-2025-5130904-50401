@@ -1,5 +1,4 @@
 #include "rectangle.hpp"
-#include <stdexcept>
 
 zharov::Rectangle::Rectangle(double width, double height, point_t pos):
   Shape(),
@@ -31,9 +30,6 @@ void zharov::Rectangle::move(double dx, double dy)
 
 void zharov::Rectangle::scale(double positive_k)
 {
-  if (positive_k <= 0.0) {
-    throw std::invalid_argument("Scale factor must be positive");
-  }
   width_ *= positive_k;
   height_ *= positive_k;
 }

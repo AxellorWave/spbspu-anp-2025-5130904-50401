@@ -1,5 +1,4 @@
 #include "concave.hpp"
-#include <stdexcept>
 
 zharov::Concave::Concave(const point_t * points, point_t pos):
   Shape(),
@@ -40,9 +39,6 @@ void zharov::Concave::move(double dx, double dy)
 
 void zharov::Concave::scale(double positive_k)
 {
-  if (positive_k <= 0.0) {
-    throw std::invalid_argument("Scale factor must be positive");
-  }
   for (size_t i = 0; i < 4; ++i) {
     points_[i].x = pos_.x + (points_[i].x - pos_.x) * positive_k;
     points_[i].y = pos_.y + (points_[i].y - pos_.y) * positive_k;

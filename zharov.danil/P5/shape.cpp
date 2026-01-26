@@ -7,7 +7,7 @@ void zharov::scaleByPoint(Shape * const shapes[], size_t size, point_t p, double
     shapes[i]->move(p);
     double dx = positive_k * (pos.x - shapes[i]->getFrameRect().pos.x);
     double dy = positive_k * (pos.y - shapes[i]->getFrameRect().pos.y);
-    shapes[i]->scale(positive_k);
+    shapes[i]->safeScale(positive_k);
     shapes[i]->move(dx, dy);
   }
 }
