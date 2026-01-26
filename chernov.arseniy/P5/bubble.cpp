@@ -1,6 +1,6 @@
+#include "bubble.hpp"
 #include <cmath>
 #include <stdexcept>
-#include "bubble.hpp"
 
 chernov::Bubble::Bubble(double r, point_t o, point_t a):
   radius(r),
