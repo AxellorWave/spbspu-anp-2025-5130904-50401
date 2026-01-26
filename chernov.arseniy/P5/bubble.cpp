@@ -46,11 +46,8 @@ void chernov::Bubble::move(double dx, double dy)
   center.y += dy;
 }
 
-void chernov::Bubble::scale(double k)
+void chernov::Bubble::doScale(double k)
 {
-  if (k <= 0.0) {
-    throw std::invalid_argument("scale factor must be positive");
-  }
   radius *= k;
   double dx = center.x - anchor.x;
   double dy = center.y - anchor.y;

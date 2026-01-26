@@ -47,12 +47,13 @@ int main()
 
     double x = 0, y = 0, k = 0;
     while (std::cin >> x >> y >> k) {
-      if (k <= 0.0) {
-        std::cerr << "k cannot be less than or equal to zero\n";
+      try {
+        scaleByPoint(shapes, count, k, {x, y});
+      } catch (const std::invalid_argument & e) {
+        std::cerr << e.what() << "\n";
         result = 1;
         break;
       }
-      scaleByPoint(shapes, count, k, {x, y});
       output << "\n\n";
       printShapesInfo(output, shapes, names, count);
       output << "\n\nEnter x, y and k: ";

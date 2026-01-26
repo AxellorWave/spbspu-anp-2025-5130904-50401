@@ -32,11 +32,8 @@ void chernov::Rectangle::move(double dx, double dy)
   move({center.x + dx, center.y + dy});
 }
 
-void chernov::Rectangle::scale(double k)
+void chernov::Rectangle::doScale(double k)
 {
-  if (k <= 0.0) {
-    throw std::invalid_argument("scale factor must be positive");
-  }
   side_x *= k;
   side_y *= k;
 }

@@ -11,7 +11,9 @@ namespace chernov {
     virtual rectangle_t getFrameRect() const = 0;
     virtual void move(point_t p) = 0;
     virtual void move(double dx, double dy) = 0;
-    virtual void scale(double positive_k) = 0;
+    void scale(double positive_k);
+  protected:
+    virtual void doScale(double positive_k) = 0;
   };
 
   void scaleByPoint(Shape ** shapes, size_t count, double k, point_t p);

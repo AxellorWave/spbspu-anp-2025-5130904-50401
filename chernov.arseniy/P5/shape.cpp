@@ -2,11 +2,16 @@
 #include <cstddef>
 #include <stdexcept>
 
-void chernov::scaleByPoint(Shape ** shapes, size_t count, double k, point_t p)
+void chernov::Shape::scale(double k)
 {
   if (k <= 0.0) {
     throw std::invalid_argument("scale factor must be positive");
   }
+  doScale(k);
+}
+
+void chernov::scaleByPoint(Shape ** shapes, size_t count, double k, point_t p)
+{
   for (size_t i = 0; i < count; ++i) {
     Shape * shape = shapes[i];
     point_t first_pos = shape->getFrameRect().pos;

@@ -11,7 +11,8 @@ namespace chernov {
     rectangle_t getFrameRect() const override;
     void move(point_t p) override;
     void move(double dx, double dy) override;
-    void scale(double k) override;
+  protected:
+    void doScale(double k) override;
   private:
     double side_x, side_y;
     point_t center;

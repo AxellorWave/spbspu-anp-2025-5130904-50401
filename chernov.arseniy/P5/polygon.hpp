@@ -17,9 +17,10 @@ namespace chernov {
     rectangle_t getFrameRect() const override;
     void move(point_t p) override;
     void move(double dx, double dy) override;
-    void scale(double k) override;
     double getSignedArea() const;
     point_t getCentroid() const;
+  protected:
+    void doScale(double k) override;
   private:
     point_t * verts;
     size_t count;
