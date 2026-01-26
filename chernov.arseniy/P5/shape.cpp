@@ -1,6 +1,6 @@
+#include "shape.hpp"
 #include <cstddef>
 #include <stdexcept>
-#include "shape.hpp"
 
 void chernov::scaleByPoint(Shape ** shapes, size_t count, double k, point_t p)
 {

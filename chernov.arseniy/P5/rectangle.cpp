@@ -1,5 +1,5 @@
-#include <stdexcept>
 #include "rectangle.hpp"
+#include <stdexcept>
 
 chernov::Rectangle::Rectangle(double a, double b, point_t o):
   Shape(),

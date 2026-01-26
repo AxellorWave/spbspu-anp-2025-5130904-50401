@@ -1,6 +1,6 @@
-#include <cstddef>
-#include <algorithm>
 #include "geom.hpp"
+#include <algorithm>
+#include <cstddef>
 
 chernov::rectangle_t chernov::getFrameRectByVerts(const point_t * verts, size_t count)
 {

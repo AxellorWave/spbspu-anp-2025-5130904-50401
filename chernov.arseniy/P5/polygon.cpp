@@ -1,5 +1,5 @@
-#include <stdexcept>
 #include "polygon.hpp"
+#include <stdexcept>
 
 chernov::Polygon::Polygon(point_t * points, size_t size):
   Shape(),

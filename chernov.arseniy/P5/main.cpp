@@ -1,9 +1,9 @@
 #include <iostream>
-#include "geom.hpp"
-#include "shape.hpp"
-#include "rectangle.hpp"
-#include "polygon.hpp"
 #include "bubble.hpp"
+#include "geom.hpp"
+#include "polygon.hpp"
+#include "rectangle.hpp"
+#include "shape.hpp"
 
 namespace chernov {
   std::ostream & printShapeInfo(std::ostream & out, double area, rectangle_t frame, const char * name);
